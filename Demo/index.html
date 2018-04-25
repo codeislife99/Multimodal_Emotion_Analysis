@@ -1,3 +1,55 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:4ef1a61503a7dda34daeaaf7b8e0f62457f78744a04178600d7987c0811fdf49
-size 2632
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <meta charset="utf-8">
+        <title>LukaBot</title>
+        <script
+        src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+        crossorigin="anonymous"></script>
+        <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="cssmain.css">
+        <script type="text/javascript" src="jsmain.js"></script>
+        <!--script type="text/javascript" src="static/data.js"></script>
+        <script type="text/javascript" src="static/data_t.js"></script-->
+    </head>
+    <body>
+        <div class="jumbo parallax parallax-1">
+            <!--p>LUKABOT EMOTION PREDICTION</p-->
+        </div>
+        <div class="row text-center">
+            <h2 class="pagetitle">LukaBot</h2>
+            <p class= "subtitle">Towards an emotionally aware artificial intelligence</p>
+            <h3>Carnegie Mellon University</h3>
+            <h4>MRSD Project 2017-18</h4>
+            <br>
+            <h4>TeamD: Deeply Emotional</h4>
+            <h4>Members: Keerthana P G, Luka Eerens, Ritwik Das</h4>
+            <h4>Sponsor: Emotech</h4>
+            <br>
+            <div class="col-md-12" style="margin:20px">               
+                <div class="tab-content col-md-6" >
+                    <div class = "text-center">
+                        <h4>Live Stream:</h4>
+                        <video width="420" height="315"  id="myVideo" controls>
+                            <source src="" id="mp4Source" type="video/mp4">
+                                Your browser does not support the video tag.
+                        </video>
+                        <br>
+                        <h4 id="transcript"></h4> 
+
+                    </div>                    
+                </div><!-- tab content -->
+                    <div class = "col-md-6 text-center">
+                        <h4>Predicted Emotion</h4>                        
+                        <div id="hi"></div>
+                        <p id="hi_text"></p>    
+                    </div>
+                </div>                   
+            </div> 
+        </body>
+    </html>

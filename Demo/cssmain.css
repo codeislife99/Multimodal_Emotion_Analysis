@@ -1,3 +1,170 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:124c5cbf337220dd614bdf4b56ac07f70d0cfe78eef616a279d8fe110bd8fb43
-size 1761
+html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+
+}
+
+body {
+   
+   
+    font-family: Lato;
+    margin:0;
+
+
+} 
+
+.nav-tabs li a {
+    color: #777;
+}
+
+.parallax-1 {
+    background-image: url("pollution2.jpg");
+}
+.pagetitle {
+    font-size: 100px;
+    font-weight: 900;
+    font-family: Lato;
+    line-height: 0.6;
+}
+.subtitle {
+    font-size: 40px;
+    font-weight: 300;
+    font-family: Lato;
+    font-style: italic;
+    
+}
+
+/*.container {
+    padding: 80px 120px;
+}
+*/
+.jumbo.parallax p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 50px;
+    line-height: 600px;
+    font-family: Lato;
+    font-weight: 100;
+    text-align: center;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.parallax {
+    height: 650px;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+
+
+/* Create two equal columns that floats next to each other */
+.column {
+    float: left;
+    width: 25%;
+    padding: 0px;
+    /*height: 400px; /* Should be removed. Only for demonstration */
+}
+.centered {
+    text-align: center;
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.result {
+    font-size: 20px;
+    font-weight: 900;
+    font-family: Lato;
+    line-height: 1;
+    color: #f1c40f;
+}
+/*
+.res_text{
+    height: 200px;
+}
+*/
+
+.title_text{
+    color:#eee;
+}
+#hi_emo{
+            font-size: 40px;
+            font-weight: 200;
+            font-family: Lato;
+            font-style: italic;
+}
+#hi_acc{
+            font-size: 40px;
+            font-weight: 200;
+            font-family: Lato;
+            font-style: italic;
+}
+
+#vv_acc{
+            font-size: 40px;
+            font-weight: 200;
+            font-family: Lato;
+            font-style: italic;
+}
+
+#vv_emo{
+            font-size: 40px;
+            font-weight: 200;
+            font-family: Lato;
+            font-style: italic;
+}
+
+#text_emo{
+            font-size: 40px;
+            font-weight: 200;
+            font-family: Lato;
+            font-style: italic;
+}
+
+#text_acc{
+            font-size: 40px;
+            font-weight: 200;
+            font-family: Lato;
+            font-style: italic;
+}
+
+#transcript{
+            font-size: 40px;
+            font-weight: 200;
+            font-family: Lato;
+            font-style: italic;
+}
+
+#actual{
+            font-size: 40px;
+            font-weight: 200;
+            font-family: Lato;
+            font-style: italic;
+}
+
+#heading{
+            font-size: 40px;
+            font-weight: 200;
+            font-family: Lato;
+            font-style: italic;
+}
+
+
+#yolo{
+            font-size: 100px;
+            font-weight: 100;
+}
