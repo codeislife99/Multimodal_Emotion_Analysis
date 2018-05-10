@@ -1,0 +1,17 @@
+Modality Speech(Averaged Softmax),,,,,,"Modality Song(No Training, Only Trained on Speech)",,,,,,"Modality Song(Pre Trained on Speech, Fine Tuned on Song)",,,,,,"Modality Song(Averaged Softmax of two 3 second chunks)(Pre Trained on Speech, Fine Tuned on Song)",,,,,
+Epoch,Val Loss,Test Loss,Val Accuracy,Test Accuracy,Overall Accuracy,Epoch,Val Loss,Test Loss,Val Accuracy,Test Accuracy,Overall Accuracy,Epoch,Val Loss,Test Loss,Val Accuracy,Test Accuracy,Overall Accuracy,Epoch,Val Loss,Test Loss,Val Accuracy,Test Accuracy,Overall Accuracy
+5,,1.9665,,27.5,27.5,5,,,,,#DIV/0!,5,,,,,#DIV/0!,5,,,,,#DIV/0!
+10,,1.8531,,29.16,29.16,10,,,,,#DIV/0!,10,,,,,#DIV/0!,10,,,,,#DIV/0!
+15,1.8738,1.9358,35,35.833,35.4165,15,,,,,#DIV/0!,15,,,,,#DIV/0!,15,,,,,#DIV/0!
+16,1.9043,1.8447,30.833,40,35.4165,16,,,,,#DIV/0!,16,,,,,#DIV/0!,16,,,,,#DIV/0!
+17,1.8192,1.8175,37.5,45,41.25,17,3.0818,2.9629,23.8636,19.3182,21.5909,17,,,,,#DIV/0!,17,,,,,#DIV/0!
+18,1.8055,1.8548,34.16,37.5,35.83,18,,,,,#DIV/0!,18,,,,,#DIV/0!,18,,,,,#DIV/0!
+19,1.936,1.847,37.5,36.6,37.05,19,,,,,#DIV/0!,19,,,,,#DIV/0!,19,,,,,#DIV/0!
+20,1.8719,1.775,35,43.33,39.165,20,3.0665,2.686,20.4545,25,22.72725,20,,,,,#DIV/0!,20,,,,,#DIV/0!
+21,1.9773,1.9785,33.33,35.833,34.5815,21,,,,,#DIV/0!,21,,,,,#DIV/0!,21,,,,,#DIV/0!
+22,1.886,1.9518,35.833,28.33,32.0815,22,,,,,#DIV/0!,22,,,,,#DIV/0!,22,,,,,#DIV/0!
+23,1.8849,2.0189,33.33,35,34.165,23,,,,,#DIV/0!,23,,,,,#DIV/0!,23,,,,,#DIV/0!
+24,1.94,1.8524,33.33,39.1667,36.24835,24,,,,,#DIV/0!,24,,,,,#DIV/0!,24,,,,,#DIV/0!
+25,1.9367,1.7971,40,38.33,39.165,25,3.219,,18.18,,18.18,25,,,,,#DIV/0!,25,,,,,#DIV/0!
+30,2.1953,2.06,36.667,40,38.3335,30,3.7934,,20.4545,,20.4545,30,,,,,#DIV/0!,30,,,,,#DIV/0!
+33,2.77,2.3981,35.833,37.5,36.6665,33,4.9281,,20,,20,33,,,,,#DIV/0!,33,,,,,#DIV/0!

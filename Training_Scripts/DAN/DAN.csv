@@ -1,0 +1,10 @@
+Modality Speech(Averaged Softmax),,,,,,"Modality Song(No Training, Only Trained on Speech)",,,,,,"Modality Song(Pre Trained on Speech, Fine Tuned on Song)",,,,,,"Modality Song(Averaged Softmax of two 3 second chunks)(Pre Trained on Speech, Fine Tuned on Song)",,,,,
+Epoch,Val Loss,Test Loss,Val Accuracy,Test Accuracy,Overall Accuracy,Epoch,Val Loss,Test Loss,Val Accuracy,Test Accuracy,Overall Accuracy,Epoch,Val Loss,Test Loss,Val Accuracy,Test Accuracy,Overall Accuracy,Epoch,Val Loss,Test Loss,Val Accuracy,Test Accuracy,Overall Accuracy
+0,1.2446,1.0446,55.833,60.833,58.333,0,1.6713,1.1821,43.18,57.9545,50.56725,0,1.23,1.1,57.38,60.7955,57.38,0,1.23,1.1,57.9545,60.2273,59.0909
+1,1.2084,1.296,56.6667,57.5,57.08335,1,1.9374,1.6809,40.34,46.59,43.465,1,1.1805,0.9857,63.06,64.7727,63.91635,1,1.1085,0.9857,65.9091,62.5,64.20455
+,,,,,,,,,,,,2,1.0514,0.9393,63.63,67.0455,65.33775,2,1.0514,0.9393,65.9091,68.1818,67.04545
+,,,,,,,,,,,,3,1.0413,0.9018,60.7955,69.3182,65.05685,3,1.0413,0.9018,63.6364,70.4545,67.04545
+,,,,,,,,,,,,4,1.044,0.9093,62.5,70.4545,66.47725,4,1.044,0.9093,61.3636,68.1818,64.7727
+,,,,,,,,,,,,5,1.0541,0.934,61.93,69.8864,65.9082,5,1.0541,0.934,62.5,70.4545,66.47725
+,,,,,,,,,,,,6,1.0945,0.9698,61.36,69.3182,65.3391,6,1.0945,0.9698,64.7727,70.4545,67.6136
+,,,`,,,,,,,,,7,1.1541,1.0149,61.93,,61.93,7,1.1541,1.0149,63.6364,70.4545,67.04545
