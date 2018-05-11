@@ -1,9 +1,9 @@
 #### Download Links
 
-Please download both the datasets _before_ cloning this repository
+Please download both the datasets _before_ cloning this repository <br/>
 
-Processed Dataset - http://sorena.multicomp.cs.cmu.edu/downloads/MOSEI/
-Raw Dataset - http://sorena.multicomp.cs.cmu.edu/downloads_raw/MOSEI
+Processed Dataset - http://sorena.multicomp.cs.cmu.edu/downloads/MOSEI/ <br/>
+Raw Dataset - http://sorena.multicomp.cs.cmu.edu/downloads_raw/MOSEI <br/>
 
 
 #### Structure of Pickle Files
