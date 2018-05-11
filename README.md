@@ -19,11 +19,11 @@ Let *emo_intsts* be  = array([Anger_Intensity, Disgust_Intensity, Fear_Intensity
 
 ##### 4. Train/Test/Valid.pkl 
 
-Contains a set of all the train/test/validation video names
-Length of Dataset - 3228 Videos divided into 17728 Video Clips of ~3-8 seconds
-Length of Training Set - 2250 Videos
-Length of Validation Set - 300 Videos
-Length of Test Set - 678 Videos
+Contains a set of all the train/test/validation video names <br/>
+Length of Dataset - 3228 Videos divided into 17728 Video Clips of ~3-8 seconds <br/>
+Length of Training Set - 2250 Videos <br/>
+Length of Validation Set - 300 Videos <br/>
+Length of Test Set - 678 Videos <br/>
 
 ##### 5. Facet.pkl 
 
