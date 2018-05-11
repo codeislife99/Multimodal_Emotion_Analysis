@@ -27,17 +27,18 @@ for key,value in data.items():
 		else: 
 			folder_location = "./Multimodal_Emotion_Analysis/audio_files/test/"
 		video_name = key2
+		pp.pprint(key2)
 		for key3,value3 in value2.items():
 			segment_id  = key3
 			pickle_file = folder_location + video_name + '_' + segment_id + '.pkl'
 			print(pickle_file)
-			# print(value3[0][2])
-			for idx,frame in enumerate(value3):
-				if idx == 0:
-					facet_features = frame[2]
-				else:
-					facet_features = np.vstack((facet_features,frame[2]))
-			# pp.pprint(facet_features)
+			pp.pprint(value3)
+			# for idx,frame in enumerate(value3):
+			# 	if idx == 0:
+			# 		facet_features = frame[2]
+			# 	else:
+			# 		facet_features = np.vstack((facet_features,frame[2]))
+			# # pp.pprint(facet_features)
 			pickle.dump(facet_features, open(pickle_file, "wb" ))
 			# break
 		# break
