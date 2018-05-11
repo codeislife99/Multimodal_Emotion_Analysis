@@ -1,3 +1,11 @@
+#### Download Links
+
+Please download both the datasets _before_ cloning this repository
+
+Processed Dataset - http://sorena.multicomp.cs.cmu.edu/downloads/MOSEI/
+Raw Dataset - http://sorena.multicomp.cs.cmu.edu/downloads_raw/MOSEI
+
+
 #### Structure of Pickle Files
 
 ##### 1. Emotions.pkl 
