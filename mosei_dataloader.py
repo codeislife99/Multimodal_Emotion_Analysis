@@ -2,6 +2,7 @@ import os
 import numpy as np
 import torch
 from torch.utils import data
+import cPickle as pickle 
 
 vision_dir = './vision_files/'
 vocal_dir = './audio_files/'
@@ -23,12 +24,10 @@ def make_dataset(mode):
     return items
 
 class mosei(data.Dataset):
-    def __init__(self, quality, mode):
+    def __init__(self, mode):
         self.items = make_dataset(mode)
         if len(self.items) == 0:
             raise RuntimeError('Found 0 items, please check the data set')
-        self.quality = quality
-        self.mode = mode
 
     def __getitem__(self, index):
         vision_path, vocal_path, gt_path = self.items[index]
@@ -38,7 +37,6 @@ class mosei(data.Dataset):
             vocal_file = pickle.load(f)
         with open(gt_path,'rb') as f:
             gt_file = pickle.load(f)
-
 
         return vision_file, vocal_file, gt_file
 
