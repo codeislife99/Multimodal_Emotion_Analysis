@@ -23,11 +23,11 @@ for key,value in data.items():
 	# pp.pprint(key)
 	for key2,value2 in value.items():
 		if key2 in train_data: 
-			folder_location = "./Multimodal_Emotion_Analysis/audio_files/train/" 
+			folder_location = "./audio_files/train/" 
 		elif key2 in valid_data: 
-			folder_location = "./Multimodal_Emotion_Analysis/audio_files/val/"
+			folder_location = "./audio_files/val/"
 		else: 
-			folder_location = "./Multimodal_Emotion_Analysis/audio_files/test/"
+			folder_location = "./audio_files/test/"
 		video_name = key2
 		# pp.pprint(key2)
 		for key3,value3 in value2.items():
