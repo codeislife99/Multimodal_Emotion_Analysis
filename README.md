@@ -26,6 +26,8 @@ Length of Validation Set - 300 Videos divided into 1835 Video Clips <br/>
 Length of Test Set - 678 Videos divided into 4625 Video Clips <br/>
 
 ##### 5. Facet.pkl 
+Let *facet_features* be  = array([feature_1_val,feature_2_val,....,feature_35_val]) <br/>
+{ "facet" :{"Video Name": {"Segment ID i_1 ": ((start_time_frame_1,end_time_frame_1,facet_features),...((start_time_frame_n,end_time_frame_n,facet_features)),"Segment ID i_2 ": ..., .... ,"Segment ID i_n ": ....}}}
 
 ##### 6. Sentiments.pkl 
 
