@@ -1,5 +1,21 @@
 #### Structure of Pickle Files
 
-##### Emotions.pkl 
+##### 1. Emotions.pkl 
 
-{"Video Name": {"Segment ID i_1 ": array([Anger, Disgust, Fear, Happy ,Sad, Surprise],"Segment ID i_2 ": array([Anger, Disgust, Fear, Happy ,Sad, Surprise], .... ,"Segment ID i_n ": array([Anger, Disgust, Fear, Happy ,Sad, Surprise] }}
+Let emo_intsts be  = array([Anger_Intensity, Disgust_Intensity, Fear_Intensity, Happy_Intensity ,Sad_Intensity,   Surprise_Intensity]
+{"Video Name": {"Segment ID i_1 ": emo_intsts,"Segment ID i_2 ": emo_intsts, .... ,"Segment ID i_n ": emo_intsts}}
+
+##### 2. Words.pkl 
+
+##### 3. Embeddings.pkl 
+
+##### 4. Train/Test/Valid.pkl 
+
+##### 5. Facet.pkl 
+
+##### 6. Sentiments.pkl 
+
+##### 7. Covarep.pkl 
+
+
+
