@@ -42,8 +42,8 @@ for key,value in data.items():
 					covarep_features = np.vstack((covarep_features,frame[2]))
 			# pp.pprint(facet_features)
 			pickle.dump(covarep_features, open(pickle_file,"wb"))
-			break
-		break
-	break
+	# 		break
+	# 	break
+	# break
 
 
