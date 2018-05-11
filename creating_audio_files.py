@@ -4,7 +4,7 @@ import random
 import os
 import numpy as np
 
-with open('facet.pkl', 'rb') as f:
+with open('covarep.pkl', 'rb') as f:
 	data = pickle.load(f)
 pp = pprint.PrettyPrinter(indent=4)
 # pp.pprint(data[0])
@@ -21,11 +21,11 @@ for key,value in data.items():
 	pp.pprint(key)
 	for key2,value2 in value.items():
 		if key2 in train_data: 
-			folder_location = "./Multimodal_Emotion_Analysis/vision_files/train/" 
+			folder_location = "./Multimodal_Emotion_Analysis/audio_files/train/" 
 		elif key2 in valid_data: 
-			folder_location = "./Multimodal_Emotion_Analysis/vision_files/val/"
+			folder_location = "./Multimodal_Emotion_Analysis/audio_files/val/"
 		else: 
-			folder_location = "./Multimodal_Emotion_Analysis/vision_files/test/"
+			folder_location = "./Multimodal_Emotion_Analysis/audio_files/test/"
 		video_name = key2
 		for key3,value3 in value2.items():
 			segment_id  = key3

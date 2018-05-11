@@ -32,13 +32,13 @@ for key2,value2 in data.items():
 		val_set.add(key2)
 	else: 
 		folder_location = "./gt_emotions_files/test/"
-	# video_name = key2
-	# for key3,value3 in value2.items():
-	# 	segment_id  = key3
-	# 	pickle_file = folder_location + video_name + '_' + segment_id + '.pkl'
-	# 	print(pickle_file)
-	# 	# pp.pprint(facet_features)
-	# 	pickle.dump(value3, open(pickle_file, "wb" ))
+	video_name = key2
+	for key3,value3 in value2.items():
+		segment_id  = key3
+		pickle_file = folder_location + video_name + '_' + segment_id + '.pkl'
+		print(pickle_file)
+		# pp.pprint(facet_features)
+		pickle.dump(value3, open(pickle_file, "wb" ))
 		# break
 	# break
 # break
