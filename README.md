@@ -19,6 +19,8 @@ Let *emo_intsts* be  = array([Anger_Intensity, Disgust_Intensity, Fear_Intensity
 
 ##### 4. Train/Test/Valid.pkl 
 
+Contains a set of all the train/test/validation video names
+
 ##### 5. Facet.pkl 
 
 ##### 6. Sentiments.pkl 
