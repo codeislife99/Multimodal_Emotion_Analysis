@@ -40,3 +40,8 @@ COVAREP features are taken at a time interval of 0.01sec(10ms) which is the orig
 There are 74 features for each 0.01 segment. <br/>
 { "facet" :{"Video Name": {"Segment ID i_1 ": ((start_time_frame_1,end_time_frame_1,covarep_features),...      (start_time_frame_n,end_time_frame_n,covarep_features)),"Segment ID i_2 ": ..., .... ,"Segment ID i_n ": ....}}}
 
+
+#### TO DOs After Cloning the Repository
+
+1. Put all downloaded pickle files in the same directory. <br/>
+2. Run creating_audio_files.py using python2.7 (This might take a while depending on your machine). This will generate a folder with all the audio_files containing covarep features with the corresponding video name. 
