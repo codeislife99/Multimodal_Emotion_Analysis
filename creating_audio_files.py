@@ -17,7 +17,10 @@ with open('valid.pkl', 'rb') as f:
 	valid_data = pickle.load(f)
 with open('test.pkl', 'rb') as f:
 	test_data = pickle.load(f)
-
+os.system("mkdir -p audio_files")
+os.system("mkdir -p audio_files/train")
+os.system("mkdir -p audio_files/val")
+os.system("mkdir -p audio_files/test")
 # pp.pprint(data)
 for key,value in data.items():
 	# pp.pprint(key)
