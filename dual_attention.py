@@ -260,7 +260,7 @@ while epoch<no_of_epochs:
 			optimizer.load_state_dict(checkpoint['optimizer'])
 
 	K = 0
-	for idx,csv_file_path in enumerate(all_csv_files):
+	for i,csv_file_path in enumerate(all_csv_files):
 		# print(csv_file_path)
 		name = csv_file_path[13:-4]
 		vocal_seq_input0 = np.empty((1,vocal_seq_len,vocal_input_size), dtype = np.float32)
