@@ -64,6 +64,10 @@ COVAREP features are taken at a time interval of 0.01sec(10ms) which is the orig
 There are 74 features for each 0.01 segment. <br/>
 { "facet" :{"Video Name": {"Segment ID i_1 ": ((start_time_frame_1,end_time_frame_1,covarep_features),...      (start_time_frame_n,end_time_frame_n,covarep_features)),"Segment ID i_2 ": ..., .... ,"Segment ID i_n ": ....}}}
 
+Due to 43 features in some files the following number of features were present for vision but couldn't be used for audio: <br/>
+1. Test : 1322 <br/>
+2. Train : 5105 <br/>
+3. Val : 494 <br/>
 
 #### TO DOs After Cloning the Repository
 
