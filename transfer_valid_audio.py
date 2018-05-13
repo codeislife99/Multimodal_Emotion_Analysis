@@ -1,6 +1,7 @@
 import cPickle as pickle
 import os
 import glob
+import sys
 
 os.system("mkdir -p audio_files_74")
 splits = ['train','test','val']
@@ -10,7 +11,10 @@ for split in splits:
 	count = 0
 	for file in glob.glob(path):
 		with open(file,'rb') as f:
-			data=pickle.load(f)
+			if sys.version_info[0]==2:
+				data = pickle.load(f)
+			else:
+				data = pickle.load(f,encoding = 'latin1')
 			# print(data.shape[1])
 			if data.shape[1] == 74:
 				os.system("mv "+file+" ./audio_files_74/"+split+"/")
