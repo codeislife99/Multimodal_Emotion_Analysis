@@ -44,6 +44,11 @@ Length of Dataset - 3228 Videos divided into 22677 Video Clips of ~3-8 seconds <
 Length of Training Set - 2250 Videos divided into 16127 Video Clips <br/>
 Length of Validation Set - 300 Videos divided into 1835 Video Clips <br/>
 Length of Test Set - 678 Videos divided into 4625 Video Clips <br/>
+Length of Truncated Set: <br/>
+('train', 11112) <br/>
+('test', 3303) <br/>
+('val', 1341) <br/>
+
 
 ##### 5. Facet.pkl 
 Let *facet_features* be  = array([feature_1_val,feature_2_val,....,feature_35_val]) <br/>
@@ -59,6 +64,10 @@ COVAREP features are taken at a time interval of 0.01sec(10ms) which is the orig
 There are 74 features for each 0.01 segment. <br/>
 { "facet" :{"Video Name": {"Segment ID i_1 ": ((start_time_frame_1,end_time_frame_1,covarep_features),...      (start_time_frame_n,end_time_frame_n,covarep_features)),"Segment ID i_2 ": ..., .... ,"Segment ID i_n ": ....}}}
 
+Due to 43 features in some files the following number of features were present for vision but couldn't be used for audio(and hence removed from all three folds): <br/>
+1. Test : 1322 <br/>
+2. Train : 5105 <br/>
+3. Val : 494 <br/>
 
 #### TO DOs After Cloning the Repository
 
