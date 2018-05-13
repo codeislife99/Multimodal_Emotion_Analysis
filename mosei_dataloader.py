@@ -60,7 +60,10 @@ class mosei(data.Dataset):
             with open(gt_path,'rb') as f:
                 gt_file = pickle.load(f,encoding = 'latin1')
             with open(emb_path,'rb') as f:
-                emb_file = pickle.load(f,encoding = 'bytes')
+                try:
+                    emb_file = pickle.load(f)
+                except:
+                    print("Error in Embeddings")
         return vision_file, vocal_file, gt_file,emb_file, vision_path, vocal_path, gt_path, emb_path
 
     def __len__(self):
