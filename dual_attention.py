@@ -264,6 +264,7 @@ while epoch<no_of_epochs:
 	for i,datapoint in enumerate(train_loader):
 		print(datapoint[1].shape[2])
 		print(datapoint[4])
+		
 	# for i,csv_file_path in enumerate(all_csv_files):
 	# 	# print(csv_file_path)
 	# 	name = csv_file_path[13:-4]
