@@ -75,4 +75,6 @@ Due to 43 features in some files the following number of features were present f
 #### TO DOs After Cloning the Repository
 
 1. Put all downloaded pickle files in the same directory. <br/>
-2. Run creating_audio_files.py using python2.7 (This might take a while depending on your machine). This will generate a folder with all the audio_files containing covarep features with the corresponding video name. 
+2. Run creating_audio_files.py using python2.7 (This might take a while depending on your machine). This will generate a folder with all the audio_files containing covarep features with the corresponding video name. <br/>
+3. Run transfer_valid_audio.py <br/>
+4. Run dual_attention.py <br/>
