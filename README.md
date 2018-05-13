@@ -44,6 +44,11 @@ Length of Dataset - 3228 Videos divided into 22677 Video Clips of ~3-8 seconds <
 Length of Training Set - 2250 Videos divided into 16127 Video Clips <br/>
 Length of Validation Set - 300 Videos divided into 1835 Video Clips <br/>
 Length of Test Set - 678 Videos divided into 4625 Video Clips <br/>
+Length of Truncated Set: <br/>
+('train', 11112) <br/>
+('test', 3303) <br/>
+('val', 1341) <br/>
+
 
 ##### 5. Facet.pkl 
 Let *facet_features* be  = array([feature_1_val,feature_2_val,....,feature_35_val]) <br/>
