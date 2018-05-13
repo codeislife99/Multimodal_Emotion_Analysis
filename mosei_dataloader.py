@@ -41,7 +41,7 @@ class mosei(data.Dataset):
             raise RuntimeError('Found 0 items, please check the data set')
 
     def __getitem__(self, index):
-        vision_path, vocal_path, gt_path = self.items[index]
+        vision_path, vocal_path, gt_path, emb_path = self.items[index]
         if sys.version_info[0] == 2:
             with open(vision_path,'rb') as f:
                 vision_file = pickle.load(f)
