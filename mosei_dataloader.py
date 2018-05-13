@@ -2,7 +2,8 @@ import os
 import numpy as np
 import torch
 from torch.utils import data
-import cPickle as pickle 
+# import cPickle as pickle 
+import pickle 
 
 vision_dir = './vision_files/'
 vocal_dir = './audio_files/'

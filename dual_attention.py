@@ -174,8 +174,8 @@ no_of_emotions = 6
 use_CUDA = True
 
 test_mode = False
-val_mode = True
-train_mode = False
+val_mode = False
+train_mode = True
 
 no_of_epochs = 1000
 vocal_input_size = 74 # Dont Change

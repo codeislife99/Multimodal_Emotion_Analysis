@@ -1,4 +1,5 @@
-import cPickle as pickle
+# import cPickle as pickle
+import pickle
 import pprint
 import random
 import os
