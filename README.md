@@ -13,21 +13,24 @@ Raw Dataset - http://sorena.multicomp.cs.cmu.edu/downloads_raw/MOSEI <br/>
 Let *emo_intsts* be  = array([Anger_Intensity, Disgust_Intensity, Fear_Intensity, Happy_Intensity ,Sad_Intensity,   Surprise_Intensity] <br/>
 {"Video Name": {"Segment ID i_1 ": emo_intsts,"Segment ID i_2 ": emo_intsts, .... ,"Segment ID i_n ": emo_intsts}} <br/>
 
-###### Train Set Emotion Intensity Stats: <br/>
+##### Train Set Emotion Intensity Stats: <br/>
  
         0-1 = 94964
         1-2 = 3275 
         2-3 = 515 
-        Max Intensity = 3.0
-        Min Intensity = 0.0 
-        
+        Max Intensity  = 3.0
+        Min Intensity  = 0.0 
+        Mean Intensity = 0.17
+        Mean Non-Zero Intensity = 0.74
 ##### Validation Set Emotion Intensity Stats: <br/>
         
         0-1 = 11031 
         1-2 = 278 
         2-3 = 37 
-        Max Intensity = 3.0
-        Min Intensity = 0.0
+        Max Intensity  = 3.0
+        Min Intensity  = 0.0
+        Mean Intensity = 0.15
+        Mean Non-Zero Intensity = 0.68
 
 ##### 2. Words.pkl 
 
