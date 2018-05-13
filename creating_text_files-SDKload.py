@@ -60,10 +60,14 @@ for key,value in data.items():
 		videobased_pickle_file = videobased_folder_location + video_name + '.pkl'		
 		videobased_embeddings_features = np.empty([0,EMBEDDING_SIZE]) 
 	
-		for key3,value3 in value2.items():
+		# for key3,value3 in value2.items():
+		key3seq = list(map(str,sorted(map(int,value2.keys()))))
+		for key3 in key3seq:
 			segment_id  = key3
+			value3 = value2[key3]
 			pickle_file = folder_location + video_name + '_' + segment_id + '.pkl'
 			print(pickle_file)
+		
 			for idx,frame in enumerate(value3):
 				videobased_embeddings_features = np.vstack((videobased_embeddings_features,frame[2]))
 				if idx == 0:
@@ -75,7 +79,7 @@ for key,value in data.items():
 		# save to videobased file
 		pickle.dump(videobased_embeddings_features, open(videobased_pickle_file,"wb"))
 
-		# replicate vidoe-based file by softlinks
+		# replicate vidoe-based file by softlinks, the order by which soft links are generated does not matter
 		for key3,value3 in value2.items():
 			segment_id = key3
 			target_pickle_file = videobased_folder_location + video_name + '_' + segment_id + '.pkl'
