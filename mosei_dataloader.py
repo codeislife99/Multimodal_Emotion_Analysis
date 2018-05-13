@@ -6,7 +6,7 @@ from torch.utils import data
 import pickle 
 
 vision_dir = './vision_files/'
-vocal_dir = './audio_files/'
+vocal_dir = './audio_files_74/'
 gt_emotions = './gt_emotions_files/'
 
 def make_dataset(mode):
@@ -20,11 +20,6 @@ def make_dataset(mode):
     for file in sorted(vocal_files):
         vision_path = os.path.join(vision, file)
         vocal_path = os.path.join(vocal, file)
-        with open(vocal_path,'rb') as f:
-            print("HERE")
-            vocal_file = pickle.load(f)
-        if vocal_file.shape[1]!=74:
-            continue
         gt_path = os.path.join(gt, file)
         items.append((vision_path,vocal_path,gt_path))
     return items
