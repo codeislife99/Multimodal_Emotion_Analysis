@@ -17,10 +17,14 @@ train emotion stats: <br/>
 0-1 = 94964 <br/>
 1-2 = 3275 <br/>
 2-3 = 515 <br/>
+Max Intensity = 3.0 <br/>
+Min Intensity = 0.0 <br/>
 val emotion stats: <br/>
 0-1 = 11031 <br/>
 1-2 = 278 <br/>
 2-3 = 37 <br/>
+Max Intensity = 3.0 <br/>
+Min Intensity = 0.0 <br/>
 
 ##### 2. Words.pkl 
 
