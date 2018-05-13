@@ -18,22 +18,25 @@ emo_bins = [{"0-2":0,"2-4":0,"4-6":0,"6-8":0,"8-10":0, "10-15":0, "15-20":0},
 			{"0-2":0,"2-4":0,"4-6":0,"6-8":0,"8-10":0, "10-15":0, "15-20":0}]
 
 
-with open('train.pkl', 'rb') as f:
-	train_data = pickle.load(f)
+# with open('train.pkl', 'rb') as f:
+# 	train_data = pickle.load(f)
 
-with open('valid.pkl', 'rb') as f:
-	valid_data = pickle.load(f)
+# with open('valid.pkl', 'rb') as f:
+# 	valid_data = pickle.load(f)
 
-with open('test.pkl', 'rb') as f:
-	test_data = pickle.load(f)
+# with open('test.pkl', 'rb') as f:
+# 	test_data = pickle.load(f)
 
 
-path = './sample_mp4/*.mp4'
+path_dir = "./sample_mp4/"
+path = path_dir + '*.mp4'
+
 for file in glob.glob(path):
 
 	print (file)
-	# file_name = file[13, -4]
 	duration = get_len(file)
+	file = str(file)
+	file_name = file[len(path_dir): -6]
 
 	idx = -1
 	if file_name in train_data:
@@ -43,7 +46,7 @@ for file in glob.glob(path):
 		idx = 1
 
 	if file_name in test_data:
-		idx = 0
+		idx = 2
 
 	if duration < 10:
 		for limit in range(0,11,2):
@@ -60,9 +63,8 @@ for file in glob.glob(path):
 				break
 
 
-
-for idx in range(3)
-	print(splits[idx] + " lenghts:")
+for idx in range(3):
+	print(splits[idx] + " length:")
 
 	for limit in range(0,11,2):
 		print(bins[limit/2-1]+" = "+ str(emo_bins[idx][bins[limit/2-1]]))
