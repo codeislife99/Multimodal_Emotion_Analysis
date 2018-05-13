@@ -69,15 +69,18 @@ class Dataloader(object):
     
     def get_feature(self, feature):
         """The unified API for getting specified features"""
-        # feature_path = os.path.join(self.location, feature + '.pkl')
-        feature_path = feature + '.pkl'
+        feature_path = os.path.join(self.location, feature + '.pkl')
         feature_present = os.path.exists(feature_path)
+        print(feature_path)
+
         if not feature_present:
             downloaded = download(self.dataset, feature, self.location)
             if not downloaded:
                 return None
 
         # TODO: check MD5 values and etc. to ensure the downloaded dataset's intact
+        print(feature_path)
+
         with open(feature_path, 'rb') as fp:
             try:
                 feature_values = compatible_load(fp)
