@@ -13,6 +13,21 @@ Raw Dataset - http://sorena.multicomp.cs.cmu.edu/downloads_raw/MOSEI <br/>
 Let *emo_intsts* be  = array([Anger_Intensity, Disgust_Intensity, Fear_Intensity, Happy_Intensity ,Sad_Intensity,   Surprise_Intensity] <br/>
 {"Video Name": {"Segment ID i_1 ": emo_intsts,"Segment ID i_2 ": emo_intsts, .... ,"Segment ID i_n ": emo_intsts}} <br/>
 
+There are 18350 segments in total in mosei (train+val)
+>>> k=0
+>>> for i in mosei_emotions.keys():
+...   for j in mosei_emotions[i].keys():
+...     k = k + 1
+
+These emotion labels are emotion intensities, out of 18350 segments 5510 of them gives indecisive classes                                    
+>>> k2=0
+>>> for i in mosei_emotions.keys():
+...   for j in mosei_emotions[i].keys():
+...     if(max(mosei_emotions[i][j])==min(mosei_emotions[i][j])) or sorted(mosei_emotions[i][j],reverse=True)[0]==sorted(mosei_emotions[i][j],reverse=True)[1]:
+...       k2 = k2+ 1
+
+
+
 ##### Train Set Emotion Intensity Stats: <br/>
  
         0-1 = 94964
@@ -35,6 +50,18 @@ Let *emo_intsts* be  = array([Anger_Intensity, Disgust_Intensity, Fear_Intensity
 ##### 2. Words.pkl 
 
 ##### 3. Embeddings.pkl 
+
+To load the embeddings from CMU-MOSEI, run the following
+1. build softlinks in mmdata/data/pickled/
+$ cd mmdata/data/pickled/
+$ ln -s ../../../*.pkl .
+2. run this
+$ python3 creating_text_files-SDKload.py
+
+Two folders will be created: 
+text_files_segbased   : segment-base embeddings
+text_files_videobased : segment-base embeddings, but each embedding files has a scope covering the whole video
+
 
 ##### 4. Train/Test/Valid.pkl 
 
