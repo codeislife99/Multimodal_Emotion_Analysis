@@ -1,6 +1,7 @@
 import cPickle as pickle
 import os
 import glob
+import numpy as np
 
 splits = ['train','val']
 bins = ["0-1","1-2","2-3","3-4","4-5","5-6","6-7","7-8","8-9","9-10"]
@@ -29,4 +30,6 @@ for i,split in enumerate(splits):
 	for limit in range(1,11,1):
 		print(bins[limit-1]+" = "+ str(emo_bins[i][bins[limit-1]]))
 	print("Max Intensity = ", max_intensity)
+	print("Mean Intensity = ", np.mean(np.array(intensity)))
+	print("Mean Non Zero Intensity = ", np.mean(np.array(non_zero_intensity)))
 
