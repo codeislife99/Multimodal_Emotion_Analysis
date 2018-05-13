@@ -61,9 +61,8 @@ class mosei(data.Dataset):
                 gt_file = pickle.load(f,encoding = 'latin1')
             with open(emb_path,'rb') as f:
                 try:
-                    emb_file = pickle.load(f,encoding = 'latin1')
-                except:
                     emb_file = pickle.load(f,encoding = 'bytes')
+
 
         return vision_file, vocal_file, gt_file,emb_file, vision_path, vocal_path, gt_path, emb_path
 
