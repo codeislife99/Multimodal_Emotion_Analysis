@@ -167,11 +167,12 @@ class predictor(nn.Module):
 		x = self.fc(x)
 		return x
 '------------------------------------------------------Hyperparameters-------------------------------------------------'
-batch_size = 10
+batch_size = 1
 no_of_emotions = 6
 # vocal_seq_len = 150
 # vision_seq_len = 45
 use_CUDA = True
+use_pretrained =  False
 
 test_mode = False
 val_mode = True
@@ -260,139 +261,142 @@ while epoch<no_of_epochs:
 			optimizer.load_state_dict(checkpoint['optimizer'])
 
 	K = 0
-	for i,csv_file_path in enumerate(all_csv_files):
-		# print(csv_file_path)
-		name = csv_file_path[13:-4]
-		vocal_seq_input0 = np.empty((1,vocal_seq_len,vocal_input_size), dtype = np.float32)
-		vocal_seq_input1 = np.empty((1,vocal_seq_len,vocal_input_size), dtype = np.float32)
+	for i,datapoint in enumerate(train_loader):
+		print(datapoint[1].shape[2])
+		print(datapoint[4])
+	# for i,csv_file_path in enumerate(all_csv_files):
+	# 	# print(csv_file_path)
+	# 	name = csv_file_path[13:-4]
+	# 	vocal_seq_input0 = np.empty((1,vocal_seq_len,vocal_input_size), dtype = np.float32)
+	# 	vocal_seq_input1 = np.empty((1,vocal_seq_len,vocal_input_size), dtype = np.float32)
 
-		target_numpy = np.empty((1,) ,dtype = np.int64)
+	# 	target_numpy = np.empty((1,) ,dtype = np.int64)
 
-		vocal_mat_file = vocal_directory+'/'+"03"+str(name[2:])+'.mat'  # Accessing Vocal Mat File
-		struct = sio.loadmat(vocal_mat_file)
+	# 	vocal_mat_file = vocal_directory+'/'+"03"+str(name[2:])+'.mat'  # Accessing Vocal Mat File
+	# 	struct = sio.loadmat(vocal_mat_file)
 
-		# print(struct)
-		no_of_seconds = struct['features'].shape[0]*0.01
-		no_of_frames = no_of_seconds*29.97
-		if no_of_frames < 90:
-			print(csv_file_path)
-			continue
+	# 	# print(struct)
+	# 	no_of_seconds = struct['features'].shape[0]*0.01
+	# 	no_of_frames = no_of_seconds*29.97
+	# 	if no_of_frames < 90:
+	# 		print(csv_file_path)
+	# 		continue
 
-		struct['features'][[struct['features']<(-1e8)]] = 0
-		# struct['features'][36][7] = -0.1734
-		# struct['features'][37][7] = -0.1734
+	# 	struct['features'][[struct['features']<(-1e8)]] = 0
+	# 	# struct['features'][36][7] = -0.1734
+	# 	# struct['features'][37][7] = -0.1734
 
-		target_numpy[0] = int(name[6:8])-1
-		df = pd.read_csv(csv_file_path)
-		yolo = Variable(torch.from_numpy(target_numpy)).cuda()  
+	# 	target_numpy[0] = int(name[6:8])-1
+	# 	df = pd.read_csv(csv_file_path)
+	# 	yolo = Variable(torch.from_numpy(target_numpy)).cuda()  
 
-		for iteration in range(2):
-			if iteration == 0:
-				vocal_seq_input0[0] = struct['features'][0:150]
-				# vocal_seq_input0[0] = struct['features'][30:180]
-				vocal_seq_input1[0] = struct['features'][150:300]
-				# print(vocal_seq_input0[0][6][7])
-				df0 = df.iloc[list(range(0,45,1)),list(range(5,22,1))]
-				df1 = df.iloc[list(range(45,90,1)),list(range(5,22,1))]
+	# 	for iteration in range(2):
+	# 		if iteration == 0:
+	# 			vocal_seq_input0[0] = struct['features'][0:150]
+	# 			# vocal_seq_input0[0] = struct['features'][30:180]
+	# 			vocal_seq_input1[0] = struct['features'][150:300]
+	# 			# print(vocal_seq_input0[0][6][7])
+	# 			df0 = df.iloc[list(range(0,45,1)),list(range(5,22,1))]
+	# 			df1 = df.iloc[list(range(45,90,1)),list(range(5,22,1))]
 
-			else:
-				vocal_seq_input0[0] = struct['features'][-300:-150]
-				# vocal_seq_input1[0] = struct['features'][-180:-30]
-				vocal_seq_input1[0] = struct['features'][-150:]
+	# 		else:
+	# 			vocal_seq_input0[0] = struct['features'][-300:-150]
+	# 			# vocal_seq_input1[0] = struct['features'][-180:-30]
+	# 			vocal_seq_input1[0] = struct['features'][-150:]
 
-				# vocal_seq_input0[0] = struct['features'][-150:]
-				# vocal_seq_input1[0] = struct['features'][-150:]
-				df0 = df.iloc[list(range(-90,-45,1)),list(range(5,22,1))]
-				df1 = df.iloc[list(range(-45,0,1)),list(range(5,22,1))]	
+	# 			# vocal_seq_input0[0] = struct['features'][-150:]
+	# 			# vocal_seq_input1[0] = struct['features'][-150:]
+	# 			df0 = df.iloc[list(range(-90,-45,1)),list(range(5,22,1))]
+	# 			df1 = df.iloc[list(range(-45,0,1)),list(range(5,22,1))]	
 
 
-			target_df0 = np.array(df0.values , dtype = np.float32)
-			target_df1 = np.array(df1.values , dtype = np.float32)
+	# 		target_df0 = np.array(df0.values , dtype = np.float32)
+	# 		target_df1 = np.array(df1.values , dtype = np.float32)
 
-			resnet_output0 = Variable(torch.from_numpy(target_df0)).cuda().unsqueeze(0)
-			resnet_output1 = Variable(torch.from_numpy(target_df1)).cuda().unsqueeze(0)
-			# print(resnet_output0)
-			target = Variable(torch.from_numpy(target_numpy)).cuda()  
-			vocal_seq_i0 = Variable(torch.from_numpy(vocal_seq_input0)).cuda()
-			vocal_seq_i1 = Variable(torch.from_numpy(vocal_seq_input1)).cuda()
-			vocal_output0 = Vocal_encoder(vocal_seq_i0)
-			vocal_output1 = Vocal_encoder(vocal_seq_i1)
-			vision_output0 = Vision_encoder(resnet_output0)
-			vision_output1 = Vision_encoder(resnet_output1)
-			outputs0 = Attention(vocal_output0,vision_output0)
-			outputs1 = Attention(vocal_output1,vision_output1)
+	# 		resnet_output0 = Variable(torch.from_numpy(target_df0)).cuda().unsqueeze(0)
+	# 		resnet_output1 = Variable(torch.from_numpy(target_df1)).cuda().unsqueeze(0)
+	# 		# print(resnet_output0)
+	# 		target = Variable(torch.from_numpy(target_numpy)).cuda()  
+	# 		vocal_seq_i0 = Variable(torch.from_numpy(vocal_seq_input0)).cuda()
+	# 		vocal_seq_i1 = Variable(torch.from_numpy(vocal_seq_input1)).cuda()
+	# 		vocal_output0 = Vocal_encoder(vocal_seq_i0)
+	# 		vocal_output1 = Vocal_encoder(vocal_seq_i1)
+	# 		vision_output0 = Vision_encoder(resnet_output0)
+	# 		vision_output1 = Vision_encoder(resnet_output1)
+	# 		outputs0 = Attention(vocal_output0,vision_output0)
+	# 		outputs1 = Attention(vocal_output1,vision_output1)
 
 		
-			memory_output = torch.cat((outputs0,outputs1),dim=1)
+	# 		memory_output = torch.cat((outputs0,outputs1),dim=1)
 
-			outputs = Predictor(memory_output)
-			loss = criterion(outputs, target)
+	# 		outputs = Predictor(memory_output)
+	# 		loss = criterion(outputs, target)
 
-			optimizer.zero_grad()
-			Vocal_encoder.zero_grad()
-			Vision_encoder.zero_grad()
-			Attention.zero_grad()
-			Predictor.zero_grad()
+	# 		optimizer.zero_grad()
+	# 		Vocal_encoder.zero_grad()
+	# 		Vision_encoder.zero_grad()
+	# 		Attention.zero_grad()
+	# 		Predictor.zero_grad()
 
-			running_loss += loss.data[0]
-			if train_mode:
-				loss.backward()
-				optimizer.step()
-			if train_mode:
-				_, preds = torch.max(outputs.data, 1)
-				# print(target.data)
-				running_corrects += torch.sum(preds == target.data)
+	# 		running_loss += loss.data[0]
+	# 		if train_mode:
+	# 			loss.backward()
+	# 			optimizer.step()
+	# 		if train_mode:
+	# 			_, preds = torch.max(outputs.data, 1)
+	# 			# print(target.data)
+	# 			running_corrects += torch.sum(preds == target.data)
 
-				K+=1
-				running_accuracy = 100.0*float(running_corrects)/float(K)
+	# 			K+=1
+	# 			running_accuracy = 100.0*float(running_corrects)/float(K)
 				
-				average_loss = float(running_loss)/float(K)
-				print('Training -- Epoch [%d], Sample [%d], Average Loss: %.4f, Accuracy: %.4f'
-				% (epoch+1, K, average_loss, running_accuracy))
+	# 			average_loss = float(running_loss)/float(K)
+	# 			print('Training -- Epoch [%d], Sample [%d], Average Loss: %.4f, Accuracy: %.4f'
+	# 			% (epoch+1, K, average_loss, running_accuracy))
 
-			else:
-				if iteration == 0:
-					avg_softmax_outputs1 = F.softmax(outputs,dim=-1)
-					# print(avg_softmax_outputs1)
-				else:
-					avg_softmax_outputs2 = F.softmax(outputs,dim=-1)
-					# print(avg_softmax_outputs2)
-
-
+	# 		else:
+	# 			if iteration == 0:
+	# 				avg_softmax_outputs1 = F.softmax(outputs,dim=-1)
+	# 				# print(avg_softmax_outputs1)
+	# 			else:
+	# 				avg_softmax_outputs2 = F.softmax(outputs,dim=-1)
+	# 				# print(avg_softmax_outputs2)
 
 
 
-		if not train_mode:
-			avg_all = (avg_softmax_outputs1+avg_softmax_outputs2)
-			# print(avg_all)
-			_, preds = torch.max(avg_all.data, 1)
-			running_corrects += torch.sum(preds == yolo.data)   
-			y_true.append(yolo.data)
-			y_pred.append(preds) 
-			K+=1
-			running_accuracy = 100.0*float(running_corrects)/float(K)
-			average_loss = float(running_loss)/float(2*K)
-			if val_mode:
-				print('Validating -- Epoch [%d], Sample [%d], Average Loss: %.4f, Accuracy: %.4f'
-				% (epoch+1, K, average_loss, running_accuracy))
-			else:
-				print('Testing -- Epoch [%d], Sample [%d], Average Loss: %.4f, Accuracy: %.4f'
-				% (epoch+1, K, average_loss, running_accuracy))				
 
-			if train_mode:
-				if (K+batch_size)%250==0:
-					save_checkpoint({
-						'epoch': epoch,
-						'accuracy': running_accuracy,
-						'loss' : running_loss,
-						'correct' : running_corrects,
-						'j_start' : 0,
-						'Vocal_encoder': Vocal_encoder.state_dict(),
-						'Vision_encoder' : 	Vision_encoder.state_dict(),
-						'Attention' : Attention.state_dict(),
-						'Predictor' : Predictor.state_dict(),
-						'optimizer': optimizer.state_dict(),
-					}, False,'dual_attention_net_iter_'+str(K+batch_size))
+
+	# 	if not train_mode:
+	# 		avg_all = (avg_softmax_outputs1+avg_softmax_outputs2)
+	# 		# print(avg_all)
+	# 		_, preds = torch.max(avg_all.data, 1)
+	# 		running_corrects += torch.sum(preds == yolo.data)   
+	# 		y_true.append(yolo.data)
+	# 		y_pred.append(preds) 
+	# 		K+=1
+	# 		running_accuracy = 100.0*float(running_corrects)/float(K)
+	# 		average_loss = float(running_loss)/float(2*K)
+	# 		if val_mode:
+	# 			print('Validating -- Epoch [%d], Sample [%d], Average Loss: %.4f, Accuracy: %.4f'
+	# 			% (epoch+1, K, average_loss, running_accuracy))
+	# 		else:
+	# 			print('Testing -- Epoch [%d], Sample [%d], Average Loss: %.4f, Accuracy: %.4f'
+	# 			% (epoch+1, K, average_loss, running_accuracy))				
+
+			# if train_mode:
+			# 	if (K+batch_size)%250==0:
+			# 		save_checkpoint({
+			# 			'epoch': epoch,
+			# 			'accuracy': running_accuracy,
+			# 			'loss' : running_loss,
+			# 			'correct' : running_corrects,
+			# 			'j_start' : 0,
+			# 			'Vocal_encoder': Vocal_encoder.state_dict(),
+			# 			'Vision_encoder' : 	Vision_encoder.state_dict(),
+			# 			'Attention' : Attention.state_dict(),
+			# 			'Predictor' : Predictor.state_dict(),
+			# 			'optimizer': optimizer.state_dict(),
+			# 		}, False,'dual_attention_net_iter_'+str(K+batch_size))
 	'-------------------------------------------------Saving model after every epoch-----------------------------------'
 	if train_mode:
 		save_checkpoint({
