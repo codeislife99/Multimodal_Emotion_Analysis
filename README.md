@@ -5,6 +5,10 @@ Please download both the datasets _before_ cloning this repository <br/>
 Processed Dataset - http://sorena.multicomp.cs.cmu.edu/downloads/MOSEI/ <br/>
 Raw Dataset - http://sorena.multicomp.cs.cmu.edu/downloads_raw/MOSEI <br/>
 
+Specify Environment variable : 
+export LC_ALL=C.UTF-8
+
+
 #### Baselines and Metrics:
       The following metrics are defined :
       Metric 1 = MSE with sum across categories
