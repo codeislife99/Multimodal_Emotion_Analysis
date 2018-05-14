@@ -48,6 +48,29 @@ class VocalNet(nn.Module):
 		hiddens,_ = self.lstm(x)
 		hiddens = hiddens.squeeze(1)
 		return hiddens
+'---------------------------------------------------LSTM TextNet-------------------------------------------------------'
+
+class WordvecNet(nn.Module):
+	# def __init__(self,input_size,hidden_size,num_layers,out_size,dropout=0.2,bidirectional=False):
+	def __init__(self,input_size,hidden_size,num_layers,dropout=0.2,bidirectional=True):
+		super(WordvecNet, self).__init__()
+		# self.rnn = nn.LSTM(input_size,hidden_size,num_layers,dropout,bidirectional,batch_first=True)
+		self.rnn = nn.LSTM(input_size,hidden_size,num_layers,dropout,bidirectional)
+
+	def forward(self,x):
+		"""
+		param x: tensor of shape (batch_size, seq_len, in_size)
+		"""
+		# output,final_hiddens = self.rnn(x)
+		# return output,final_hiddens
+		x = torch.transpose(x,0,1)
+		hiddens,_ = self.rnn(x)
+		hiddens = hiddens.squeeze(1)
+		return hiddens
+
+
+
+
 '---------------------------------------------------LSTM VisualNet-------------------------------------------------------'
 
 class VisionNet(nn.Module):
@@ -96,6 +119,9 @@ class DualAttention(nn.Module):
 		self.Wvocal_1 = nn.Linear(N,N)
 		self.Wvocal_m1 = nn.Linear(N,N)
 		self.Wvocal_h1 = nn.Linear(N,N)
+		self.Wemb_1 = nn.Linear(N,N)
+		self.Wemb_m1 = nn.Linear(N,N)
+		self.Wemb_h1 = nn.Linear(N,N)
 
 		''' K = 2 '''
 		self.Wvision_2 = nn.Linear(N,N)
@@ -104,11 +130,14 @@ class DualAttention(nn.Module):
 		self.Wvocal_2 = nn.Linear(N,N)
 		self.Wvocal_m2 = nn.Linear(N,N)
 		self.Wvocal_h2 = nn.Linear(N,N)
+		self.Wemb_2 = nn.Linear(N,N)
+		self.Wemb_m2 = nn.Linear(N,N)
+		self.Wemb_h2 = nn.Linear(N,N)
 
 		self.fc = nn.Linear(N, no_of_emotions)
 
 
-	def forward(self,vocal,vision):
+	def forward(self,vocal,vision,emb):
 		# Sorting out vision
 		# print(resnet_output.size())
 		# resnet_output = resnet_output.mean(0)
@@ -119,9 +148,18 @@ class DualAttention(nn.Module):
 
 		vision_zero = vision.mean(0).unsqueeze(0)
 		vocal_zero = vocal.mean(0).unsqueeze(0)
-		m_zero = vision_zero * vocal_zero 
+		emb_zero = emb.mean(0).unsqueeze(0)
+		print('Initialising memory in DualAttention')
+		print(vision.size())
+		print(vocal.size())
+		print(emb.size())
+		print(vision_zero.size())
+		print(vocal_zero.size())
+		print(emb_zero.size())
+		m_zero = vision_zero * vocal_zero * emb_zero
 		m_zero_vision = m_zero.repeat(vision.size(0),1)
 		m_zero_vocal = m_zero.repeat(vocal.size(0),1)
+		m_zero_emb = m_zero.repeat(emb.size(0),1)
 		'--------------------------------------------------K = 1 ---------------------------------------------------'
 		# Visual Attention
 		h_one_vision = F.tanh(self.Wvision_1(vision))*F.tanh(self.Wvision_m1(m_zero_vision))
@@ -133,25 +171,36 @@ class DualAttention(nn.Module):
 		a_one_vocal = F.softmax(self.Wvocal_h1(h_one_vocal),dim=-1)
 		vocal_one = (a_one_vocal*vocal).mean(0).unsqueeze(0)
 
+		# Emb Attention
+		h_one_emb = F.tanh(self.Wemb_1(emb))*F.tanh(self.Wemb_m1(m_zero_emb))
+		a_one_emb = F.softmax(self.Wemb_h1(h_one_emb),dim=-1)
+		emb_one = (a_one_emb*emb).mean(0).unsqueeze(0)
+
 		# Memory Update
-		m_one = m_zero + vision_one * vocal_one 
+		m_one = m_zero + vision_one * vocal_one * emb_one
 		m_one_vision = m_one.repeat(vision.size(0),1)
 		m_one_vocal = m_one.repeat(vocal.size(0),1)
+		m_one_emb = m_one.repeat(emb.size(0),1)
 
 		'--------------------------------------------------K = 2  ---------------------------------------------------'
 
 		# Visual Attention
 		h_two_vision = F.tanh(self.Wvision_2(vision))*F.tanh(self.Wvision_m2(m_one_vision))
 		a_two_vision = F.softmax(self.Wvision_h2(h_two_vision),dim=-1)
-
 		vision_two = (a_two_vision*vision).mean(0).unsqueeze(0)
+
 		# Vocal Attention
 		h_two_vocal = F.tanh(self.Wvocal_2(vocal))*F.tanh(self.Wvocal_m2(m_one_vocal))
 		a_two_vocal = F.softmax(self.Wvocal_h2(h_two_vocal),dim=-1)
 		vocal_two = (a_two_vocal*vocal).mean(0).unsqueeze(0)
 
+		# Emb Attention
+		h_two_emb = F.tanh(self.Wemb_2(emb))*F.tanh(self.Wemb_m2(m_one_emb))
+		a_two_emb = F.softmax(self.Wemb_H2(h_two_emb),dim=-1)
+		emb_two = (a_two_emb*emb).mean(0).unsqueeze(0)
+
 		# Memory Update
-		m_two = m_one + vision_two * vocal_two 
+		m_two = m_one + vision_two * vocal_two * emb_two 
 		return m_two
 		'-------------------------------------------------Prediction--------------------------------------------------'
 		# return m_two
@@ -173,24 +222,28 @@ no_of_emotions = 6
 # vocal_seq_len = 150
 # vision_seq_len = 45
 use_CUDA = True
-use_pretrained =  True
+use_pretrained =  False
 num_workers = 20
 
-test_mode = False
+test_mode = True
 val_mode = False
-train_mode = True
+train_mode = False
 
 no_of_epochs = 1000
 vocal_input_size = 74 # Dont Change
 vision_input_size = 35 # Dont Change
+wordvec_input_size = 300
 vocal_num_layers = 2
 vision_num_layers = 2
+wordvec_num_layers = 2
 vocal_hidden_size = 1024
 vision_hidden_size = 1024
+wordvec_hidden_size = 1024
 dan_hidden_size = 2048
 '----------------------------------------------------------------------------------------------------------------------'
 Vocal_encoder = VocalNet(vocal_input_size, vocal_hidden_size, vocal_num_layers)
 Vision_encoder = VisionNet(vision_input_size, vision_hidden_size, vision_num_layers)
+Wordvec_encoder = WordvecNet(wordvec_input_size, wordvec_hidden_size, wordvec_num_layers)
 Attention = DualAttention(no_of_emotions,dan_hidden_size)
 Predictor = predictor(no_of_emotions,dan_hidden_size)
 if train_mode:
@@ -216,10 +269,11 @@ total = 0
 Vocal_encoder = Vocal_encoder.cuda()
 Attention = Attention.cuda()
 Vision_encoder = Vision_encoder.cuda()
+Wordvec_encoder = Wordvec_encoder.cuda()
 Predictor = Predictor.cuda()
 '----------------------------------------------------------------------------------------------------------------------'
 criterion = nn.MSELoss(size_average = False)
-params =  list(Vocal_encoder.parameters())+ list(Attention.parameters()) +list(Vision_encoder.parameters()) + list(Predictor.parameters())
+params =  list(Vocal_encoder.parameters())+ list(Attention.parameters()) + list(Wordvec_encoder.parameters()) + list(Vision_encoder.parameters()) + list(Predictor.parameters())
 print('Parameters in the model = ' + str(len(params)))
 optimizer = torch.optim.Adam(params, lr = 0.0001)
 # optimizer = torch.optim.SGD(params, lr =0.001,momentum = 0.9 )
@@ -229,8 +283,8 @@ optimizer = torch.optim.Adam(params, lr = 0.0001)
 
 def save_checkpoint(state, is_final, filename='attention_net'):
 	filename = filename +'_'+str(state['epoch'])+'.pth.tar'
-	os.system("mkdir -p DAN") 
-	torch.save(state, './DAN/'+filename)
+	os.system("mkdir -p TAN") 
+	torch.save(state, './TAN/'+filename)
 	if is_final:
 		shutil.copyfile(filename, 'model_final.pth.tar')
 
@@ -240,11 +294,13 @@ def save_checkpoint(state, is_final, filename='attention_net'):
 if not train_mode:
 	Vision_encoder.train(False)
 	Vocal_encoder.train(False)
+	Wordvec_encoder.train(False)
 	Attention.train(False)
 	Predictor.train(False)
 else:
 	Vision_encoder.train(True)
 	Vocal_encoder.train(True)
+	Wordvec_encoder.train(True)
 	Attention.train(True)
 	Predictor.train(True)
 
@@ -257,12 +313,13 @@ while epoch<no_of_epochs:
 	running_loss = 0
 	running_corrects = 0
 	if use_pretrained:
-		# pretrained_file = './DAN/dual_attention_net_iter_8000_0.pth.tar'
-		pretrained_file = './DAN/dual_attention_net__4.pth.tar'
+		# pretrained_file = './TAN/dual_attention_net_iter_8000_0.pth.tar'
+		pretrained_file = './TAN/triple_attention_net__1.pth.tar'
 
 		checkpoint = torch.load(pretrained_file)
 		Vocal_encoder.load_state_dict(checkpoint['Vocal_encoder'])
 		Vision_encoder.load_state_dict(checkpoint['Vision_encoder'])
+		Wordvec_encoder.load_state_dict(checkpoint['Wordvec_encoder'])
 		Attention.load_state_dict(checkpoint['Attention'])
 		Predictor.load_state_dict(checkpoint['Predictor'])
 		use_pretrained = False
@@ -273,13 +330,21 @@ while epoch<no_of_epochs:
 	K = 0
 	for i,(vision,vocal,emb,gt) in enumerate(data_loader):
 		if use_CUDA:
+			if i==0 or i==1:
+				print('To load data into CUDA')
+				print(vision.size())
+				print(vocal.size())
+				print(emb.size())
 			vision = Variable(vision.float()).cuda()
 			vocal = Variable(vocal.float()).cuda()
+			emb = Variable(emb.float()).cuda()
 			gt = Variable(gt.float()).cuda()
 
 		vision_output = Vision_encoder(vision)
 		vocal_output = Vocal_encoder(vocal)
-		output = Attention(vocal_output,vision_output)
+		emb_output = Wordvec_encoder(emb)
+		# output = Attention(vocal_output,vision_output)
+		output = Attention(vocal_output,vision_output,emb_output)
 		outputs = Predictor(output)
 		outputs = torch.clamp(outputs,0,3)
 		loss = criterion(outputs, gt)
@@ -289,6 +354,7 @@ while epoch<no_of_epochs:
 		optimizer.zero_grad()
 		Vocal_encoder.zero_grad()
 		Vision_encoder.zero_grad()
+		Wordvec_encoder.zero_grad()
 		Attention.zero_grad()
 		Predictor.zero_grad()
 
@@ -316,6 +382,7 @@ while epoch<no_of_epochs:
 					'j_start' : 0,
 					'Vocal_encoder': Vocal_encoder.state_dict(),
 					'Vision_encoder' : 	Vision_encoder.state_dict(),
+					'Wordvec_encoder' : Wordvec_encoder.state_dict(),
 					'Attention' : Attention.state_dict(),
 					'Predictor' : Predictor.state_dict(),
 					'optimizer': optimizer.state_dict(),
@@ -329,6 +396,7 @@ while epoch<no_of_epochs:
 			'j_start' : 0,
 			'Vocal_encoder': Vocal_encoder.state_dict(),
 			'Vision_encoder' : 	Vision_encoder.state_dict(),
+			'Wordvec_encoder' : Wordvec_encoder.state_dict(),
 			'Attention' : Attention.state_dict(),
 			'Predictor' : Predictor.state_dict(),
 			'optimizer': optimizer.state_dict(),
@@ -342,6 +410,7 @@ if train_mode:
 		'j_start' : 0,
 		'Vocal_encoder': Vocal_encoder.state_dict(),
 		'Vision_encoder' : 	Vision_encoder.state_dict(),
+		'Wordvec_encoder' : Wordvec_encoder.state_dict(),
 		'Attention' : Attention.state_dict(),
 		'Predictor' : Predictor.state_dict(),
 		'optimizer': optimizer.state_dict(),
