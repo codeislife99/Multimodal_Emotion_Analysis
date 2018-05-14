@@ -176,8 +176,8 @@ use_pretrained =  False
 num_workers = 0
 
 test_mode = False
-val_mode = True
-train_mode = False
+val_mode = False
+train_mode = True
 
 no_of_epochs = 1000
 vocal_input_size = 74 # Dont Change
@@ -263,10 +263,6 @@ while epoch<no_of_epochs:
 
 	K = 0
 	for i,(vision,vocal,emb,gt) in enumerate(train_loader):
-		#print(datapoint[1].shape[2])
-		#print(datapoint[4])
-		#print(datapoint)
-		# print("i = ", i)
 		if use_CUDA:
 			vision = Variable(vision.float()).cuda()
 			vocal = Variable(vocal.float()).cuda()
@@ -274,11 +270,8 @@ while epoch<no_of_epochs:
 
 		vision_output = Vision_encoder(vision)
 		vocal_output = Vocal_encoder(vocal)
-		# print(vision_output)
-		# print(vocal_output)
 		output = Attention(vocal_output,vision_output)
 		outputs = Predictor(output)
-		# print(outputs)
 		loss = criterion(outputs, gt)
 		loss.backward()
 		optimizer.step()
@@ -287,12 +280,64 @@ while epoch<no_of_epochs:
 		Vision_encoder.zero_grad()
 		Attention.zero_grad()
 		Predictor.zero_grad()
-		# print("Loss = ", loss.data[0])
+
+		# outputs_ = Variable(torch.FloatTensor([ 0.1565 ,0.1233,  0.0401,  0.4836 , 0.1596,  0.04842])).cuda()
+		# loss = criterion(outputs_, gt)
+
 		running_loss += loss.data[0]
 		K+=1
 		average_loss = running_loss/K		
 		print('Training -- Epoch [%d], Sample [%d], Average Loss: %.4f'
 		% (epoch+1, K, average_loss))
+		if train_mode:
+			if K%4000==0:
+				save_checkpoint({
+					'epoch': epoch,
+					'accuracy': running_accuracy,
+					'loss' : running_loss,
+					'correct' : running_corrects,
+					'j_start' : 0,
+					'Vocal_encoder': Vocal_encoder.state_dict(),
+					'Vision_encoder' : 	Vision_encoder.state_dict(),
+					'Attention' : Attention.state_dict(),
+					'Predictor' : Predictor.state_dict(),
+					'optimizer': optimizer.state_dict(),
+				}, False,'dual_attention_net_iter_'+str(K))
+	'-------------------------------------------------Saving model after every epoch-----------------------------------'
+	if train_mode:
+		save_checkpoint({
+			'epoch': epoch,
+			'accuracy': running_accuracy,
+			'loss' : running_loss,
+			'correct' : running_corrects,
+			'j_start' : 0,
+			'Vocal_encoder': Vocal_encoder.state_dict(),
+			'Vision_encoder' : 	Vision_encoder.state_dict(),
+			'Attention' : Attention.state_dict(),
+			'Predictor' : Predictor.state_dict(),
+			'optimizer': optimizer.state_dict(),
+		}, False,'dual_attention_net_')
+	epoch+= 1 
+'------------------------------------------------------Saving model after training completion--------------------------'
+if train_mode:
+	save_checkpoint({
+		'epoch': epoch,
+		'accuracy': running_accuracy,
+		'loss' : running_loss,
+		'correct' : running_corrects,
+		'j_start' : 0,
+		'Vocal_encoder': Vocal_encoder.state_dict(),
+		'Vision_encoder' : 	Vision_encoder.state_dict(),
+		'Attention' : Attention.state_dict(),
+		'Predictor' : Predictor.state_dict(),
+		'optimizer': optimizer.state_dict(),
+	}, False)
+
+# print(precision_recall_fscore_support(y_true, y_pred))
+print('Accuracy:', accuracy_score(y_true, y_pred))
+print('F1 score:', f1_score(y_true, y_pred,average = 'weighted'))
+print('Recall:', recall_score(y_true, y_pred,average ='weighted'))
+print('Precision:', precision_score(y_true, y_pred,average = 'weighted'))
 		# print(vision.size())
 		# print(vocal.size())
 		# print(gt)		
@@ -429,38 +474,3 @@ while epoch<no_of_epochs:
 			# 			'Predictor' : Predictor.state_dict(),
 			# 			'optimizer': optimizer.state_dict(),
 			# 		}, False,'dual_attention_net_iter_'+str(K+batch_size))
-	'-------------------------------------------------Saving model after every epoch-----------------------------------'
-	if train_mode:
-		save_checkpoint({
-			'epoch': epoch,
-			'accuracy': running_accuracy,
-			'loss' : running_loss,
-			'correct' : running_corrects,
-			'j_start' : 0,
-			'Vocal_encoder': Vocal_encoder.state_dict(),
-			'Vision_encoder' : 	Vision_encoder.state_dict(),
-			'Attention' : Attention.state_dict(),
-			'Predictor' : Predictor.state_dict(),
-			'optimizer': optimizer.state_dict(),
-		}, False,'dual_attention_net_')
-	epoch+= 1 
-'------------------------------------------------------Saving model after training completion--------------------------'
-if train_mode:
-	save_checkpoint({
-		'epoch': epoch,
-		'accuracy': running_accuracy,
-		'loss' : running_loss,
-		'correct' : running_corrects,
-		'j_start' : 0,
-		'Vocal_encoder': Vocal_encoder.state_dict(),
-		'Vision_encoder' : 	Vision_encoder.state_dict(),
-		'Attention' : Attention.state_dict(),
-		'Predictor' : Predictor.state_dict(),
-		'optimizer': optimizer.state_dict(),
-	}, False)
-
-# print(precision_recall_fscore_support(y_true, y_pred))
-print('Accuracy:', accuracy_score(y_true, y_pred))
-print('F1 score:', f1_score(y_true, y_pred,average = 'weighted'))
-print('Recall:', recall_score(y_true, y_pred,average ='weighted'))
-print('Precision:', precision_score(y_true, y_pred,average = 'weighted'))

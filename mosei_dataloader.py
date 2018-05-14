@@ -31,7 +31,8 @@ def make_dataset(mode, segment = True):
         vocal_path = os.path.join(vocal, file)
         gt_path = os.path.join(gt, file)
         emb_path = os.path.join(emb, file)
-        # emb_path = 'NAN_PATH'
+        if sys.version_info[0] == 2:
+            emb_path = 'NAN_PATH'
         items.append((vision_path,vocal_path,emb_path,gt_path))
     return items
 
@@ -50,10 +51,10 @@ class mosei(data.Dataset):
                 vision_file = pickle.load(f)
             with open(vocal_path,'rb') as f:
                 vocal_file = pickle.load(f)
+            # with open(emb_path,'rb') as f:
+            #     emb_file = pickle.load(f)
             with open(gt_path,'rb') as f:
                 gt_file = pickle.load(f)
-            with open(emb_path,'rb') as f:
-                emb_file = pickle.load(f)
         else:
             with open(vision_path,'rb') as f:
                 vision_file = pickle.load(f,encoding = 'latin1')
