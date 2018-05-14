@@ -74,6 +74,8 @@ for key,value in data.items():
 					embeddings_features = frame[2]
 				else:
 					embeddings_features = np.vstack((embeddings_features,frame[2]))
+			if embeddings_features.shape[0] == 300:
+				embeddings_features = np.reshape(embeddings_features, [-1, 300])
 			pickle.dump(embeddings_features, open(pickle_file,"wb"))
 
 		# save to videobased file
