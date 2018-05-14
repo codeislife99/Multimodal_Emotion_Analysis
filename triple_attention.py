@@ -29,6 +29,7 @@ import pandas as pd
 from sklearn.metrics import precision_score, recall_score, confusion_matrix, classification_report, accuracy_score, f1_score
 from torch.utils.data import Dataset, DataLoader
 from mosei_dataloader import mosei
+from torch.nn.parameter import Parameter
 
 preprocess = transforms.Compose([
 	transforms.ToTensor(),
