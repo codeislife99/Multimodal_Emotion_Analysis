@@ -18,7 +18,7 @@ class TextEncoder(nn.Module):
 
 
         super(TextEncoder, self).__init__()
-        self.rnn = nn.LSTM(in_size, hid_size, num_layers=num_layers, dropout=droupout,
+        self.rnn = nn.LSTM(in_size, hid_size, num_layers=num_layers, dropout=dropout,
                            bidirectional=bidirectional, batch_first=batch_first)
         self.batch_size = batch_size
         self.num_layers = num_layers
@@ -86,7 +86,7 @@ class TextEncoderExtContext(nn.Module):
 
 
         super(TextEncoder, self).__init__()
-        self.rnn = nn.LSTM(in_size, hid_size, num_layers=num_layers, droupout=droupout,
+        self.rnn = nn.LSTM(in_size, hid_size, num_layers=num_layers, dropout=dropout,
                            bidirectional=bidirectional, batch_first=True)
         self.dropout = nn.Dropout(dropout)
         self.linear_last = nn.Linear(hid_size, out_size)
