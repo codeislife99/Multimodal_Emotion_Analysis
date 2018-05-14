@@ -48,6 +48,17 @@ Let *emo_intsts* be  = array([Anger_Intensity, Disgust_Intensity, Fear_Intensity
         Mean Intensity = 0.15
         Mean Non-Zero Intensity = 0.68
         Mean Per Emotion Intensity = [ 0.1207   0.0888  0.0436  0.4341  0.1656  0.0497]
+        
+##### Test Set Emotion Intensity Stats: <br/>
+        
+        0-1 = 29574 
+        1-2 = 914 
+        2-3 = 130 
+        Max Intensity  = 3.0
+        Min Intensity  = 0.0
+        Mean Intensity = 0.16
+        Mean Non-Zero Intensity = 0.72
+        Mean Per Emotion Intensity = [ 0.1602  0.1140   0.0409   0.4685  0.1407  0.0437]
 
 ##### 2. Words.pkl 
 
