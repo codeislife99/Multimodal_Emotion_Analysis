@@ -37,9 +37,9 @@ class TextEncoder(nn.Module):
         param seq_lens: 
         """
 
-        packed_input = pack_padded_sequence(x, seq_lens)
+        packed_input = pack_padded_sequence(x, seq_lens, batch_first=True)
         packed_output, final_hiddens = self.rnn(packed_input)
-        output, _ = pad_packed_sequence(packed_output)
+        output, _ = pad_packed_sequence(packed_output, batch_first=True)
 
         return output, final_hiddens
 
