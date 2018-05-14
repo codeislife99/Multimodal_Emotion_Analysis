@@ -196,7 +196,7 @@ class TripleAttention(nn.Module):
 
 		# Emb Attention
 		h_two_emb = F.tanh(self.Wemb_2(emb))*F.tanh(self.Wemb_m2(m_one_emb))
-		a_two_emb = F.softmax(self.Wemb_H2(h_two_emb),dim=-1)
+		a_two_emb = F.softmax(self.Wemb_h2(h_two_emb),dim=-1)
 		emb_two = (a_two_emb*emb).mean(0).unsqueeze(0)
 
 		# Memory Update
@@ -217,7 +217,7 @@ class predictor(nn.Module):
 		return x
 '------------------------------------------------------Hyperparameters-------------------------------------------------'
 batch_size = 1
-mega_batch_size = 1
+mega_batch_size = 16
 no_of_emotions = 6
 use_CUDA = True
 use_pretrained =  False
