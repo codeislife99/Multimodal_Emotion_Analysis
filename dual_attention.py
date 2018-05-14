@@ -286,11 +286,11 @@ while epoch<no_of_epochs:
 		if train_mode and K%mega_batch_size==0:
 			loss.backward()
 			optimizer.step()
-		optimizer.zero_grad()
-		Vocal_encoder.zero_grad()
-		Vision_encoder.zero_grad()
-		Attention.zero_grad()
-		Predictor.zero_grad()
+			optimizer.zero_grad()
+			Vocal_encoder.zero_grad()
+			Vision_encoder.zero_grad()
+			Attention.zero_grad()
+			Predictor.zero_grad()
 
 		# outputs_ = Variable(torch.FloatTensor([ 0.1565 ,0.1233,  0.0401,  0.4836 , 0.1596,  0.04842])).cuda()
 		# loss = criterion(outputs_, gt)
