@@ -5,16 +5,23 @@ Please download both the datasets _before_ cloning this repository <br/>
 Processed Dataset - http://sorena.multicomp.cs.cmu.edu/downloads/MOSEI/ <br/>
 Raw Dataset - http://sorena.multicomp.cs.cmu.edu/downloads_raw/MOSEI <br/>
 
+Specify Environment variable : 
+export LC_ALL=C.UTF-8
+
+
 #### Baselines and Metrics:
       The following metrics are defined :
       Metric 1 = MSE with sum across categories
       Random with Metric 1 :
           Train Set      : 0.73
           Validation Set : 0.63
+          Test Set       : 0.66
       Vanilla Dual Attention with Metric 1  :
-          Validation Set : 0.54
+          Validation Set : 0.5157
+          Test Set       :
       Text Only with Metric 1 :
-          Validation Set : 
+          Validation Set :
+          Test Set       :
       
 #### Structure of Pickle Files
 
@@ -44,6 +51,17 @@ Let *emo_intsts* be  = array([Anger_Intensity, Disgust_Intensity, Fear_Intensity
         Mean Intensity = 0.15
         Mean Non-Zero Intensity = 0.68
         Mean Per Emotion Intensity = [ 0.1207   0.0888  0.0436  0.4341  0.1656  0.0497]
+        
+##### Test Set Emotion Intensity Stats: <br/>
+        
+        0-1 = 29574 
+        1-2 = 914 
+        2-3 = 130 
+        Max Intensity  = 3.0
+        Min Intensity  = 0.0
+        Mean Intensity = 0.16
+        Mean Non-Zero Intensity = 0.72
+        Mean Per Emotion Intensity = [ 0.1602  0.1140   0.0409   0.4685  0.1407  0.0437]
 
 ##### 2. Words.pkl 
 
