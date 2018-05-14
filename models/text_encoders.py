@@ -51,7 +51,7 @@ class TextOnlyModel(nn.Module):
 
         super(TextOnlyModel, self).__init__()
         self.rnn_enc = TextEncoder(in_size, hid_size, out_size, batch_size, num_layers=num_layers, dropout=rnn_dropout, bidirectional=bidirectional, batch_first=True)
-        self.dropout = nn.Dropout(dropout)
+        self.dropout = nn.Dropout(post_dropout)
         self.linear_last = nn.Linear(hid_size, out_size)
         self.output_scale_factor = Parameter(torch.FloatTensor([output_scale_factor]), requires_grad=False)
         self.output_shift = Parameter(torch.FloatTensor([output_shift]), requires_grad=False)
