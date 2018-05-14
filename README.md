@@ -12,7 +12,7 @@ Raw Dataset - http://sorena.multicomp.cs.cmu.edu/downloads_raw/MOSEI <br/>
           Train Set      : 0.73
           Validation Set : 0.63
       Vanilla Dual Attention with Metric 1  :
-          Validation Set : 
+          Validation Set : 0.54
       Text Only with Metric 1 :
           Validation Set : 
       
