@@ -6,9 +6,9 @@ import json
 
 
 def get_len(filename):
-   result = subprocess.Popen(["ffprobe", filename, '-print_format', 'json', '-show_streams', '-loglevel', 'quiet'],
-     stdout = subprocess.PIPE, stderr = subprocess.STDOUT)
-   return float(json.loads(result.stdout.read())['streams'][0]['duration'])
+	result = subprocess.Popen(["ffprobe", filename, '-print_format', 'json', '-show_streams', '-loglevel', 'quiet'],
+		stdout = subprocess.PIPE, stderr = subprocess.STDOUT)
+	return float(json.loads(result.stdout.read())['streams'][0]['duration'])
 
 
 splits = ['train','val', 'test']
@@ -18,22 +18,23 @@ emo_bins = [{"0-2":0,"2-4":0,"4-6":0,"6-8":0,"8-10":0, "10-15":0, "15-20":0},
 			{"0-2":0,"2-4":0,"4-6":0,"6-8":0,"8-10":0, "10-15":0, "15-20":0}]
 
 
-# with open('train.pkl', 'rb') as f:
-# 	train_data = pickle.load(f)
+with open('train.pkl', 'rb') as f:
+	train_data = pickle.load(f)
 
-# with open('valid.pkl', 'rb') as f:
-# 	valid_data = pickle.load(f)
+with open('valid.pkl', 'rb') as f:
+	valid_data = pickle.load(f)
 
-# with open('test.pkl', 'rb') as f:
-# 	test_data = pickle.load(f)
+with open('test.pkl', 'rb') as f:
+	test_data = pickle.load(f)
 
 
-path_dir = "./sample_mp4/"
+path_dir = "/media/codeislife99/New Volume/MOSEI_raw/segments/"
 path = path_dir + '*.mp4'
 
 for file in glob.glob(path):
 
 	print (file)
+	print(os.path.exists(file))
 	duration = get_len(file)
 	file = str(file)
 	file_name = file[len(path_dir): -6]

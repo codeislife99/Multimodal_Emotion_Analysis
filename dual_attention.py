@@ -1,5 +1,4 @@
 import sys
-sys.stdout.buffer.write(chr(9986).encode('utf8'))
 import glob
 import scipy.io as sio
 import matplotlib.pyplot as plt
@@ -54,7 +53,7 @@ class VocalNet(nn.Module):
 class VisionNet(nn.Module):
 	def __init__(self,input_size,hidden_size,num_layers):
 		super(VisionNet, self).__init__()
-		self.lstm = nn.LSTM(17,128,num_layers,bidirectional=False)
+		self.lstm = nn.LSTM(35,128,num_layers,bidirectional=False)
 
 
 	def forward(self,x):
@@ -163,7 +162,7 @@ class DualAttention(nn.Module):
 class predictor(nn.Module):
 	def __init__(self,no_of_emotions):
 		super(predictor, self).__init__()
-		self.fc = nn.Linear(256, no_of_emotions)
+		self.fc = nn.Linear(128, no_of_emotions)
 	def forward(self,x):
 		x = self.fc(x)
 		return x
@@ -182,7 +181,7 @@ train_mode = False
 
 no_of_epochs = 1000
 vocal_input_size = 74 # Dont Change
-vision_input_size = 17 # Dont Change
+vision_input_size = 35 # Dont Change
 vocal_num_layers = 2
 vision_num_layers = 2
 vocal_hidden_size = 128
@@ -211,7 +210,7 @@ Attention = Attention.cuda()
 Vision_encoder = Vision_encoder.cuda()
 Predictor = Predictor.cuda()
 '----------------------------------------------------------------------------------------------------------------------'
-criterion = nn.CrossEntropyLoss()
+criterion = nn.MSELoss(size_average = False)
 params =  list(Vocal_encoder.parameters())+ list(Attention.parameters()) +list(Vision_encoder.parameters()) + list(Predictor.parameters())
 print('Parameters in the model = ' + str(len(params)))
 optimizer = torch.optim.Adam(params, lr = 0.0001)
@@ -267,12 +266,36 @@ while epoch<no_of_epochs:
 		#print(datapoint[1].shape[2])
 		#print(datapoint[4])
 		#print(datapoint)
-		print("i = ", i)
-		print(vision)
-		print(vocal)
-		print(emb)
-		print(gt)
-		
+		# print("i = ", i)
+		if use_CUDA:
+			vision = Variable(vision.float()).cuda()
+			vocal = Variable(vocal.float()).cuda()
+			gt = Variable(gt.float()).cuda()
+
+		vision_output = Vision_encoder(vision)
+		vocal_output = Vocal_encoder(vocal)
+		# print(vision_output)
+		# print(vocal_output)
+		output = Attention(vocal_output,vision_output)
+		outputs = Predictor(output)
+		# print(outputs)
+		loss = criterion(outputs, gt)
+		loss.backward()
+		optimizer.step()
+		optimizer.zero_grad()
+		Vocal_encoder.zero_grad()
+		Vision_encoder.zero_grad()
+		Attention.zero_grad()
+		Predictor.zero_grad()
+		# print("Loss = ", loss.data[0])
+		running_loss += loss.data[0]
+		K+=1
+		average_loss = running_loss/K		
+		print('Training -- Epoch [%d], Sample [%d], Average Loss: %.4f'
+		% (epoch+1, K, average_loss))
+		# print(vision.size())
+		# print(vocal.size())
+		# print(gt)		
 	# for i,csv_file_path in enumerate(all_csv_files):
 	# 	# print(csv_file_path)
 	# 	name = csv_file_path[13:-4]

@@ -24,7 +24,7 @@ def make_dataset(mode, segment = True):
     vision_files = os.listdir(vision)
     vocal_files = os.listdir(vocal)
     gt_files = os.listdir(gt)
-    emb_files = os.listdir(emb)
+    # emb_files = os.listdir(emb)
     items = []
     for file in sorted(vocal_files):
         vision_path = os.path.join(vision, file)
@@ -32,7 +32,7 @@ def make_dataset(mode, segment = True):
         gt_path = os.path.join(gt, file)
         emb_path = os.path.join(emb, file)
         # emb_path = 'NAN_PATH'
-        items.append((vision_path,vocal_path,gt_path,emb_path))
+        items.append((vision_path,vocal_path,emb_path,gt_path))
     return items
 
 class mosei(data.Dataset):
@@ -42,9 +42,9 @@ class mosei(data.Dataset):
             raise RuntimeError('Found 0 items, please check the data set')
 
     def __getitem__(self, index):
-        vision_path, vocal_path, gt_path, emb_path = self.items[index]
+        vision_path, vocal_path, emb_path, gt_path = self.items[index]
         # print(emb_path)
-        # emb_file = 'NAN_VAL'
+        emb_file = 'NAN_VAL'
         if sys.version_info[0] == 2:
             with open(vision_path,'rb') as f:
                 vision_file = pickle.load(f)
@@ -59,11 +59,14 @@ class mosei(data.Dataset):
                 vision_file = pickle.load(f,encoding = 'latin1')
             with open(vocal_path,'rb') as f:
                 vocal_file = pickle.load(f,encoding = 'latin1')
-            with open(gt_path,'rb') as f:
-                gt_file = pickle.load(f,encoding = 'latin1')
             with open(emb_path,'rb') as f:
                 emb_file = pickle.load(f)
-        return vision_file, vocal_file, gt_file,emb_file
+            with open(gt_path,'rb') as f:
+                gt_file = pickle.load(f,encoding = 'latin1')
+
+        vocal_file[vocal_file<(-1e8)] = 0
+        vision_file[vision_file<(-1e8)] = 0
+        return vision_file, vocal_file, emb_file,gt_file
 
     def __len__(self):
         return len(self.items)
