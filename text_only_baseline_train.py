@@ -98,7 +98,7 @@ def main(options):
             # NOTE: typically padding is performed at word idx level i.e. before embedding projection
             # but we begin with embeddings, so *hopefully* it's ok to embed pad tkn as [0]*300
             seq_tensor = torch.zeros((x_t.size()[0], seq_lengths.max(), x_t.size()[2]))
-            for idx, (seq, seqlen) in enumerate(zip(x_t, seq_lengths)):
+            for idx, (seq, seqlen) in enumerate(zip(x_t.long(), seq_lengths)):
                 seq_tensor[idx, :seqlen] = torch.LongTensor(seq)
             # sort tensors by length
             seq_lengths, perm_idx = seq_lengths.sort(0, descending=True)
