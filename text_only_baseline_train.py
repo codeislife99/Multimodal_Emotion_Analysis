@@ -61,7 +61,7 @@ def main(options):
     valid_iterator = DataLoader(valid_set, batch_size=len(valid_set), num_workers=num_workers, shuffle=True)
     test_iterator = DataLoader(test_set, batch_size=len(test_set), num_workers=num_workers, shuffle=True)
 
-    input_dim = train_iterator[2][2]
+    input_dim = 300
     batch_size = options['batch_size']
     bidirectional = options['bidirectional']
     num_layers = options['num_layers']
