@@ -157,6 +157,8 @@ def main(options):
 
         # On validation set we don't have to compute metrics other than MAE and accuracy
         model.eval()
+        valid_loss = 0.0
+        K = 0
         for _, _, x_t, gt in valid_iterator:
 
             # x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
@@ -181,7 +183,9 @@ def main(options):
                 x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
                 output = model(x_t)
 
-            valid_loss = criterion(output, gt)
+            loss = criterion(output, gt)
+            valid_loss += loss.data[0]
+            K += 1
         output_valid = output.cpu().data.numpy().reshape(-1)
         gt = gt.cpu().data.numpy().reshape(-1)
 
@@ -192,7 +196,7 @@ def main(options):
 
         valid_binacc = accuracy_score(output_valid>=0, gt>=0)
 
-        print("Validation loss is: {}".format(valid_loss.data[0] / len(valid_set)))
+        print("Validation loss is: {}".format(valid_loss / K))
         print("Validation binary accuracy is: {}".format(valid_binacc))
 
         if (valid_loss.data[0] < min_valid_loss):
