@@ -48,10 +48,10 @@ def display(test_loss, test_binacc, test_precision, test_recall, test_f1, test_s
 
 def save_checkpoint(state, is_final, filename='text_only'):
     filename = filename +'_'+str(state['epoch'])+'.pth.tar'
-    os.system("mkdir -p text_only")
+    os.system("mkdir -p text_only") 
     torch.save(state, './text_only/'+filename)
     if is_final:
-        shutil.copyfile(filename, 'model_final.pth.tar')
+        shutil.copyfile(filename, './text_only/model_final.pth.tar')
 
 def main(options):
     DTYPE = torch.FloatTensor
@@ -63,9 +63,10 @@ def main(options):
     epochs = options['epochs']
     model_path = options['model_path']
     curr_patience = patience
+
     train_iterator = DataLoader(train_set, batch_size=batch_size, num_workers=num_workers, shuffle=True)
-    valid_iterator = DataLoader(valid_set, batch_size=batch_size, num_workers=num_workers, shuffle=True)
-    test_iterator = DataLoader(test_set, batch_size=batch_size, num_workers=num_workers, shuffle=True)
+    valid_iterator = DataLoader(valid_set, batch_size=1, num_workers=num_workers, shuffle=True)
+    test_iterator = DataLoader(test_set, batch_size=1, num_workers=num_workers, shuffle=True)
 
     input_dim = 300
     batch_size = options['batch_size']
@@ -85,8 +86,18 @@ def main(options):
     # setup training
     complete = True
     min_valid_loss = float('Inf')
+    use_pretrained = False
+    e = 0
+    if use_pretrained:
+        # pretrained_file = './TAN/triple_attention_net_iter_8000_0.pth.tar'
+        pretrained_file = './text_only/text_only_net__0.pth.tar'
+        checkpoint = torch.load(pretrained_file)
+        model.load_state_dict(checkpoint['text_model'])
+        use_pretrained = False
+        e = checkpoint['epoch']+1
+        optimizer.load_state_dict(checkpoint['optimizer'])
 
-    for e in range(epochs):
+    while e<epochs:
         model.train()
         model.zero_grad()
         train_loss = 0.0
@@ -125,10 +136,9 @@ def main(options):
                 optimizer.step()
                 optimizer.zero_grad()
                 model.zero_grad()
-
-
-            train_loss += loss.data[0]
-            optimizer.step()
+            
+            
+            train_loss += loss.data[0] 
             K+=1
             average_loss = train_loss/K
             if K%20 == 0:
@@ -142,7 +152,7 @@ def main(options):
                     'optimizer': optimizer.state_dict(),
                 }, False,'text_only_net_iter_'+str(K))
 
-        print("Epoch {} complete! Average Training loss: {}".format(e, train_loss))
+        print("Epoch {} complete! Average Training loss: {}".format(e, average_loss))
         save_checkpoint({
             'epoch': e,
             'loss' : average_loss,
@@ -150,15 +160,11 @@ def main(options):
             'optimizer': optimizer.state_dict(),
         }, False,'text_only_net_')
         # Terminate the training process if run into NaN
-        if np.isnan(train_loss):
-            print("Training got into NaN values...\n\n")
-            complete = False
-            break
-
         # On validation set we don't have to compute metrics other than MAE and accuracy
+        model.zero_grad()
         model.eval()
-        valid_loss = 0.0
         K = 0
+        valid_loss = 0.0
         for _, _, x_t, gt in valid_iterator:
 
             # x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
@@ -180,29 +186,29 @@ def main(options):
 
                 output = model(seq_tensor, seq_lengths.cpu().numpy)
             else:
+                print(x_t.size())
                 x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
                 output = model(x_t)
 
             loss = criterion(output, gt)
             valid_loss += loss.data[0]
-            K += 1
-        output_valid = output.cpu().data.numpy().reshape(-1)
-        gt = gt.cpu().data.numpy().reshape(-1)
+            K+=1
+            average_valid_loss = valid_loss/K
+            if K%20 == 0:
+                print('Training -- Epoch [%d], Sample [%d], Average Loss: %.4f'
+                % (e+1, K, average_valid_loss))
 
-        if np.isnan(valid_loss.data[0]):
-            print("Training got into NaN values...\n\n")
-            complete = False
-            break
-
-        valid_binacc = accuracy_score(output_valid>=0, gt>=0)
-
-        print("Validation loss is: {}".format(valid_loss / K))
-        print("Validation binary accuracy is: {}".format(valid_binacc))
+        print("Validation loss is: {}".format(average_valid_loss))
 
         if (valid_loss.data[0] < min_valid_loss):
             curr_patience = patience
             min_valid_loss = valid_loss.data[0]
-            torch.save(model, model_path)
+            save_checkpoint({
+                'epoch': e,
+                'loss' : min_valid_loss,
+                'text_model' : model.state_dict(),
+                'optimizer': optimizer.state_dict(),
+            }, True,'text_only_net_')
             print("Found new best model, saving to disk...")
         else:
             curr_patience -= 1
