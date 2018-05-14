@@ -62,11 +62,13 @@ class mosei(data.Dataset):
                 vocal_file = pickle.load(f,encoding = 'latin1')
             with open(emb_path,'rb') as f:
                 emb_file = pickle.load(f)
+
             with open(gt_path,'rb') as f:
                 gt_file = pickle.load(f,encoding = 'latin1')
 
         vocal_file[vocal_file<(-1e8)] = 0
         vision_file[vision_file<(-1e8)] = 0
+        emb_file = np.reshape(emb_file,(1,-1,300))
         return vision_file, vocal_file, emb_file,gt_file
 
     def __len__(self):
