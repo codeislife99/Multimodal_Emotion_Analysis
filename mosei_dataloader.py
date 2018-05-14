@@ -24,14 +24,14 @@ def make_dataset(mode, segment = True):
     vision_files = os.listdir(vision)
     vocal_files = os.listdir(vocal)
     gt_files = os.listdir(gt)
-    # emb_files = os.listdir(emb)
+    emb_files = os.listdir(emb)
     items = []
     for file in sorted(vocal_files):
         vision_path = os.path.join(vision, file)
         vocal_path = os.path.join(vocal, file)
         gt_path = os.path.join(gt, file)
-        # emb_path = os.path.join(emb, file)
-        emb_path = 'NAN_PATH'
+        emb_path = os.path.join(emb, file)
+        # emb_path = 'NAN_PATH'
         items.append((vision_path,vocal_path,gt_path,emb_path))
     return items
 
@@ -44,7 +44,7 @@ class mosei(data.Dataset):
     def __getitem__(self, index):
         vision_path, vocal_path, gt_path, emb_path = self.items[index]
         # print(emb_path)
-        emb_file = 'NAN_VAL'
+        # emb_file = 'NAN_VAL'
         if sys.version_info[0] == 2:
             with open(vision_path,'rb') as f:
                 vision_file = pickle.load(f)
@@ -56,16 +56,13 @@ class mosei(data.Dataset):
                 emb_file = pickle.load(f)
         else:
             with open(vision_path,'rb') as f:
-                vision_file = pickle.load(f,encoding = 'latin1')
+                vision_file = pickle.load(f,encoding = 'bytes')
             with open(vocal_path,'rb') as f:
                 vocal_file = pickle.load(f,encoding = 'latin1')
             with open(gt_path,'rb') as f:
                 gt_file = pickle.load(f,encoding = 'latin1')
-            # with open(emb_path,'rb') as f:
-            #     try:
-            #         emb_file = pickle.load(f)
-            #     except:
-            #         print("Error in Embeddings")
+            with open(emb_path,'rb') as f:
+                emb_file = pickle.load(f)
         return vision_file, vocal_file, gt_file,emb_file, vision_path, vocal_path, gt_path, emb_path
 
     def __len__(self):
