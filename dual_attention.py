@@ -176,9 +176,9 @@ use_CUDA = True
 use_pretrained =  True
 num_workers = 20
 
-test_mode = True
+test_mode = False
 val_mode = False
-train_mode = False
+train_mode = True
 
 no_of_epochs = 1000
 vocal_input_size = 74 # Dont Change
@@ -258,7 +258,7 @@ while epoch<no_of_epochs:
 	running_corrects = 0
 	if use_pretrained:
 		# pretrained_file = './DAN/dual_attention_net_iter_8000_0.pth.tar'
-		pretrained_file = './DAN/dual_attention_net__1.pth.tar'
+		pretrained_file = './DAN/dual_attention_net__4.pth.tar'
 
 		checkpoint = torch.load(pretrained_file)
 		Vocal_encoder.load_state_dict(checkpoint['Vocal_encoder'])
