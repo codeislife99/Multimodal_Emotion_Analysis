@@ -149,13 +149,6 @@ class TripleAttention(nn.Module):
 		vision_zero = vision.mean(0).unsqueeze(0)
 		vocal_zero = vocal.mean(0).unsqueeze(0)
 		emb_zero = emb.mean(0).unsqueeze(0)
-		# print('Initialising memory in TripleAttention')
-		# print(vision.size())
-		# print(vocal.size())
-		# print(emb.size())
-		# print(vision_zero.size())
-		# print(vocal_zero.size())
-		# print(emb_zero.size())
 		m_zero = vision_zero * vocal_zero * emb_zero
 		m_zero_vision = m_zero.repeat(vision.size(0),1)
 		m_zero_vocal = m_zero.repeat(vocal.size(0),1)
@@ -209,11 +202,17 @@ class TripleAttention(nn.Module):
 		# return outputs	
 '---------------------------------------------------Memory to Emotion Decoder------------------------------------------'
 class predictor(nn.Module):
-	def __init__(self,no_of_emotions,hidden_size):
+	def __init__(self,no_of_emotions,hidden_size,output_scale_factor = 1, output_shift = 0):
 		super(predictor, self).__init__()
 		self.fc = nn.Linear(hidden_size, no_of_emotions)
+		self.output_scale_factor = Parameter(torch.FloatTensor([output_scale_factor]), requires_grad=False)
+		self.output_shift = Parameter(torch.FloatTensor([output_shift]), requires_grad=False)
+
 	def forward(self,x):
 		x = self.fc(x)
+		x = F.sigmoid(x)
+        x = x*self.output_scale_factor + self.output_shift
+
 		return x
 '------------------------------------------------------Hyperparameters-------------------------------------------------'
 batch_size = 1
@@ -344,7 +343,7 @@ while epoch<no_of_epochs:
 		# output = Attention(vocal_output,vision_output)
 		output = Attention(vocal_output,vision_output,emb_output)
 		outputs = Predictor(output)
-		outputs = torch.clamp(outputs,0,3)
+		# outputs = torch.clamp(outputs,0,3)
 		loss = criterion(outputs, gt)
 		if train_mode and K%mega_batch_size==0:
 			loss.backward()
