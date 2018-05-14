@@ -106,11 +106,11 @@ class GatedAttention(nn.Module):
 		hiddens,_ = self.lstm(fusion)
 		outputs = self.linear(hiddens[-1])
 		return outputs	
-'---------------------------------------------------Dual Attention----------------------------------------------------'
+'---------------------------------------------------Triple Attention----------------------------------------------------'
 
-class DualAttention(nn.Module):
+class TripleAttention(nn.Module):
 	def __init__(self,no_of_emotions,dan_hidden_size):
-		super(DualAttention, self).__init__()
+		super(TripleAttention, self).__init__()
 		N = dan_hidden_size
 		''' K= 1 ''' 
 		self.Wvision_1 = nn.Linear(N,N)
@@ -149,7 +149,7 @@ class DualAttention(nn.Module):
 		vision_zero = vision.mean(0).unsqueeze(0)
 		vocal_zero = vocal.mean(0).unsqueeze(0)
 		emb_zero = emb.mean(0).unsqueeze(0)
-		# print('Initialising memory in DualAttention')
+		# print('Initialising memory in TripleAttention')
 		# print(vision.size())
 		# print(vocal.size())
 		# print(emb.size())
@@ -242,7 +242,7 @@ dan_hidden_size = 2048
 Vocal_encoder = VocalNet(vocal_input_size, vocal_hidden_size, vocal_num_layers)
 Vision_encoder = VisionNet(vision_input_size, vision_hidden_size, vision_num_layers)
 Wordvec_encoder = WordvecNet(wordvec_input_size, wordvec_hidden_size, wordvec_num_layers)
-Attention = DualAttention(no_of_emotions,dan_hidden_size)
+Attention = TripleAttention(no_of_emotions,dan_hidden_size)
 Predictor = predictor(no_of_emotions,dan_hidden_size)
 if train_mode:
 	train_dataset = mosei(mode= "train")
@@ -311,7 +311,7 @@ while epoch<no_of_epochs:
 	running_loss = 0
 	running_corrects = 0
 	if use_pretrained:
-		# pretrained_file = './TAN/dual_attention_net_iter_8000_0.pth.tar'
+		# pretrained_file = './TAN/triple_attention_net_iter_8000_0.pth.tar'
 		pretrained_file = './TAN/triple_attention_net__1.pth.tar'
 
 		checkpoint = torch.load(pretrained_file)
@@ -384,7 +384,7 @@ while epoch<no_of_epochs:
 					'Attention' : Attention.state_dict(),
 					'Predictor' : Predictor.state_dict(),
 					'optimizer': optimizer.state_dict(),
-				}, False,'dual_attention_net_iter_'+str(K))
+				}, False,'triple_attention_net_iter_'+str(K))
 	'-------------------------------------------------Saving model after every epoch-----------------------------------'
 	if train_mode:
 		save_checkpoint({
@@ -398,7 +398,7 @@ while epoch<no_of_epochs:
 			'Attention' : Attention.state_dict(),
 			'Predictor' : Predictor.state_dict(),
 			'optimizer': optimizer.state_dict(),
-		}, False,'dual_attention_net_')
+		}, False,'triple_attention_net_')
 	epoch+= 1 
 '------------------------------------------------------Saving model after training completion--------------------------'
 if train_mode:
