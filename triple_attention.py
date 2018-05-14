@@ -106,11 +106,11 @@ class GatedAttention(nn.Module):
 		hiddens,_ = self.lstm(fusion)
 		outputs = self.linear(hiddens[-1])
 		return outputs	
-'---------------------------------------------------Dual Attention----------------------------------------------------'
+'---------------------------------------------------Triple Attention----------------------------------------------------'
 
-class DualAttention(nn.Module):
+class TripleAttention(nn.Module):
 	def __init__(self,no_of_emotions,dan_hidden_size):
-		super(DualAttention, self).__init__()
+		super(TripleAttention, self).__init__()
 		N = dan_hidden_size
 		''' K= 1 ''' 
 		self.Wvision_1 = nn.Linear(N,N)
@@ -149,13 +149,13 @@ class DualAttention(nn.Module):
 		vision_zero = vision.mean(0).unsqueeze(0)
 		vocal_zero = vocal.mean(0).unsqueeze(0)
 		emb_zero = emb.mean(0).unsqueeze(0)
-		print('Initialising memory in DualAttention')
-		print(vision.size())
-		print(vocal.size())
-		print(emb.size())
-		print(vision_zero.size())
-		print(vocal_zero.size())
-		print(emb_zero.size())
+		# print('Initialising memory in TripleAttention')
+		# print(vision.size())
+		# print(vocal.size())
+		# print(emb.size())
+		# print(vision_zero.size())
+		# print(vocal_zero.size())
+		# print(emb_zero.size())
 		m_zero = vision_zero * vocal_zero * emb_zero
 		m_zero_vision = m_zero.repeat(vision.size(0),1)
 		m_zero_vocal = m_zero.repeat(vocal.size(0),1)
@@ -219,15 +219,13 @@ class predictor(nn.Module):
 batch_size = 1
 mega_batch_size = 1
 no_of_emotions = 6
-# vocal_seq_len = 150
-# vision_seq_len = 45
 use_CUDA = True
 use_pretrained =  False
 num_workers = 20
 
-test_mode = True
+test_mode = False
 val_mode = False
-train_mode = False
+train_mode = True
 
 no_of_epochs = 1000
 vocal_input_size = 74 # Dont Change
@@ -244,7 +242,7 @@ dan_hidden_size = 2048
 Vocal_encoder = VocalNet(vocal_input_size, vocal_hidden_size, vocal_num_layers)
 Vision_encoder = VisionNet(vision_input_size, vision_hidden_size, vision_num_layers)
 Wordvec_encoder = WordvecNet(wordvec_input_size, wordvec_hidden_size, wordvec_num_layers)
-Attention = DualAttention(no_of_emotions,dan_hidden_size)
+Attention = TripleAttention(no_of_emotions,dan_hidden_size)
 Predictor = predictor(no_of_emotions,dan_hidden_size)
 if train_mode:
 	train_dataset = mosei(mode= "train")
@@ -313,7 +311,7 @@ while epoch<no_of_epochs:
 	running_loss = 0
 	running_corrects = 0
 	if use_pretrained:
-		# pretrained_file = './TAN/dual_attention_net_iter_8000_0.pth.tar'
+		# pretrained_file = './TAN/triple_attention_net_iter_8000_0.pth.tar'
 		pretrained_file = './TAN/triple_attention_net__1.pth.tar'
 
 		checkpoint = torch.load(pretrained_file)
@@ -330,11 +328,11 @@ while epoch<no_of_epochs:
 	K = 0
 	for i,(vision,vocal,emb,gt) in enumerate(data_loader):
 		if use_CUDA:
-			if i==0 or i==1:
-				print('To load data into CUDA')
-				print(vision.size())
-				print(vocal.size())
-				print(emb.size())
+			# if i==0 or i==1:
+			# 	print('To load data into CUDA')
+			# 	print(vision.size())
+			# 	print(vocal.size())
+			# 	print(emb.size())
 			vision = Variable(vision.float()).cuda()
 			vocal = Variable(vocal.float()).cuda()
 			emb = Variable(emb.float()).cuda()
@@ -351,12 +349,12 @@ while epoch<no_of_epochs:
 		if train_mode and K%mega_batch_size==0:
 			loss.backward()
 			optimizer.step()
-		optimizer.zero_grad()
-		Vocal_encoder.zero_grad()
-		Vision_encoder.zero_grad()
-		Wordvec_encoder.zero_grad()
-		Attention.zero_grad()
-		Predictor.zero_grad()
+			optimizer.zero_grad()
+			Vocal_encoder.zero_grad()
+			Vision_encoder.zero_grad()
+			Wordvec_encoder.zero_grad()
+			Attention.zero_grad()
+			Predictor.zero_grad()
 
 		# outputs_ = Variable(torch.FloatTensor([ 0.1565 ,0.1233,  0.0401,  0.4836 , 0.1596,  0.04842])).cuda()
 		# loss = criterion(outputs_, gt)
@@ -386,7 +384,7 @@ while epoch<no_of_epochs:
 					'Attention' : Attention.state_dict(),
 					'Predictor' : Predictor.state_dict(),
 					'optimizer': optimizer.state_dict(),
-				}, False,'dual_attention_net_iter_'+str(K))
+				}, False,'triple_attention_net_iter_'+str(K))
 	'-------------------------------------------------Saving model after every epoch-----------------------------------'
 	if train_mode:
 		save_checkpoint({
@@ -400,7 +398,7 @@ while epoch<no_of_epochs:
 			'Attention' : Attention.state_dict(),
 			'Predictor' : Predictor.state_dict(),
 			'optimizer': optimizer.state_dict(),
-		}, False,'dual_attention_net_')
+		}, False,'triple_attention_net_')
 	epoch+= 1 
 '------------------------------------------------------Saving model after training completion--------------------------'
 if train_mode:

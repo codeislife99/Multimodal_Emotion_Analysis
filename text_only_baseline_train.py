@@ -46,6 +46,12 @@ def display(test_loss, test_binacc, test_precision, test_recall, test_f1, test_s
     print("Seven-class accuracy on test set is {}".format(test_septacc))
     print("Correlation w.r.t human evaluation on test set is {}".format(test_corr))
 
+def save_checkpoint(state, is_final, filename='text_only'):
+    filename = filename +'_'+str(state['epoch'])+'.pth.tar'
+    os.system("mkdir -p text_only") 
+    torch.save(state, './text_only/'+filename)
+    if is_final:
+        shutil.copyfile(filename, 'model_final.pth.tar')
 
 def main(options):
     DTYPE = torch.FloatTensor
@@ -84,6 +90,7 @@ def main(options):
         model.train()
         model.zero_grad()
         train_loss = 0.0
+        K = 0
         for _, _, x_t, gt in train_iterator: # iterate over batches of text and gt labels (x_t is unpadded)
             model.zero_grad()
 
@@ -115,11 +122,28 @@ def main(options):
 
             loss = criterion(output, gt)
             loss.backward()
-            train_loss += loss.data[0] / len(train_set)
+            train_loss += loss.data[0] 
             optimizer.step()
+            K+=1
+            average_loss = train_loss/K
+            if K%20 == 0:
+                print('Training -- Epoch [%d], Sample [%d], Average Loss: %.4f'
+                % (e+1, K, average_loss))
+            if K%4000 == 0:
+                save_checkpoint({
+                    'epoch': e,
+                    'loss' : average_loss,
+                    'text_model' : model.state_dict(),
+                    'optimizer': optimizer.state_dict(),
+                }, False,'text_only_net_iter_'+str(K))
 
         print("Epoch {} complete! Average Training loss: {}".format(e, train_loss))
-
+        save_checkpoint({
+            'epoch': e,
+            'loss' : average_loss,
+            'text_model' : model.state_dict(),
+            'optimizer': optimizer.state_dict(),
+        }, False,'text_only_net_')
         # Terminate the training process if run into NaN
         if np.isnan(train_loss):
             print("Training got into NaN values...\n\n")
