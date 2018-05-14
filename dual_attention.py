@@ -39,7 +39,7 @@ preprocess = transforms.Compose([
 class VocalNet(nn.Module):
 	def __init__(self,input_size,hidden_size,num_layers):
 		super(VocalNet, self).__init__()
-		self.lstm = nn.LSTM(74,128,num_layers,bidirectional=False)
+		self.lstm = nn.LSTM(input_size,hidden_size,num_layers,bidirectional=True)
 		self.linear = nn.Linear(hidden_size, 6)
 
 
@@ -53,7 +53,7 @@ class VocalNet(nn.Module):
 class VisionNet(nn.Module):
 	def __init__(self,input_size,hidden_size,num_layers):
 		super(VisionNet, self).__init__()
-		self.lstm = nn.LSTM(35,128,num_layers,bidirectional=False)
+		self.lstm = nn.LSTM(input_size,hidden_size,num_layers,bidirectional=True)
 
 
 	def forward(self,x):
@@ -86,9 +86,9 @@ class GatedAttention(nn.Module):
 '---------------------------------------------------Dual Attention----------------------------------------------------'
 
 class DualAttention(nn.Module):
-	def __init__(self,no_of_emotions):
+	def __init__(self,no_of_emotions,dan_hidden_size):
 		super(DualAttention, self).__init__()
-		N = 128 
+		N = dan_hidden_size
 		''' K= 1 ''' 
 		self.Wvision_1 = nn.Linear(N,N)
 		self.Wvision_m1 = nn.Linear(N,N)
@@ -160,14 +160,15 @@ class DualAttention(nn.Module):
 		# return outputs	
 '---------------------------------------------------Memory to Emotion Decoder------------------------------------------'
 class predictor(nn.Module):
-	def __init__(self,no_of_emotions):
+	def __init__(self,no_of_emotions,hidden_size):
 		super(predictor, self).__init__()
-		self.fc = nn.Linear(128, no_of_emotions)
+		self.fc = nn.Linear(hidden_size, no_of_emotions)
 	def forward(self,x):
 		x = self.fc(x)
 		return x
 '------------------------------------------------------Hyperparameters-------------------------------------------------'
 batch_size = 1
+mega_batch_size = 1
 no_of_emotions = 6
 # vocal_seq_len = 150
 # vision_seq_len = 45
@@ -184,16 +185,14 @@ vocal_input_size = 74 # Dont Change
 vision_input_size = 35 # Dont Change
 vocal_num_layers = 2
 vision_num_layers = 2
-vocal_hidden_size = 128
-vision_hidden_size = 128
-att_input_size = 512
-att_hidden_size = 512
-att_num_layers = 2
+vocal_hidden_size = 1024
+vision_hidden_size = 1024
+dan_hidden_size = 2048
 '----------------------------------------------------------------------------------------------------------------------'
 Vocal_encoder = VocalNet(vocal_input_size, vocal_hidden_size, vocal_num_layers)
 Vision_encoder = VisionNet(vision_input_size, vision_hidden_size, vision_num_layers)
-Attention = DualAttention(no_of_emotions)
-Predictor = predictor(no_of_emotions)
+Attention = DualAttention(no_of_emotions,dan_hidden_size)
+Predictor = predictor(no_of_emotions,dan_hidden_size)
 train_dataset = mosei(mode = "train")
 val_dataset = mosei(mode = "val")
 if train_mode:
@@ -204,6 +203,7 @@ elif val_mode:
 	data_loader = torch.utils.data.DataLoader(dataset=val_dataset,
                                         batch_size=1,
                                         shuffle=False,num_workers = num_workers)
+	no_of_epochs = 1
 curr_epoch = 0
 total = 0
 '----------------------------------------------------------------------------------------------------------------------'
@@ -251,8 +251,8 @@ while epoch<no_of_epochs:
 	running_loss = 0
 	running_corrects = 0
 	if use_pretrained:
-		# pretrained_file = './DAN/dual_attention_net_iter_4000_0.pth.tar'
-		pretrained_file = './DAN/dual_attention_net__0.pth.tar'
+		pretrained_file = './DAN/dual_attention_net_iter_8000_0.pth.tar'
+		# pretrained_file = './DAN/dual_attention_net__0.pth.tar'
 
 		checkpoint = torch.load(pretrained_file)
 		Vocal_encoder.load_state_dict(checkpoint['Vocal_encoder'])
@@ -275,9 +275,11 @@ while epoch<no_of_epochs:
 		vocal_output = Vocal_encoder(vocal)
 		output = Attention(vocal_output,vision_output)
 		outputs = Predictor(output)
+		outputs = torch.clamp(outputs,0,3)
 		loss = criterion(outputs, gt)
-		loss.backward()
-		optimizer.step()
+		if train_mode and K%mega_batch_size==0:
+			loss.backward()
+			optimizer.step()
 		optimizer.zero_grad()
 		Vocal_encoder.zero_grad()
 		Vision_encoder.zero_grad()
@@ -289,9 +291,13 @@ while epoch<no_of_epochs:
 
 		running_loss += loss.data[0]
 		K+=1
-		average_loss = running_loss/K		
-		print('Training -- Epoch [%d], Sample [%d], Average Loss: %.4f'
-		% (epoch+1, K, average_loss))
+		average_loss = running_loss/K
+		if train_mode and K%mega_batch_size==0:			
+			print('Training -- Epoch [%d], Sample [%d], Average Loss: %.4f'
+			% (epoch+1, K, average_loss))
+		elif val_mode:
+			print('Validating -- Epoch [%d], Sample [%d], Average Loss: %.4f'
+			% (epoch+1, K, average_loss))
 		if train_mode:
 			if K%4000==0:
 				save_checkpoint({
