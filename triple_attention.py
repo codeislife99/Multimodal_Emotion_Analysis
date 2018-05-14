@@ -211,7 +211,7 @@ class predictor(nn.Module):
 	def forward(self,x):
 		x = self.fc(x)
 		x = F.sigmoid(x)
-        x = x*self.output_scale_factor + self.output_shift
+		x = x*self.output_scale_factor + self.output_shift
 
 		return x
 '------------------------------------------------------Hyperparameters-------------------------------------------------'
