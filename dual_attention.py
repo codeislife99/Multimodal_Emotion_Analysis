@@ -196,10 +196,12 @@ Attention = DualAttention(no_of_emotions)
 Predictor = predictor(no_of_emotions)
 train_dataset = mosei(mode = "train")
 val_dataset = mosei(mode = "val")
-train_loader = torch.utils.data.DataLoader(dataset=train_dataset,
+if train_mode:
+	data_loader = torch.utils.data.DataLoader(dataset=train_dataset,
                                         batch_size=batch_size,
                                         shuffle=True,num_workers = num_workers)
-val_loader = torch.utils.data.DataLoader(dataset=val_dataset,
+elif val_mode:
+	data_loader = torch.utils.data.DataLoader(dataset=val_dataset,
                                         batch_size=1,
                                         shuffle=False,num_workers = num_workers)
 curr_epoch = 0
@@ -249,8 +251,8 @@ while epoch<no_of_epochs:
 	running_loss = 0
 	running_corrects = 0
 	if use_pretrained:
-		pretrained_file = 'OF_attention_net__5.pth.tar'
-		# pretrained_file = 'attention_net__0.pth.tar'
+		# pretrained_file = './DAN/dual_attention_net_iter_4000_0.pth.tar'
+		pretrained_file = './DAN/dual_attention_net__0.pth.tar'
 
 		checkpoint = torch.load(pretrained_file)
 		Vocal_encoder.load_state_dict(checkpoint['Vocal_encoder'])
@@ -263,7 +265,7 @@ while epoch<no_of_epochs:
 			optimizer.load_state_dict(checkpoint['optimizer'])
 
 	K = 0
-	for i,(vision,vocal,emb,gt) in enumerate(train_loader):
+	for i,(vision,vocal,emb,gt) in enumerate(data_loader):
 		if use_CUDA:
 			vision = Variable(vision.float()).cuda()
 			vocal = Variable(vocal.float()).cuda()
