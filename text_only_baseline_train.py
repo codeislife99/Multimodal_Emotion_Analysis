@@ -48,7 +48,7 @@ def display(test_loss, test_binacc, test_precision, test_recall, test_f1, test_s
 
 def save_checkpoint(state, is_final, filename='text_only'):
     filename = filename +'_'+str(state['epoch'])+'.pth.tar'
-    os.system("mkdir -p text_only") 
+    os.system("mkdir -p text_only")
     torch.save(state, './text_only/'+filename)
     if is_final:
         shutil.copyfile(filename, 'model_final.pth.tar')
@@ -64,8 +64,8 @@ def main(options):
     model_path = options['model_path']
     curr_patience = patience
     train_iterator = DataLoader(train_set, batch_size=batch_size, num_workers=num_workers, shuffle=True)
-    valid_iterator = DataLoader(valid_set, batch_size=len(valid_set), num_workers=num_workers, shuffle=True)
-    test_iterator = DataLoader(test_set, batch_size=len(test_set), num_workers=num_workers, shuffle=True)
+    valid_iterator = DataLoader(valid_set, batch_size=batch_size, num_workers=num_workers, shuffle=True)
+    test_iterator = DataLoader(test_set, batch_size=batch_size, num_workers=num_workers, shuffle=True)
 
     input_dim = 300
     batch_size = options['batch_size']
@@ -85,7 +85,7 @@ def main(options):
     # setup training
     complete = True
     min_valid_loss = float('Inf')
-    
+
     for e in range(epochs):
         model.train()
         model.zero_grad()
@@ -125,9 +125,9 @@ def main(options):
                 optimizer.step()
                 optimizer.zero_grad()
                 model.zero_grad()
-            
-            
-            train_loss += loss.data[0] 
+
+
+            train_loss += loss.data[0]
             optimizer.step()
             K+=1
             average_loss = train_loss/K
