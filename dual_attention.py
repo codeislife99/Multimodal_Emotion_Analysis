@@ -173,7 +173,7 @@ no_of_emotions = 6
 # vision_seq_len = 45
 use_CUDA = True
 use_pretrained =  False
-num_workers = 0
+num_workers = 20
 
 test_mode = False
 val_mode = False
@@ -220,7 +220,8 @@ optimizer = torch.optim.Adam(params, lr = 0.0001)
 
 
 def save_checkpoint(state, is_final, filename='attention_net'):
-	filename = filename +'_'+str(state['epoch'])+'.pth.tar' 
+	filename = filename +'_'+str(state['epoch'])+'.pth.tar'
+	os.system("mkdir -p DAN") 
 	torch.save(state, './DAN/'+filename)
 	if is_final:
 		shutil.copyfile(filename, 'model_final.pth.tar')
@@ -293,9 +294,7 @@ while epoch<no_of_epochs:
 			if K%4000==0:
 				save_checkpoint({
 					'epoch': epoch,
-					'accuracy': running_accuracy,
 					'loss' : running_loss,
-					'correct' : running_corrects,
 					'j_start' : 0,
 					'Vocal_encoder': Vocal_encoder.state_dict(),
 					'Vision_encoder' : 	Vision_encoder.state_dict(),
@@ -307,7 +306,6 @@ while epoch<no_of_epochs:
 	if train_mode:
 		save_checkpoint({
 			'epoch': epoch,
-			'accuracy': running_accuracy,
 			'loss' : running_loss,
 			'correct' : running_corrects,
 			'j_start' : 0,
@@ -322,9 +320,7 @@ while epoch<no_of_epochs:
 if train_mode:
 	save_checkpoint({
 		'epoch': epoch,
-		'accuracy': running_accuracy,
 		'loss' : running_loss,
-		'correct' : running_corrects,
 		'j_start' : 0,
 		'Vocal_encoder': Vocal_encoder.state_dict(),
 		'Vision_encoder' : 	Vision_encoder.state_dict(),
