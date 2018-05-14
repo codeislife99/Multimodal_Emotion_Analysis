@@ -35,10 +35,7 @@ def preprocess(options):
     text_valid_set = mosei('val', segment)
     text_test_set = mosei('test', segment)
 
-    text_dim = text_train_set[0].shape[1] # check this
-    print("Text feature dimension is: {}".format(text_dim))
-
-    return text_train_set, text_valid_set, text_test_set, text_dim
+    return text_train_set, text_valid_set, text_test_set
 
 def display(test_loss, test_binacc, test_precision, test_recall, test_f1, test_septacc, test_corr):
     print("MAE on test set is {}".format(test_loss))
@@ -52,9 +49,19 @@ def display(test_loss, test_binacc, test_precision, test_recall, test_f1, test_s
 
 def main(options):
     DTYPE = torch.FloatTensor
-    train_set, valid_set, test_set, input_dim = preprocess(options)
+    train_set, valid_set, test_set = preprocess(options)
 
-    text_hid_size = 64
+    batch_size = options['batch_size']
+    num_workers = options['num_workers']
+    patience = options['patience']
+    epochs = options['epochs']
+    model_path = options['model_path']
+    curr_patience = patience
+    train_iterator = DataLoader(train_set, batch_size=batch_size, num_workers=num_workers, shuffle=True)
+    valid_iterator = DataLoader(valid_set, batch_size=len(valid_set), num_workers=num_workers, shuffle=True)
+    test_iterator = DataLoader(test_set, batch_size=len(test_set), num_workers=num_workers, shuffle=True)
+
+    input_dim = train_iterator[2][2]
     batch_size = options['batch_size']
     bidirectional = options['bidirectional']
     num_layers = options['num_layers']
@@ -72,15 +79,7 @@ def main(options):
     # setup training
     complete = True
     min_valid_loss = float('Inf')
-    batch_size = options['batch_size']
-    num_workers = options['num_workers']
-    patience = options['patience']
-    epochs = options['epochs']
-    model_path = options['model_path']
-    curr_patience = patience
-    train_iterator = DataLoader(train_set, batch_size=batch_size, num_workers=num_workers, shuffle=True)
-    valid_iterator = DataLoader(valid_set, batch_size=len(valid_set), num_workers=num_workers, shuffle=True)
-    test_iterator = DataLoader(test_set, batch_size=len(test_set), num_workers=num_workers, shuffle=True)
+    
     for e in range(epochs):
         model.train()
         model.zero_grad()
