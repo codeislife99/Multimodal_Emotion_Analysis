@@ -178,11 +178,10 @@ def main(options):
 
                 output = model(seq_tensor, seq_lengths.cpu().numpy)
             else:
-                print(x_t.size())
                 x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
                 output = model(x_t)
 
-            loss = criterion(output, gt)
+            valid_loss = criterion(output, gt)
         output_valid = output.cpu().data.numpy().reshape(-1)
         gt = gt.cpu().data.numpy().reshape(-1)
 
