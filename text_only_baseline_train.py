@@ -1,4 +1,4 @@
-from utils import MultimodalDataset
+from mosei_dataloader import mosei
 from models.text_encoders import TextOnlyModel
 from torch.utils.data import DataLoader
 from torch.autograd import Variable
@@ -17,24 +17,32 @@ def preprocess(options):
     dataset = options['dataset']
     epochs = options['epochs']
     model_path = options['model_path']
-    max_len = options['max_len']
+    vid_or_seg_based = options['vid_or_seg_based']
+    if vid_or_seg_based == 'seg':
+        segment=True
+    elif vid_or_seg_based == 'vid':
+        segment=False
+    else:
+        raise ValueError("illegal string value {} for vid_or_seg_based arg".format(vid_or_seg_based))
 
     # prepare the paths for storing models
     model_path = os.path.join(
-        model_path, "tfn.pt")
+        model_path, "text_only.pt")
     print("Temp location for saving model: {}".format(model_path))
 
     # prepare the datasets
     print("Currently using {} dataset.".format(dataset))
-    mosei = MultimodalDataset(dataset, max_len=max_len)
-    train_set, valid_set = mosei.train_set, mosei.valid_set
+    train_loader = mosei('train', segment)
+    valid_loader = mosei('val', segment)
+
+    ######### FIX THIS ##########
 
     text_dim = train_set[0][2].shape[1]
     print("Text feature dimension is: {}".format(text_dim))
     # input_dims = (audio_dim, visual_dim, text_dim)
 
-    text_train_set = train_set[:][2]
-    text_valid_set = valid_set[:][2]
+    # text_train_set = train_set[:][2]
+    # text_valid_set = valid_set[:][2]
 
     return text_train_set, text_valid_set, text_dim
 
@@ -132,41 +140,42 @@ def main(options):
             break
         print("\n\n")
 
-    if complete:
+    # if complete:
 
-        best_model = torch.load(model_path)
-        best_model.eval()
-        for batch in test_iterator:
-            x_avt = batch[:-1]
-            x_t = Variable(x[2].float().type(DTYPE), requires_grad=False)
-            y = Variable(batch[-1].view(-1, 1).float().type(DTYPE), requires_grad=False)
-            output_test = model(x_t)
-            loss_test = criterion(output_test, y)
-            test_loss = loss_test.data[0]
-        output_test = output_test.cpu().data.numpy().reshape(-1)
-        y = y.cpu().data.numpy().reshape(-1)
+    #     best_model = torch.load(model_path)
+    #     best_model.eval()
+    #     for batch in test_iterator:
+    #         x_avt = batch[:-1]
+    #         x_t = Variable(x[2].float().type(DTYPE), requires_grad=False)
+    #         y = Variable(batch[-1].view(-1, 1).float().type(DTYPE), requires_grad=False)
+    #         output_test = model(x_t)
+    #         loss_test = criterion(output_test, y)
+    #         test_loss = loss_test.data[0]
+    #     output_test = output_test.cpu().data.numpy().reshape(-1)
+    #     y = y.cpu().data.numpy().reshape(-1)
 
-        test_binacc = accuracy_score(output_test>=0, y>=0)
-        test_precision, test_recall, test_f1, _ = precision_recall_fscore_support(y>=0, output_test>=0, average='binary')
-        test_septacc = (output_test.round() == y.round()).mean()
+    #     test_binacc = accuracy_score(output_test>=0, y>=0)
+    #     test_precision, test_recall, test_f1, _ = precision_recall_fscore_support(y>=0, output_test>=0, average='binary')
+    #     test_septacc = (output_test.round() == y.round()).mean()
 
-        # compute the correlation between true and predicted scores
-        test_corr = np.corrcoef([output_test, y])[0][1]  # corrcoef returns a matrix
-        test_loss = test_loss / len(test_set)
+    #     # compute the correlation between true and predicted scores
+    #     test_corr = np.corrcoef([output_test, y])[0][1]  # corrcoef returns a matrix
+    #     test_loss = test_loss / len(test_set)
 
-        display(test_loss, test_binacc, test_precision, test_recall, test_f1, test_septacc, test_corr)
+    #     display(test_loss, test_binacc, test_precision, test_recall, test_f1, test_septacc, test_corr)
     return
 
 if __name__ == "__main__":
     OPTIONS = argparse.ArgumentParser()
     OPTIONS.add_argument('--dataset', dest='dataset',
-                         type=str, default='MOSI')
+                         type=str, default='MOSEI')
     OPTIONS.add_argument('--epochs', dest='epochs', type=int, default=50)
     OPTIONS.add_argument('--batch_size', dest='batch_size', type=int, default=32)
     OPTIONS.add_argument('--patience', dest='patience', type=int, default=20)
-    OPTIONS.add_argument('--cuda', dest='cuda', type=bool, default=False)
+    OPTIONS.add_argument('--cuda', dest='cuda', type=bool, default=True)
     OPTIONS.add_argument('--model_path', dest='model_path',
                          type=str, default='models')
-    OPTIONS.add_argument('--max_len', dest='max_len', type=int, default=20)
+    OPTIONS.add_argument('--vidorseg', dest='vid_or_seg_based', type=str, default='seg')
+
     PARAMS = vars(OPTIONS.parse_args())
     main(PARAMS)
