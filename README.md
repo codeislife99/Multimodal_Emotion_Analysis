@@ -5,7 +5,17 @@ Please download both the datasets _before_ cloning this repository <br/>
 Processed Dataset - http://sorena.multicomp.cs.cmu.edu/downloads/MOSEI/ <br/>
 Raw Dataset - http://sorena.multicomp.cs.cmu.edu/downloads_raw/MOSEI <br/>
 
-
+#### Baselines and Metrics:
+      The following metrics are defined :
+      Metric 1 = MSE with sum across categories
+      Random with Metric 1 :
+          Train Set      : 0.73
+          Validation Set : 0.63
+      Vanilla Dual Attention with Metric 1  :
+          Validation Set : 
+      Text Only with Metric 1 :
+          Validation Set : 
+      
 #### Structure of Pickle Files
 
 ##### 1. Emotions.pkl 
