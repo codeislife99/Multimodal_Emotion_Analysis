@@ -14,12 +14,12 @@ class TextEncoder(nn.Module):
     as per DAN paper, i.e. the shared memory affects how the word encodings are attended to,
     but now how they were derived from the word embeddings via recurrent encoding.
     """
-    def __init__(self, in_size, hid_size, out_size, batch_size, num_layers=1, dropout=0.2, bidirectional=False):
+    def __init__(self, in_size, hid_size, out_size, batch_size, num_layers=1, dropout=0.2, bidirectional=False, batch_first=True):
 
 
         super(TextEncoder, self).__init__()
         self.rnn = nn.LSTM(in_size, hid_size, num_layers=num_layers, dropout=droupout,
-                           bidirectional=bidirectional, batch_first=True)
+                           bidirectional=bidirectional, batch_first=batch_first)
         self.batch_size = batch_size
         self.num_layers = num_layers
         self.bidirectional = bidirectional
