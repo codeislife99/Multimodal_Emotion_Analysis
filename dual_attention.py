@@ -173,12 +173,12 @@ no_of_emotions = 6
 # vocal_seq_len = 150
 # vision_seq_len = 45
 use_CUDA = True
-use_pretrained =  False
+use_pretrained =  True
 num_workers = 20
 
-test_mode = False
+test_mode = True
 val_mode = False
-train_mode = True
+train_mode = False
 
 no_of_epochs = 1000
 vocal_input_size = 74 # Dont Change
@@ -193,14 +193,20 @@ Vocal_encoder = VocalNet(vocal_input_size, vocal_hidden_size, vocal_num_layers)
 Vision_encoder = VisionNet(vision_input_size, vision_hidden_size, vision_num_layers)
 Attention = DualAttention(no_of_emotions,dan_hidden_size)
 Predictor = predictor(no_of_emotions,dan_hidden_size)
-train_dataset = mosei(mode = "train")
-val_dataset = mosei(mode = "val")
 if train_mode:
+	train_dataset = mosei(mode= "train")
 	data_loader = torch.utils.data.DataLoader(dataset=train_dataset,
                                         batch_size=batch_size,
                                         shuffle=True,num_workers = num_workers)
 elif val_mode:
+	val_dataset = mosei(mode = "val")
 	data_loader = torch.utils.data.DataLoader(dataset=val_dataset,
+                                        batch_size=1,
+                                        shuffle=False,num_workers = num_workers)
+	no_of_epochs = 1
+else:
+	test_dataset = mosei(mode = "test")
+	data_loader = torch.utils.data.DataLoader(dataset=test_dataset,
                                         batch_size=1,
                                         shuffle=False,num_workers = num_workers)
 	no_of_epochs = 1
@@ -251,8 +257,8 @@ while epoch<no_of_epochs:
 	running_loss = 0
 	running_corrects = 0
 	if use_pretrained:
-		pretrained_file = './DAN/dual_attention_net_iter_8000_0.pth.tar'
-		# pretrained_file = './DAN/dual_attention_net__0.pth.tar'
+		# pretrained_file = './DAN/dual_attention_net_iter_8000_0.pth.tar'
+		pretrained_file = './DAN/dual_attention_net__1.pth.tar'
 
 		checkpoint = torch.load(pretrained_file)
 		Vocal_encoder.load_state_dict(checkpoint['Vocal_encoder'])
@@ -298,6 +304,10 @@ while epoch<no_of_epochs:
 		elif val_mode:
 			print('Validating -- Epoch [%d], Sample [%d], Average Loss: %.4f'
 			% (epoch+1, K, average_loss))
+		elif test_mode:
+			print('Testing -- Epoch [%d], Sample [%d], Average Loss: %.4f'
+			 % (epoch+1, K, average_loss))
+
 		if train_mode:
 			if K%4000==0:
 				save_checkpoint({
