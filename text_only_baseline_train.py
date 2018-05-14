@@ -195,7 +195,7 @@ def main(options):
             K+=1
             average_valid_loss = valid_loss/K
             if K%20 == 0:
-                print('Training -- Epoch [%d], Sample [%d], Average Loss: %.4f'
+                print('Validating -- Epoch [%d], Sample [%d], Average Loss: %.4f'
                 % (e+1, K, average_valid_loss))
 
         print("Validation loss is: {}".format(average_valid_loss))
