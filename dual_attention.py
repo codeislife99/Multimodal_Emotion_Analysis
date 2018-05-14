@@ -1,3 +1,5 @@
+import sys
+sys.stdout.buffer.write(chr(9986).encode('utf8'))
 import glob
 import scipy.io as sio
 import matplotlib.pyplot as plt
@@ -21,7 +23,6 @@ import re
 from tensorboardX import SummaryWriter
 import time
 import math
-import sys
 from torchvision import datasets, models, transforms
 import matplotlib.cm as cm
 import cv2
@@ -173,6 +174,7 @@ no_of_emotions = 6
 # vision_seq_len = 45
 use_CUDA = True
 use_pretrained =  False
+num_workers = 0
 
 test_mode = False
 val_mode = True
@@ -197,10 +199,10 @@ train_dataset = mosei(mode = "train")
 val_dataset = mosei(mode = "val")
 train_loader = torch.utils.data.DataLoader(dataset=train_dataset,
                                         batch_size=batch_size,
-                                        shuffle=True,num_workers = 8)
+                                        shuffle=True,num_workers = num_workers)
 val_loader = torch.utils.data.DataLoader(dataset=val_dataset,
                                         batch_size=1,
-                                        shuffle=False,num_workers = 8)
+                                        shuffle=False,num_workers = num_workers)
 curr_epoch = 0
 total = 0
 '----------------------------------------------------------------------------------------------------------------------'
@@ -261,11 +263,16 @@ while epoch<no_of_epochs:
 			optimizer.load_state_dict(checkpoint['optimizer'])
 
 	K = 0
-	for i,datapoint in enumerate(train_loader):
-		print(datapoint[1].shape[2])
-		print(datapoint[4])
-		print(datapoint)
-
+	for i,(vision,vocal,emb,gt) in enumerate(train_loader):
+		#print(datapoint[1].shape[2])
+		#print(datapoint[4])
+		#print(datapoint)
+		print("i = ", i)
+		print(vision)
+		print(vocal)
+		print(emb)
+		print(gt)
+		
 	# for i,csv_file_path in enumerate(all_csv_files):
 	# 	# print(csv_file_path)
 	# 	name = csv_file_path[13:-4]

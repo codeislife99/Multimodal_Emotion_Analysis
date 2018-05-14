@@ -4,3 +4,6 @@ covarep.pkl
 demo.py
 embeddings.pkl
 facet.pkl
+text_files_segbased/
+text_files_videobased/
+*.pyc
