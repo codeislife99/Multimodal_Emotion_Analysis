@@ -271,7 +271,7 @@ Wordvec_encoder = Wordvec_encoder.cuda()
 Predictor = Predictor.cuda()
 '----------------------------------------------------------------------------------------------------------------------'
 criterion = nn.MSELoss(size_average = False)
-params =  list(Vocal_encoder.parameters())+ list(Attention.parameters()) + list(Wordvec_encoder.parameters()) + list(Vision_encoder.parameters()) + list(Predictor.parameters()[2:])
+params =  list(Vocal_encoder.parameters())+ list(Attention.parameters()) + list(Wordvec_encoder.parameters()) + list(Vision_encoder.parameters()) + list(Predictor.parameters())[2:]
 print('Parameters in the model = ' + str(len(params)))
 optimizer = torch.optim.Adam(params, lr = 0.0001)
 # optimizer = torch.optim.SGD(params, lr =0.001,momentum = 0.9 )
