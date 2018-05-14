@@ -36,10 +36,12 @@ class TextEncoder(nn.Module):
         param x: tensor of shape (batch_size, max_seq_len, in_size)
         param seq_lens: 
         """
-
-        packed_input = pack_padded_sequence(x, seq_lens, batch_first=True)
-        packed_output, final_hiddens = self.rnn(packed_input)
-        output, _ = pad_packed_sequence(packed_output, batch_first=True)
+        if x.size()[0] == 1:
+            output, final_hiddens = self.rnn(x)
+        else:
+            packed_input = pack_padded_sequence(x, seq_lens, batch_first=True)
+            packed_output, final_hiddens = self.rnn(packed_input)
+            output, _ = pad_packed_sequence(packed_output, batch_first=True)
 
         return output, final_hiddens
 
