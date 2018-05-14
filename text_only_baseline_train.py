@@ -96,7 +96,6 @@ def main(options):
             # need to pad the batch according to longest sequence within it
             seq_lengths = torch.LongTensor([x_t[i, :].size()[0] for i in range(x_t.size()[0])])
 
-            pad_tk_embedding = torch.zeros((x_t.size()[2], 1)) 
             # NOTE: typically padding is performed at word idx level i.e. before embedding projection
             # but we begin with embeddings, so *hopefully* it's ok to embed pad tkn as [0]*300
             seq_tensor = torch.zeros((x_t.size()[0], seq_lengths.max(), x_t.size()[2]))
@@ -134,7 +133,7 @@ def main(options):
             pad_tk_embedding = torch.zeros((x_t.size()[2], 1)) 
             # NOTE: typically padding is performed at word idx level i.e. before embedding projection
             # but we begin with embeddings, so *hopefully* it's ok to embed pad tkn as [0]*300
-            seq_tensor = Variable(torch.zeros((x_t.size()[0], seq_lengths.max(), x_t.size()[2]))
+            seq_tensor = torch.zeros((x_t.size()[0], seq_lengths.max(), x_t.size()[2]))
             for idx, (seq, seqlen) in enumerate(zip(x_t, seq_lengths)):
                 seq_tensor[idx, :seqlen] = torch.LongTensor(seq)
             # sort tensors by length
@@ -208,7 +207,6 @@ if __name__ == "__main__":
     OPTIONS.add_argument('--num_workers', dest='num_workers', type=int, default=20)
     OPTIONS.add_argument('--num_layers', dest='num_layers', type=int, default=1)
     OPTIONS.add_argument('--hidden_size', dest='hidden_size', type=int, default=64)
-    OPTIONS.add_argument('--batch_size', dest='batch_size', type=int, default=32)
     OPTIONS.add_argument('--bidirectional', dest='bidirectional', action='store_true', default=False)
 
 
