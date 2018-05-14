@@ -30,7 +30,7 @@ class TextEncoder(nn.Module):
         return ((torch.zeros(self.num_layers * num_directions, self.batch_size, self.hid_size)),
                 (torch.zeros(self.num_layers * num_directions, self.batch_size, self.hid_size)))
 
-    def forward(self, x, seq_lens):
+    def forward(self, x, seq_lens=None):
         """
         
         param x: tensor of shape (batch_size, max_seq_len, in_size)
@@ -58,7 +58,7 @@ class TextOnlyModel(nn.Module):
         self.output_scale_factor = Parameter(torch.FloatTensor([output_scale_factor]), requires_grad=False)
         self.output_shift = Parameter(torch.FloatTensor([output_shift]), requires_grad=False)
 
-    def forward(self, x, seq_lens):
+    def forward(self, x, seq_lens=None):
         """
 
         param x: tensor of shape (batch_size, max_seq_len, in_size)
