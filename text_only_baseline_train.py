@@ -92,7 +92,7 @@ def main(options):
         train_loss = 0.0
         K = 0
         for _, _, x_t, gt in train_iterator: # iterate over batches of text and gt labels (x_t is unpadded)
-            model.zero_grad()
+            # model.zero_grad()
 
             # the provided data has format [batch_size, seq_len, feature_dim] or [batch_size, 1, feature_dim]
 
@@ -120,7 +120,13 @@ def main(options):
                 output = model(x_t)
 
             loss = criterion(output, gt)
-            loss.backward()
+            if K%options['mega_batch_size'] == 0:
+                loss.backward()
+                optimizer.step()
+                optimizer.zero_grad()
+                model.zero_grad()
+            
+            
             train_loss += loss.data[0] 
             optimizer.step()
             K+=1
@@ -231,7 +237,8 @@ if __name__ == "__main__":
     OPTIONS.add_argument('--dataset', dest='dataset',
                          type=str, default='MOSEI')
     OPTIONS.add_argument('--epochs', dest='epochs', type=int, default=50)
-    OPTIONS.add_argument('--batch_size', dest='batch_size', type=int, default=32)
+    OPTIONS.add_argument('--batch_size', dest='batch_size', type=int, default=1)
+    OPTIONS.add_argument('--mega_batch_size', dest='mega_batch_size', type=int, default=16)
     OPTIONS.add_argument('--patience', dest='patience', type=int, default=20)
     OPTIONS.add_argument('--cuda', dest='cuda', type=bool, default=True)
     OPTIONS.add_argument('--model_path', dest='model_path',
@@ -241,6 +248,7 @@ if __name__ == "__main__":
     OPTIONS.add_argument('--num_layers', dest='num_layers', type=int, default=1)
     OPTIONS.add_argument('--hidden_size', dest='hidden_size', type=int, default=64)
     OPTIONS.add_argument('--bidirectional', dest='bidirectional', action='store_true', default=False)
+
 
 
     PARAMS = vars(OPTIONS.parse_args())
