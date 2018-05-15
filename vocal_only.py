@@ -50,14 +50,10 @@ class VocalNet(nn.Module):
 class predictor(nn.Module):
 	def __init__(self,no_of_emotions,input_size):
 		super(predictor, self).__init__()
-		self.fc1 = nn.Linear(input_size, 512)
-		self.fc2 = nn.Linear(512, 256)
-		self.fc3 = nn.Linear(256, no_of_emotions)
+		self.fc = nn.Linear(input_size, no_of_emotions)
 
 	def forward(self,x):
-		x = self.fc1(x)
-		x = self.fc2(x)
-		x = self.fc3(x)
+		x = self.fc(x)
 		return x
 '------------------------------------------------------Hyperparameters-------------------------------------------------'
 batch_size = 1
@@ -157,7 +153,7 @@ while epoch<no_of_epochs:
 			gt = Variable(gt.float()).cuda()
 
 		vocal_output = Vocal_encoder(vocal)
-		outputs = Predictor(output)
+		outputs = Predictor(vocal_output)
 		outputs = torch.clamp(outputs,0,3)
 		loss = criterion(outputs, gt)
 		if train_mode and K%mega_batch_size==0:

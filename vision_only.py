@@ -53,14 +53,10 @@ class VisionNet(nn.Module):
 class predictor(nn.Module):
 	def __init__(self,no_of_emotions,input_size):
 		super(predictor, self).__init__()
-		self.fc1 = nn.Linear(input_size, 512)
-		self.fc2 = nn.Linear(512, 256)
-		self.fc3 = nn.Linear(256, no_of_emotions)
+		self.fc = nn.Linear(input_size, no_of_emotions)
 
 	def forward(self,x):
-		x = self.fc1(x)
-		x = self.fc2(x)
-		x = self.fc3(x)
+		x = self.fc(x)
 		return x
 '------------------------------------------------------Hyperparameters-------------------------------------------------'
 batch_size = 1
