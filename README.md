@@ -16,12 +16,22 @@ export LC_ALL=C.UTF-8
           Train Set      : 0.73
           Validation Set : 0.63
           Test Set       : 0.66
-      Vanilla Dual Attention with Metric 1  :
+      Vanilla Triple Attention with Metric 1 :
+          Validation Set : 0.4899
+          Test Set       : 0.4857
+      Vanilla Dual Attention(V+A) with Metric 1  :
           Validation Set : [0.5157, 0.5211]
           Test Set       : [0.5103, 0.4986]
-      Text Only with Metric 1 :
+      Text Only with Metric 1 (LSTM -Only) :
+          Validation Set : 0.59
+          Test Set       : 
+      Text Only with Metric 1 (TorchMoji Features) :
           Validation Set :
           Test Set       :
+      Vision Only with Metric 1 :
+          Validation Set :
+          Test Set       :
+      
       
 #### Structure of Pickle Files
 
