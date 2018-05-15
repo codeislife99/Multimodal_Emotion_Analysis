@@ -254,7 +254,7 @@ if __name__ == "__main__":
     OPTIONS.add_argument('--vidorseg', dest='vid_or_seg_based', type=str, default='seg')
     OPTIONS.add_argument('--num_workers', dest='num_workers', type=int, default=20)
     OPTIONS.add_argument('--num_layers', dest='num_layers', type=int, default=1)
-    OPTIONS.add_argument('--hidden_size', dest='hidden_size', type=int, default=64)
+    OPTIONS.add_argument('--hidden_size', dest='hidden_size', type=int, default=150)
     OPTIONS.add_argument('--bidirectional', dest='bidirectional', action='store_true', default=False)
 
 
