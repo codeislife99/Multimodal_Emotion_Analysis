@@ -37,13 +37,13 @@ class TextEncoder(nn.Module):
         param seq_lens: 
         """
         if not isinstance(x, PackedSequence):
-            output, final_hiddens = self.rnn(x)
+            output, (final_h, final_c) = self.rnn(x)
         else:
             packed_input = pack_padded_sequence(x, seq_lens, batch_first=True)
             packed_output, final_hiddens = self.rnn(packed_input)
             output, _ = pad_packed_sequence(packed_output, batch_first=True)
 
-        return output, final_hiddens
+        return output, (final_h, final_c)
 
 class TextOnlyModel(nn.Module):
     """
@@ -64,9 +64,9 @@ class TextOnlyModel(nn.Module):
 
         param x: tensor of shape (batch_size, max_seq_len, in_size)
         """
-        _, final_hiddens = self.rnn_enc(x, seq_lens)
-
-        final_h_drop = self.dropout(final_hiddens[0].squeeze())
+        _, (final_h, final_c) = self.rnn_enc(x, seq_lens)
+        print(final_h.size())
+        final_h_drop = self.dropout(final_h.squeeze())
         y = F.sigmoid(self.linear_last(final_h_drop))
         y = y*self.output_scale_factor + self.output_shift
 
