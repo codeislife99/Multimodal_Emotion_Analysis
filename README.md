@@ -15,7 +15,7 @@ export LC_ALL=C.UTF-8
       Random with Metric 1 :
           Train Set      : 0.73
           Validation Set : 0.63
-          Test Set       : 0.66
+          Test Set       : 0.647
       Vanilla Triple Attention with Metric 1 :
           Validation Set : 0.4899
           Test Set       : 0.4857
