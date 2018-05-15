@@ -69,6 +69,7 @@ class TextOnlyModel(nn.Module):
         _, (final_h, final_c) = self.rnn_enc(x, seq_lens)
         print(final_h.size())
         final_h_drop = self.dropout(final_h.squeeze()) # num_dir, batch_size, hid_size
+        print(final_h_drop.size())
         # stack along first dim if bidir (one dim for each direction)
         if final_h_drop.size()[0] == 2:
             final_h_drop = torch.cat((final_h_drop[0], final_h_drop[1]), 1)
