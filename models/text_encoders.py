@@ -38,8 +38,8 @@ class TextEncoder(nn.Module):
         """
         if not isinstance(x, PackedSequence):
             output, (final_h, final_c) = self.rnn(x)
-            print("not packed!")
-            print(x.size())
+            # print("not packed!")
+            # print(x.size())
         else:
             packed_input = pack_padded_sequence(x, seq_lens, batch_first=True)
             packed_output, (final_h, final_c) = self.rnn(packed_input)
@@ -67,13 +67,13 @@ class TextOnlyModel(nn.Module):
         param x: tensor of shape (batch_size, max_seq_len, in_size)
         """
         _, (final_h, final_c) = self.rnn_enc(x, seq_lens)
-        print(final_h.size())
+        # print(final_h.size())
         final_h_drop = self.dropout(final_h.squeeze()) # num_dir, batch_size, hid_size
         print(final_h_drop.size())
         # stack along first dim if bidir (one dim for each direction)
         if final_h_drop.size()[0] == 2:
-            final_h_drop = torch.cat((final_h_drop[0], final_h_drop[1]), 1)
-            print(final_h_drop.size())
+            final_h_drop = torch.cat((final_h_drop[0], final_h_drop[1]), 0)
+            # print(final_h_drop.size())
         y = F.sigmoid(self.linear_last(final_h_drop))
         y = y*self.output_scale_factor + self.output_shift
 
