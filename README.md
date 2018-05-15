@@ -17,10 +17,10 @@ export LC_ALL=C.UTF-8
       
 | Model         | Modality      | Metric 1  || Metric 2  || Metric 3 ||
 |               |               |Val | Test | Val |Test | Val | Test|
-|:-------------:|:-------------:|:---------:|:---------:|:---------:|
-| Random         | - |     0.647      |   0.8121        |  0.2946         |
-| Triple Attention     | V+A+T      |  0.4709         |           |           |
-|  |       |         |           |           |
+| Random         | - |     0.647 |     |   0.8121 |       |  0.2946 |         |
+| Triple Attention     | V+A+T      |  0.4709|         |      |     |   |        |
+|  |       |  |       |   |        | |          |
+
       Random with Metric 1 :
           Train Set      : 0.73
           Validation Set : 0.63
@@ -72,6 +72,8 @@ export LC_ALL=C.UTF-8
       Text Attention with Metric 1  :
           Validation Set : 
           Test Set       : 
+          |:-------------:|:-------------:|:---------:|:---------:|:---------:|
+
       Vision Attention with Metric 1 :
           Validation Set :
           Test Set       :
