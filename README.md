@@ -12,16 +12,36 @@ export LC_ALL=C.UTF-8
 #### Baselines and Metrics:
       The following metrics are defined :
       Metric 1 = MSE with sum across categories
+      Metric 2 = MAE with sum across categories
+      Metric 3 = Huber Loss (Smooth L1 Loss)
       Random with Metric 1 :
           Train Set      : 0.73
           Validation Set : 0.63
-          Test Set       : 0.66
-      Vanilla Dual Attention with Metric 1  :
+          Test Set       : 0.647
+      Random with Metric 2 :
+          Train Set      : 0.8686
+          Validation Set : 0.7938
+          Test Set       : 0.8121
+      Random with Metric 3 :
+          Train Set      : 0.3263
+          Validation Set : 0.2822
+          Test Set       : 0.2946
+      Vanilla Triple Attention with Metric 1 :
+          Validation Set : 0.4765
+          Test Set       : 0.4709
+      Vanilla Dual Attention(V+A) with Metric 1  :
           Validation Set : [0.5157, 0.5211]
           Test Set       : [0.5103, 0.4986]
-      Text Only with Metric 1 :
+      Text Only with Metric 1 (LSTM -Only) :
+          Validation Set : 0.59
+          Test Set       : 
+      Text Only with Metric 1 (TorchMoji Features) :
           Validation Set :
           Test Set       :
+      Vision Only with Metric 1 :
+          Validation Set :
+          Test Set       :
+      
       
 #### Structure of Pickle Files
 
