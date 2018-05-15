@@ -12,16 +12,36 @@ export LC_ALL=C.UTF-8
 #### Baselines and Metrics:
       The following metrics are defined :
       Metric 1 = MSE with sum across categories
+      Metric 2 = MAE with sum across categories
+      Metric 3 = Huber Loss (Smooth L1 Loss)
       Random with Metric 1 :
           Train Set      : 0.73
           Validation Set : 0.63
-          Test Set       : 0.66
-      Vanilla Dual Attention with Metric 1  :
+          Test Set       : 0.647
+      Random with Metric 2 :
+          Train Set      : 0.8686
+          Validation Set : 0.7938
+          Test Set       : 0.8121
+      Random with Metric 3 :
+          Train Set      : 0.3263
+          Validation Set : 0.2822
+          Test Set       : 0.2946
+      Vanilla Triple Attention with Metric 1 :
+          Validation Set : 0.4899
+          Test Set       : 0.4857
+      Vanilla Dual Attention(V+A) with Metric 1  :
           Validation Set : [0.5157, 0.5211]
           Test Set       : [0.5103, 0.4986]
-      Text Only with Metric 1 :
+      Text Only with Metric 1 (LSTM -Only) :
+          Validation Set : 0.59
+          Test Set       : 
+      Text Only with Metric 1 (TorchMoji Features) :
           Validation Set :
           Test Set       :
+      Vision Only with Metric 1 :
+          Validation Set :
+          Test Set       :
+      
       
 #### Structure of Pickle Files
 
@@ -104,13 +124,48 @@ text_files_videobased : segment-base embeddings, but each embedding files has a 
 Contains a set of all the train/test/validation video names <br/>
 
 Length of Dataset - 3228 Videos divided into 22677 Video Clips of ~3-8 seconds <br/>
-Length of Training Set - 2250 Videos divided into 16127 Video Clips <br/>
-Length of Validation Set - 300 Videos divided into 1835 Video Clips <br/>
-Length of Test Set - 678 Videos divided into 4625 Video Clips <br/>
+Length of Training Set - 2250 Videos divided into 16303 Video Clips <br/>
+Length of Validation Set - 300 Videos divided into 1861 Video Clips <br/>
+Length of Test Set - 678 Videos divided into 4645 Video Clips <br/>
 Length of Truncated Set: <br/>
 ('train', 11112) <br/>
 ('test', 3303) <br/>
 ('val', 1341) <br/>
+
+##### Train Set Video Length Stats: <br/>
+ 
+        0-2 = 322
+        2-4 = 2975
+        4-6 = 3979
+        6-8 = 3340
+        8-10 = 2111
+        10-15 = 2398
+        15-20 = 780
+        20+ = 398
+
+        
+##### Validation Set Video Length Stats: <br/>
+        
+        0-2 = 28
+        2-4 = 260
+        4-6 = 434
+        6-8 = 400
+        8-10 = 291
+        10-15 = 324
+        15-20 = 80
+        20+ = 44
+
+        
+##### Test Set Video Length Stats: <br/>
+        
+        0-2 = 80
+        2-4 = 845
+        4-6 = 1246
+        6-8 = 1019
+        8-10 = 743
+        10-15 = 689
+        15-20 = 214
+        20+ = 139
 
 
 ##### 5. Facet.pkl 

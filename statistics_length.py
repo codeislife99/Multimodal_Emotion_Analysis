@@ -73,17 +73,18 @@ for file in glob.glob(path):
 		test += 1
 
 	if duration < 10:
-		for limit in range(0,11,2):
+		for limit in range(2,11,2):
 			if duration <= limit:
 				# print(duration, limit/2-1)
 				emo_bins[idx][bins[limit/2-1]] += 1
 				break
 
 	elif duration >= 10 and duration <= 20:
-		for limit in range(10,21,5):
+		for limit in range(15,21,5):
 			if duration <= limit:
 				# print(duration, limit/5-1)
-				emo_bins[idx][bins[limit/5-1]] += 1
+				emo_bins[idx][bins[limit/5+2]] += 1
+				# print(idx, bins[limit/5+2])
 				break
 
 	else:
@@ -103,13 +104,13 @@ print("\n")
 for idx in range(3):
 	print(splits[idx] + " length:")
 
-	for limit in range(0,11,2):
-		print(bins[limit/2-1]+" = "+ str(emo_bins[idx][bins[limit/2-1]]))
+	for limit in range(2,11,2):
+		print(bins[limit/2-1]+" == "+ str(emo_bins[idx][bins[limit/2-1]]))
 
-	for limit in range(10,21,5):
-		print(bins[limit/5-1]+" = "+ str(emo_bins[idx][bins[limit/5-1]]))
+	for limit in range(15,21,5):
+		print(bins[limit/5+2]+" = "+ str(emo_bins[idx][bins[limit/5+2]]))
 
-	print(bins[7]+" = "+ str(emo_bins[idx][bins[7]]))
+	print(bins[7]+" = "+ str(emo_bins[idx][bins[7]]) + "\n")
 
 
 
