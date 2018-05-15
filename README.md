@@ -26,21 +26,61 @@ export LC_ALL=C.UTF-8
           Train Set      : 0.3263
           Validation Set : 0.2822
           Test Set       : 0.2946
-      Vanilla Triple Attention with Metric 1 :
+      Vanilla Triple Attention(V+A+T) with Metric 1 :
           Validation Set : 0.4765
           Test Set       : 0.4709
+      Early concatentation (V+A+T) with Metric 1  :
+          Validation Set : 
+          Test Set       :           
+      Late weighting (V+A+T) with Metric 1  :
+          Validation Set : 
+          Test Set       :  
       Vanilla Dual Attention(V+A) with Metric 1  :
           Validation Set : [0.5157, 0.5211]
           Test Set       : [0.5103, 0.4986]
-      Text Only with Metric 1 (LSTM -Only) :
-          Validation Set : 0.59
+      Vanilla Dual Attention(A+T) with Metric 1  :
+          Validation Set : 
           Test Set       : 
-      Text Only with Metric 1 (TorchMoji Features) :
+      Vanilla Dual Attention(V+T) with Metric 1  :
+          Validation Set : 
+          Test Set       : 
+      Early concatentation (V+A) with Metric 1  :
+          Validation Set : 
+          Test Set       : 
+      Early concatentation (A+T) with Metric 1  :
+          Validation Set : 
+          Test Set       :
+      Early concatentation (V+T) with Metric 1  :
+          Validation Set : 
+          Test Set       : 
+      Late weighting (V+A) with Metric 1  :
+          Validation Set : 
+          Test Set       : 
+      Late weighting (A+T) with Metric 1  :
+          Validation Set : 
+          Test Set       : 
+      Late weighting (V+T) with Metric 1  :
+          Validation Set : 
+          Test Set       :           
+      Text Attention with Metric 1  :
+          Validation Set : 
+          Test Set       : 
+      Vision Attention with Metric 1 :
           Validation Set :
           Test Set       :
+      Audio Attention with Metric 1 : 
+          Validation Set :
+          Test Set       :
+      Text Only with Metric 1  :
+          Validation Set : 
+          Test Set       : 
       Vision Only with Metric 1 :
           Validation Set :
           Test Set       :
+      Audio Only with Metric 1 : 
+          Validation Set :
+          Test Set       :
+          
       
       
 #### Structure of Pickle Files
