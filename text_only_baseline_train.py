@@ -51,7 +51,7 @@ def save_checkpoint(state, is_final, filename='text_only'):
     os.system("mkdir -p text_only") 
     torch.save(state, './text_only/'+filename)
     if is_final:
-        shutil.copyfile(filename, './text_only/model_final.pth.tar')
+        torch.save(state,'./text_only/model_final.pth.tar')
 
 def main(options):
     DTYPE = torch.FloatTensor
@@ -199,9 +199,9 @@ def main(options):
 
         print("Validation loss is: {}".format(average_valid_loss))
 
-        if (valid_loss.data[0] < min_valid_loss):
+        if (average_valid_loss < min_valid_loss):
             curr_patience = patience
-            min_valid_loss = valid_loss.data[0]
+            min_valid_loss = average_valid_loss
             save_checkpoint({
                 'epoch': e,
                 'loss' : min_valid_loss,
@@ -212,10 +212,10 @@ def main(options):
         else:
             curr_patience -= 1
 
-        if curr_patience <= 0:
+        if curr_patience <= -5:
             break
         print("\n\n")
-
+        e+=1
     # if complete:
 
     #     best_model = torch.load(model_path)
