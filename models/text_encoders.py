@@ -71,6 +71,7 @@ class TextOnlyModel(nn.Module):
         final_h_drop = self.dropout(final_h.squeeze())
         # concatenate along first dim if bidir
         torch.cat(final_h_drop, 0)
+        print(final_h_drop.size())
         y = F.sigmoid(self.linear_last(final_h_drop))
         y = y*self.output_scale_factor + self.output_shift
 
