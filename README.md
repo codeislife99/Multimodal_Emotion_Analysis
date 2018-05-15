@@ -16,7 +16,7 @@ export LC_ALL=C.UTF-8
       Metric 3 = Huber Loss (Smooth L1 Loss)
       
 | Model         | Modality      | Metric 1  | Metric 2  | Metric 3  |
-| ------------- |:-------------:|:---------:|:---------:|:---------:|
+|:-------------:|:-------------:|:---------:|:---------:|:---------:|
 | Random         | - |     0.647      |   0.8121        |  0.2946         |
 | Triple Attention     | V+A+T      |  0.4709         |           |           |
 |  |       |         |           |           |
