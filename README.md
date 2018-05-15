@@ -34,7 +34,7 @@ export LC_ALL=C.UTF-8
  | LSTM + Attention    | V          |         |           |           | | | |  
  | LSTM + Attention    | T          |         |           |           | | | |  
  | LSTM + Attention    | A          |         |           |           | | | |  
- | LSTM                | V          |         |           |           | | | |        
+ | LSTM                | V          |  0.5170 | 0.5106    |           | | | |        
  | LSTM                | T          |   0.59  |           |           | | | |        
  | LSTM                | A          |         |           |           | | | |        
       
