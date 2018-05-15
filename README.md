@@ -15,11 +15,11 @@ export LC_ALL=C.UTF-8
       Metric 2 = MAE with sum across categories
       Metric 3 = Huber Loss (Smooth L1 Loss)
       
-      | Tables        | Are           | Cool  |
-      | ------------- |:-------------:| -----:|
-      | col 3 is      | right-aligned | $1600 |
-      | col 2 is      | centered      |   $12 |
-      | zebra stripes | are neat      |    $1 |
+| Model         | Modality      | Metric 1  | Metric 2  | Metric 3  |
+| ------------- |:-------------:|:---------:|:---------:|:---------:|
+| Random         | - |     0.647      |   0.8121        |  0.2946         |
+| Triple Attention     | V+A+T      |  0.4709         |           |           |
+|  |       |         |           |           |
       Random with Metric 1 :
           Train Set      : 0.73
           Validation Set : 0.63
