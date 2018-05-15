@@ -27,8 +27,8 @@ export LC_ALL=C.UTF-8
           Validation Set : 0.2822
           Test Set       : 0.2946
       Vanilla Triple Attention with Metric 1 :
-          Validation Set : 0.4899
-          Test Set       : 0.4857
+          Validation Set : 0.4842
+          Test Set       : 0.4777
       Vanilla Dual Attention(V+A) with Metric 1  :
           Validation Set : [0.5157, 0.5211]
           Test Set       : [0.5103, 0.4986]
