@@ -38,6 +38,8 @@ class TextEncoder(nn.Module):
         """
         if not isinstance(x, PackedSequence):
             output, (final_h, final_c) = self.rnn(x)
+            print("packed!")
+            print(x.size())
         else:
             packed_input = pack_padded_sequence(x, seq_lens, batch_first=True)
             packed_output, final_hiddens = self.rnn(packed_input)
