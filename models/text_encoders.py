@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 from torch.nn.parameter import Parameter
 from torch.nn.init import xavier_normal, xavier_uniform, orthogonal
-from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
+from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence, PackedSequence
 
 
 class TextEncoder(nn.Module):
@@ -36,7 +36,7 @@ class TextEncoder(nn.Module):
         param x: tensor of shape (batch_size, max_seq_len, in_size)
         param seq_lens: 
         """
-        if x.size()[0] == 1:
+        if not isinstance(inputs, PackedSequence):
             output, final_hiddens = self.rnn(x)
         else:
             packed_input = pack_padded_sequence(x, seq_lens, batch_first=True)
@@ -54,7 +54,8 @@ class TextOnlyModel(nn.Module):
         super(TextOnlyModel, self).__init__()
         self.rnn_enc = TextEncoder(in_size, hid_size, out_size, batch_size, num_layers=num_layers, dropout=rnn_dropout, bidirectional=bidirectional, batch_first=True)
         self.dropout = nn.Dropout(post_dropout)
-        self.linear_last = nn.Linear(hid_size, out_size)
+        num_directions = 2 if bidirectional else 1
+        self.linear_last = nn.Linear(hid_size * num_directions * num_layers, out_size)
         self.output_scale_factor = Parameter(torch.FloatTensor([output_scale_factor]), requires_grad=False)
         self.output_shift = Parameter(torch.FloatTensor([output_shift]), requires_grad=False)
 
