@@ -69,6 +69,8 @@ class TextOnlyModel(nn.Module):
         _, (final_h, final_c) = self.rnn_enc(x, seq_lens)
         print(final_h.size())
         final_h_drop = self.dropout(final_h.squeeze())
+        # concatenate along first dim if bidir
+        torch.cat(final_h_drop, 0)
         y = F.sigmoid(self.linear_last(final_h_drop))
         y = y*self.output_scale_factor + self.output_shift
 
