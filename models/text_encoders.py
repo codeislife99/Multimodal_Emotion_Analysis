@@ -308,27 +308,27 @@ class TorchMoji_Emb(nn.Module):
 
         # If we don't have a packed inputs, let's pack it
         reorder_output = False
-        if not isinstance(input_seqs, PackedSequence):
-            ho = self.lstm_0.weight_hh_l0.data.new(2, input_seqs.size()[0], self.hidden_size).zero_()
-            co = self.lstm_0.weight_hh_l0.data.new(2, input_seqs.size()[0], self.hidden_size).zero_()
+        # if not isinstance(input_seqs, PackedSequence):
+        #     ho = self.lstm_0.weight_hh_l0.data.new(2, input_seqs.size()[0], self.hidden_size).zero_()
+        #     co = self.lstm_0.weight_hh_l0.data.new(2, input_seqs.size()[0], self.hidden_size).zero_()
 
-            # Reorder batch by sequence length
-            input_lengths = torch.LongTensor([torch.max(input_seqs[i, :].data.nonzero()) + 1 for i in range(input_seqs.size()[0])])
-            input_lengths, perm_idx = input_lengths.sort(0, descending=True)
-            input_seqs = input_seqs[perm_idx][:, :input_lengths.max()]
+        #     # Reorder batch by sequence length
+        #     input_lengths = torch.LongTensor([torch.max(input_seqs[i, :].data.nonzero()) + 1 for i in range(input_seqs.size()[0])])
+        #     input_lengths, perm_idx = input_lengths.sort(0, descending=True)
+        #     input_seqs = input_seqs[perm_idx][:, :input_lengths.max()]
 
-            # Pack sequence and work on data tensor to reduce embeddings/dropout computations
-            packed_input = pack_padded_sequence(input_seqs, input_lengths.cpu().numpy(), batch_first=True)
-            reorder_output = True
-        else:
-            ho = self.lstm_0.weight_hh_l0.data.data.new(2, input_seqs.size()[0], self.hidden_size).zero_()
-            co = self.lstm_0.weight_hh_l0.data.data.new(2, input_seqs.size()[0], self.hidden_size).zero_()
-            input_lengths = input_seqs.batch_sizes
-            print("input_lenghts", inputs_lenghts)
-            packed_input = input_seqs
+        #     # Pack sequence and work on data tensor to reduce embeddings/dropout computations
+        #     packed_input = pack_padded_sequence(input_seqs, input_lengths.cpu().numpy(), batch_first=True)
+        #     reorder_output = True
+        # else:
+        #     ho = self.lstm_0.weight_hh_l0.data.data.new(2, input_seqs.size()[0], self.hidden_size).zero_()
+        #     co = self.lstm_0.weight_hh_l0.data.data.new(2, input_seqs.size()[0], self.hidden_size).zero_()
+        #     input_lengths = input_seqs.batch_sizes
+        #     print("input_lenghts", inputs_lenghts)
+        #     packed_input = input_seqs
 
-        hidden = (Variable(ho, requires_grad=False), Variable(co, requires_grad=False))
-        print("hidden", hidden)
+        # hidden = (Variable(ho, requires_grad=False), Variable(co, requires_grad=False))
+        # print("hidden", hidden)
 
         # Embed with an activation function to bound the values of the embeddings
         # x = self.embed(packed_input.data)
@@ -343,8 +343,10 @@ class TorchMoji_Emb(nn.Module):
 
         # skip-connection from embedding to output eases gradient-flow and allows access to lower-level features
         # ordering of the way the merge is done is important for consistency with the pretrained model
-        lstm_0_output, _ = self.lstm_0(packed_input, hidden)
-        lstm_1_output, _ = self.lstm_1(lstm_0_output, hidden)
+        # lstm_0_output, _ = self.lstm_0(packed_input, hidden)
+        lstm_0_output, _ = self.lstm_0(packed_input)
+        # lstm_1_output, _ = self.lstm_1(lstm_0_output, hidden)
+        lstm_1_output, _ = self.lstm_1(lstm_0_output)
 
         # Update packed sequence data for attention layer
         packed_input = PackedSequence(data=torch.cat((lstm_1_output.data,
