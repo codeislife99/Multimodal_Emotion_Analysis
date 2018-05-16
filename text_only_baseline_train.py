@@ -119,25 +119,31 @@ def main(options):
             # x_t = Variable(x_t.float().type(DTYPE), requires_grad=False) # unpadded
             gt = Variable(gt.float().type(DTYPE), requires_grad=False)
 
-            if batch_size > 1:
-
-                # need to pad the batch according to longest sequence within it
-                seq_lengths = torch.LongTensor([x_t[i, :].size()[0] for i in range(x_t.size()[0])])
-
-                # NOTE: typically padding is performed at word idx level i.e. before embedding projection
-                # but we begin with embeddings, so *hopefully* it's ok to embed pad tkn as [0]*300
-                seq_tensor = torch.zeros((x_t.size()[0], seq_lengths.max(), x_t.size()[2]))
-                for idx, (seq, seqlen) in enumerate(zip(x_t.long(), seq_lengths)):
-                    seq_tensor[idx, :seqlen] = torch.LongTensor(seq)
-                # sort tensors by length
-                seq_lengths, perm_idx = seq_lengths.sort(0, descending=True)
-                seq_tensor = seq_tensor[perm_idx]
-                seq_tensor = Variable(seq_tensor.float().type(DTYPE), requires_grad=False)
-
-                output = model(seq_tensor, seq_lengths.cpu().numpy)
-            else:
+            if model_type == 'torchmoji':
                 x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
                 output = model(x_t)
+                
+            elif model_type == 'basic':
+
+                if batch_size > 1:
+
+                    # need to pad the batch according to longest sequence within it
+                    seq_lengths = torch.LongTensor([x_t[i, :].size()[0] for i in range(x_t.size()[0])])
+
+                    # NOTE: typically padding is performed at word idx level i.e. before embedding projection
+                    # but we begin with embeddings, so *hopefully* it's ok to embed pad tkn as [0]*300
+                    seq_tensor = torch.zeros((x_t.size()[0], seq_lengths.max(), x_t.size()[2]))
+                    for idx, (seq, seqlen) in enumerate(zip(x_t.long(), seq_lengths)):
+                        seq_tensor[idx, :seqlen] = torch.LongTensor(seq)
+                    # sort tensors by length
+                    seq_lengths, perm_idx = seq_lengths.sort(0, descending=True)
+                    seq_tensor = seq_tensor[perm_idx]
+                    seq_tensor = Variable(seq_tensor.float().type(DTYPE), requires_grad=False)
+
+                    output = model(seq_tensor, seq_lengths.cpu().numpy)
+                else:
+                    x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
+                    output = model(x_t)
 
             loss = criterion(output, gt)
             if K%options['mega_batch_size'] == 0:
