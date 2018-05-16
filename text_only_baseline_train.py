@@ -121,8 +121,9 @@ def main(options):
 
             if model_type == 'torchmoji':
                 x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
+                x_t = x_t.unsqueeze(0)
                 output = model(x_t)
-                
+
             elif model_type == 'basic':
 
                 if batch_size > 1:

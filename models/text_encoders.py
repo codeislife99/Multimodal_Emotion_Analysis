@@ -357,7 +357,7 @@ class TorchMoji_Emb(nn.Module):
         if not self.feature_output:
             x = self.final_dropout(x)
             outputs = self.output_layer(x)
-            outputs = torch.clamp(outputs, 0,3) # ADDED
+            outputs = torch.clamp(outputs.squeeze(), 0,3) # ADDED
         else:
             outputs = x
 
