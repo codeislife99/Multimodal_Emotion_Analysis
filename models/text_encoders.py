@@ -240,7 +240,7 @@ class TorchMoji_Emb(nn.Module):
             return_attention: If True the model also returns attention weights over the sentence
                               (defaults to False).
         """
-        super(TorchMoji, self).__init__()
+        super(TorchMoji_Emb, self).__init__()
 
         embedding_dim = 300
         hidden_size = 512
@@ -279,7 +279,7 @@ class TorchMoji_Emb(nn.Module):
         ih = (param.data for name, param in self.named_parameters() if 'weight_ih' in name)
         hh = (param.data for name, param in self.named_parameters() if 'weight_hh' in name)
         b = (param.data for name, param in self.named_parameters() if 'bias' in name)
-        nn.init.uniform(self.embed.weight.data, a=-0.5, b=0.5)
+        # nn.init.uniform(self.embed.weight.data, a=-0.5, b=0.5) # REMOVED
         for t in ih:
             nn.init.xavier_uniform(t)
         for t in hh:
