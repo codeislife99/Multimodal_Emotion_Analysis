@@ -58,8 +58,8 @@ class TextOnlyModel(nn.Module):
         self.dropout = nn.Dropout(post_dropout)
         num_directions = 2 if bidirectional else 1
         self.linear_last = nn.Linear(hid_size * num_directions * num_layers, out_size)
-        self.output_scale_factor = Parameter(torch.FloatTensor([output_scale_factor]), requires_grad=False)
-        self.output_shift = Parameter(torch.FloatTensor([output_shift]), requires_grad=False)
+        # self.output_scale_factor = Parameter(torch.FloatTensor([output_scale_factor]), requires_grad=False)
+        # self.output_shift = Parameter(torch.FloatTensor([output_shift]), requires_grad=False)
 
     def forward(self, x, seq_lens=None):
         """
@@ -75,8 +75,8 @@ class TextOnlyModel(nn.Module):
             final_h_drop = torch.cat((final_h_drop[0], final_h_drop[1]), 0)
             # print(final_h_drop.size())
         y = F.sigmoid(self.linear_last(final_h_drop))
-        y = y*self.output_scale_factor + self.output_shift
-
+        # y = y*self.output_scale_factor + self.output_shift
+        y = torch.clamp(y, 0,3)
         return y
 
 

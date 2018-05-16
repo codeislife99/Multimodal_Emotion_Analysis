@@ -81,7 +81,8 @@ def main(options):
     print("Model initialized")
 
     criterion = nn.MSELoss(size_average=False)
-    optimizer = optim.Adam(list(model.parameters())[2:]) # don't optimize the first 2 params, they should be fixed (output_scale and shift)
+    # optimizer = optim.Adam(list(model.parameters())[2:]) # don't optimize the first 2 params, they should be fixed (output_scale and shift)
+    optimizer = optim.Adam(list(model.parameters())) # clamp versions - no scale/shift params
 
     # setup training
     complete = True
