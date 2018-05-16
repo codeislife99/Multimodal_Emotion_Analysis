@@ -297,14 +297,14 @@ class TorchMoji_Emb(nn.Module):
             Same format as input format (except for PackedSequence returned as Variable).
         """
         # Check if we have Torch.LongTensor inputs or not Torch.Variable (assume Numpy array in this case), take note to return same format
-        return_numpy = False
-        return_tensor = False
-        if isinstance(input_seqs, (torch.LongTensor, torch.cuda.LongTensor)):
-            input_seqs = Variable(input_seqs)
-            return_tensor = True
-        elif not isinstance(input_seqs, Variable):
-            input_seqs = Variable(torch.from_numpy(input_seqs.astype('int64')).long())
-            return_numpy = True
+        # return_numpy = False
+        # return_tensor = False
+        # if isinstance(input_seqs, (torch.LongTensor, torch.cuda.LongTensor)):
+        #     input_seqs = Variable(input_seqs)
+        #     return_tensor = True
+        # elif not isinstance(input_seqs, Variable):
+        #     input_seqs = Variable(torch.from_numpy(input_seqs.astype('int64')).long())
+        #     return_numpy = True
 
         # If we don't have a packed inputs, let's pack it
         reorder_output = False
@@ -324,9 +324,11 @@ class TorchMoji_Emb(nn.Module):
             ho = self.lstm_0.weight_hh_l0.data.data.new(2, input_seqs.size()[0], self.hidden_size).zero_()
             co = self.lstm_0.weight_hh_l0.data.data.new(2, input_seqs.size()[0], self.hidden_size).zero_()
             input_lengths = input_seqs.batch_sizes
+            print("input_lenghts", inputs_lenghts)
             packed_input = input_seqs
 
         hidden = (Variable(ho, requires_grad=False), Variable(co, requires_grad=False))
+        print("hidden", hidden)
 
         # Embed with an activation function to bound the values of the embeddings
         # x = self.embed(packed_input.data)
