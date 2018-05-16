@@ -333,28 +333,30 @@ class TorchMoji_Emb(nn.Module):
         # Embed with an activation function to bound the values of the embeddings
         # x = self.embed(packed_input.data)
         # x = nn.Tanh()(x) # REMOVED FOR NOW
-        x = packed_input.data # ADDED
+        # --------- because of massive commenting out -----------
+        # x = packed_input.data # ADDED
+
 
         # pyTorch 2D dropout2d operate on axis 1 which is fine for us
         # x = self.embed_dropout(x) # REMOVED FOR NOW
 
-        # Update packed sequence data for RNN
-        packed_input = PackedSequence(data=x, batch_sizes=packed_input.batch_sizes)
+        # # Update packed sequence data for RNN
+        # packed_input = PackedSequence(data=x, batch_sizes=packed_input.batch_sizes)
 
         # skip-connection from embedding to output eases gradient-flow and allows access to lower-level features
         # ordering of the way the merge is done is important for consistency with the pretrained model
         # lstm_0_output, _ = self.lstm_0(packed_input, hidden)
-        lstm_0_output, _ = self.lstm_0(packed_input)
+        lstm_0_output, _ = self.lstm_0(input_seqs)
         # lstm_1_output, _ = self.lstm_1(lstm_0_output, hidden)
         lstm_1_output, _ = self.lstm_1(lstm_0_output)
 
         # Update packed sequence data for attention layer
-        packed_input = PackedSequence(data=torch.cat((lstm_1_output.data,
-                                                      lstm_0_output.data,
-                                                      packed_input.data), dim=1),
-                                      batch_sizes=packed_input.batch_sizes)
+        # packed_input = PackedSequence(data=torch.cat((lstm_1_output.data,
+        #                                               lstm_0_output.data,
+        #                                               packed_input.data), dim=1),
+        #                               batch_sizes=packed_input.batch_sizes)
 
-        input_seqs, _ = pad_packed_sequence(packed_input, batch_first=True)
+        # input_seqs, _ = pad_packed_sequence(packed_input, batch_first=True)
 
         x, att_weights = self.attention_layer(input_seqs, input_lengths)
 
