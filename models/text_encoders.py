@@ -331,6 +331,7 @@ class TorchMoji_Emb(nn.Module):
         # Embed with an activation function to bound the values of the embeddings
         # x = self.embed(packed_input.data)
         # x = nn.Tanh()(x) # REMOVED FOR NOW
+        x = packed_input.data # ADDED
 
         # pyTorch 2D dropout2d operate on axis 1 which is fine for us
         # x = self.embed_dropout(x) # REMOVED FOR NOW
