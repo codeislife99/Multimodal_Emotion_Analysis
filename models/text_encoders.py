@@ -65,7 +65,7 @@ class TextOnlyModel(nn.Module):
         if self_attention == 'typeA':
             self.self_att_layer = SelfAttention_A(hid_size)
         elif self_attenntion == 'typeB':
-            self.self_att_layer = SelfAttention_B(hid_size, hid_size * 4)
+            self.self_att_layer = SelfAttention_B(hid_size, hid_size * 4, batch_size)
         else: 
             self.self_att_layer = None
 
@@ -194,10 +194,10 @@ class SelfAttention_A(nn.Module):
         return representations, attentions
 
 class SelfAttention_B(nn.Module):
-    def __init__(self, enc_hidden_size, att_hidden_size):
+    def __init__(self, enc_hidden_size, att_hidden_size, batch_size):
         super(SelfAttention_B, self).__init__()
         # this naive implementation can only handle batch sizes = 1, so
-        assert len(enc_hidden_size.size()) == 2 # to reject batch size > 1
+        assert batch_size == 1 # to reject batch size > 1
 
         self.enc_hidden_size = enc_hidden_size
         self.att_hidden_size = att_hidden_size
