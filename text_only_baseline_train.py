@@ -264,7 +264,7 @@ if __name__ == "__main__":
     OPTIONS.add_argument('--batch_size', dest='batch_size', type=int, default=1)
     OPTIONS.add_argument('--mega_batch_size', dest='mega_batch_size', type=int, default=16)
     OPTIONS.add_argument('--patience', dest='patience', type=int, default=20)
-    OPTIONS.add_argument('--cuda', dest='cuda', action='store_false')
+    OPTIONS.add_argument('--cuda', dest='cuda', action='store_true', default=False)
     OPTIONS.add_argument('--model_path', dest='model_path',
                          type=str, default='models')
     OPTIONS.add_argument('--vidorseg', dest='vid_or_seg_based', type=str, default='seg')
