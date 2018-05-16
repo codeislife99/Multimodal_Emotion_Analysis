@@ -32,7 +32,7 @@ export LC_ALL=C.UTF-8
  | Late Weighting      | V+A        |         |           |           | | | |
  | Late Weighting      | A+T        |         |           |           | | | |
  | LSTM + Attention    | V          |         |           |           | | | |  
- | LSTM + Attention    | T          |         |           |           | | | |  
+ | LSTM + Attention    | T          |  0.6285 |           |           | | | |  
  | LSTM + Attention    | A          |         |           |           | | | |  
  | LSTM                | V          |  0.5170 | 0.5106    |           | | | |        
  | LSTM                | T          |   0.59  |           |           | | | |        
