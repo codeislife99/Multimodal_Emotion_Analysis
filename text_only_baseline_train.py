@@ -74,7 +74,9 @@ def main(options):
     num_layers = options['num_layers']
     text_hid_size = options['hidden_size']
     batch_size = options['batch_size']
-    model = TextOnlyModel(input_dim, text_hid_size, 6, batch_size, rnn_dropout=0.2, post_dropout=0.2, bidirectional=bidirectional)
+    self_attention = options['self_att']
+    model = TextOnlyModel(input_dim, text_hid_size, 6, batch_size, rnn_dropout=0.2, post_dropout=0.2, 
+                          bidirectional=bidirectional, self_attention=self_attention)
     if options['cuda']:
         model = model.cuda()
         DTYPE = torch.cuda.FloatTensor
@@ -257,7 +259,7 @@ if __name__ == "__main__":
     OPTIONS.add_argument('--num_layers', dest='num_layers', type=int, default=1)
     OPTIONS.add_argument('--hidden_size', dest='hidden_size', type=int, default=150)
     OPTIONS.add_argument('--bidirectional', dest='bidirectional', action='store_true', default=False)
-
+    OPTIONS.add_argument('--self_att', dest='self_att', type=str, default='none')
 
 
     PARAMS = vars(OPTIONS.parse_args())
