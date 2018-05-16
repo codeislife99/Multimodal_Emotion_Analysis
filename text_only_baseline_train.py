@@ -120,7 +120,7 @@ def main(options):
             gt = Variable(gt.float().type(DTYPE), requires_grad=False)
 
             if model_type == 'torchmoji':
-                x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
+                # x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
                 x_t = x_t.unsqueeze(0)
                 output = model(x_t)
 
@@ -187,7 +187,7 @@ def main(options):
             gt = Variable(gt.float().type(DTYPE), requires_grad=False)
             
             if model_type == 'torchmoji':
-                x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
+                # x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
                 x_t = x_t.unsqueeze(0)
                 output = model(x_t)
 
