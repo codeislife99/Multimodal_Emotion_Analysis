@@ -1,5 +1,5 @@
 from mosei_dataloader import mosei
-from models.text_encoders import TextOnlyModel
+from models.text_encoders import TextOnlyModel, TorchMoji_Emb
 from torch.utils.data import DataLoader
 from torch.autograd import Variable
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
@@ -63,6 +63,7 @@ def main(options):
     epochs = options['epochs']
     model_path = options['model_path']
     curr_patience = patience
+    model_type = options['model']
 
     train_iterator = DataLoader(train_set, batch_size=batch_size, num_workers=num_workers, shuffle=True)
     valid_iterator = DataLoader(valid_set, batch_size=1, num_workers=num_workers, shuffle=True)
@@ -75,8 +76,13 @@ def main(options):
     text_hid_size = options['hidden_size']
     batch_size = options['batch_size']
     self_attention = options['self_att']
-    model = TextOnlyModel(input_dim, text_hid_size, 6, batch_size, rnn_dropout=0.2, post_dropout=0.2, 
-                          bidirectional=bidirectional, self_attention=self_attention)
+    if model_type == 'basic':
+        model = TextOnlyModel(input_dim, text_hid_size, 6, batch_size, rnn_dropout=0.2, post_dropout=0.2, 
+                              bidirectional=bidirectional, self_attention=self_attention)
+    elif model_type == 'torchmoji':
+        nb_tokens = 0 # dummy - unused in adjusted torchmoji model
+        model = TorchMoji_Emb(6, nb_tokens, feature_output=False, output_logits=True,
+                 embed_dropout_rate=0, final_dropout_rate=0.2, return_attention=False)
     if options['cuda']:
         model = model.cuda()
         DTYPE = torch.cuda.FloatTensor
@@ -260,6 +266,7 @@ if __name__ == "__main__":
     OPTIONS.add_argument('--hidden_size', dest='hidden_size', type=int, default=150)
     OPTIONS.add_argument('--bidirectional', dest='bidirectional', action='store_true', default=False)
     OPTIONS.add_argument('--self_att', dest='self_att', type=str, default='none')
+    OPTIONS.add_argument('--model', dest='model', type=str, default='basic')
 
 
     PARAMS = vars(OPTIONS.parse_args())
