@@ -63,7 +63,7 @@ class TextOnlyModel(nn.Module):
         # self.output_scale_factor = Parameter(torch.FloatTensor([output_scale_factor]), requires_grad=False)
         # self.output_shift = Parameter(torch.FloatTensor([output_shift]), requires_grad=False)
         if self_attention == 'typeA':
-            self.self_att_layer = SelfAttention_A(hid_size, batch_first=batch_first)
+            self.self_att_layer = SelfAttention_A(hid_size)
         elif self_attenntion == 'typeB':
             self.self_att_layer = SelfAttention_B(hid_size, hid_size * 4)
         else: 
@@ -80,7 +80,7 @@ class TextOnlyModel(nn.Module):
             encoded = self.self_att_layer(final_h)
         else:
             encoded = final_h
-            
+
         final_h_drop = self.dropout(final_h.squeeze()) # num_dir, batch_size, hid_size
         # print(final_h_drop.size())
         # stack along first dim if bidir (one dim for each direction)
