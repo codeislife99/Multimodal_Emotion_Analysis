@@ -147,7 +147,7 @@ class SelfAttention_A(nn.Module):
         self.att_weights = Parameter(torch.Tensor(1, hidden_size),
                                      requires_grad=True)
 
-        init.xavier_uniform(self.att_weights.data)
+        xavier_uniform(self.att_weights.data)
 
     def get_mask(self):
         pass
