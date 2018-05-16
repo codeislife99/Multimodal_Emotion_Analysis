@@ -139,7 +139,7 @@ class TextEncoderExtContext(nn.Module):
 
 class SelfAttention_A(nn.Module):
     def __init__(self, hidden_size, batch_first=True):
-        super(SelfAttention, self).__init__()
+        super(SelfAttention_A, self).__init__()
 
         self.hidden_size = hidden_size
         self.batch_first = batch_first
