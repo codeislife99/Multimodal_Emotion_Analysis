@@ -76,7 +76,7 @@ class TextOnlyModel(nn.Module):
         """
         _, (final_h, final_c) = self.rnn_enc(x, seq_lens)
         # print(final_h.size())
-        if not self.self_attention =='none':
+        if self.self_att_layer is not None:
             encoded = self.self_att_layer(final_h)
         else:
             encoded = final_h
