@@ -226,7 +226,7 @@ class TorchMoji_Emb(nn.Module):
                  embed_dropout_rate=0, final_dropout_rate=0, return_attention=False):
         """
         torchMoji model, adjusted to accept embeddings rather than words.
-        IMPORTANT: The model is loaded in evaluation mode by default (self.eval())
+        IMPORTANT: The model is loaded in evaluation mode by default (self.eval()) <-- REMOVED!
         # Arguments:
             nb_classes: Number of classes in the dataset.
             nb_tokens: Number of tokens in the dataset (i.e. vocabulary size).
@@ -270,7 +270,7 @@ class TorchMoji_Emb(nn.Module):
                                                               nn.Softmax() if self.nb_classes > 2 else nn.Sigmoid()))
         self.init_weights()
         # Put model in evaluation mode by default
-        self.eval()
+        # self.eval() REMOVED
 
     def init_weights(self):
         """
