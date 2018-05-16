@@ -64,7 +64,7 @@ class TextOnlyModel(nn.Module):
         # self.output_shift = Parameter(torch.FloatTensor([output_shift]), requires_grad=False)
         if self_attention == 'typeA':
             self.self_att_layer = SelfAttention_A(hid_size)
-        elif self_attenntion == 'typeB':
+        elif self_attention == 'typeB':
             self.self_att_layer = SelfAttention_B(hid_size, hid_size * 4, batch_size)
         else: 
             self.self_att_layer = None
