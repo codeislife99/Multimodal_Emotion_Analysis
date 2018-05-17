@@ -328,6 +328,7 @@ class TorchMoji_Emb(nn.Module):
             packed_input = input_seqs
 
         hidden = (Variable(ho, requires_grad=False), Variable(co, requires_grad=False))
+        print(hidden.size())
 
         # Embed with an activation function to bound the values of the embeddings
         # x = self.embed(packed_input.data)
@@ -401,7 +402,7 @@ class BiLSTM(nn.Module):
         #     self.custom_params.append(self.embed.weight)
 
         # The first LSTM layer
-        self.lstm1 = nn.LSTM(embed_size, self.hidden_size, num_layer, dropout=0.3, bidirectional=True)
+        self.lstm1 = nn.LSTM(embed_size, self.hidden_size, num_layer, dropout=0.3, bidirectional=True, batch_first=True)
         for param in self.lstm1.parameters():
             self.custom_params.append(param)
             if param.data.dim() > 1:
@@ -412,7 +413,7 @@ class BiLSTM(nn.Module):
         self.lstm1_dropout = nn.Dropout(p=0.3)
 
         # The second LSTM layer
-        self.lstm2 = nn.LSTM(2*self.hidden_size, self.hidden_size, num_layer, dropout=0.3, bidirectional=True)
+        self.lstm2 = nn.LSTM(2*self.hidden_size, self.hidden_size, num_layer, dropout=0.3, bidirectional=True, batch_first=True)
         for param in self.lstm2.parameters():
             self.custom_params.append(param)
             if param.data.dim() > 1:
@@ -436,7 +437,7 @@ class BiLSTM(nn.Module):
         self.hidden1=self.init_hidden()
         self.hidden2=self.init_hidden()
 
-    def init_hidden(self, batch_size=3):
+    def init_hidden(self, batch_size=1):
         if torch.cuda.is_available():
             return (Variable(torch.zeros(self.num_layer*2, batch_size, self.hidden_size)).cuda(),
                     Variable(torch.zeros(self.num_layer*2, batch_size, self.hidden_size)).cuda())
@@ -446,8 +447,7 @@ class BiLSTM(nn.Module):
 
     def forward(self, sentences):
         # get embedding vectors of input
-        padded_sentences, lengths = torch.nn.utils.rnn.pad_packed_sequence(sentences, padding_value=int(0), batch_first=True)
-        print('lengths', lengths)
+        # padded_sentences, lengths = torch.nn.utils.rnn.pad_packed_sequence(sentences, padding_value=int(0), batch_first=True)
         # embeds = self.embed(padded_sentences)
         noise = Variable(torch.zeros(embeds.shape).cuda())
         noise.data.normal_(std=0.3)
@@ -455,7 +455,8 @@ class BiLSTM(nn.Module):
         # embeds = self.embed_dropout(embeds)
         # add noise
         
-        packed_embeds = torch.nn.utils.rnn.pack_padded_sequence(embeds, lengths, batch_first=True)
+        # packed_embeds = torch.nn.utils.rnn.pack_padded_sequence(embeds, lengths, batch_first=True)
+        packed_embeds = sentences # not really packed.. 
         
         # First LSTM layer
         # self.hidden = num_layers*num_directions batch_size hidden_size
