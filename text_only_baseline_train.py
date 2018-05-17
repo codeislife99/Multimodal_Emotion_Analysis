@@ -129,6 +129,7 @@ def main(options):
 
             elif model_type == 'bilstm':
                 x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
+                x_t = x_t.unsqueeze(0)
                 output = model(x_t)
 
             elif model_type == 'basic':
@@ -200,6 +201,7 @@ def main(options):
 
             elif model_type == 'bilstm':
                 x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
+                x_t = x_t.unsqueeze(0)
                 output = model(x_t)
 
             elif model_type == 'basic':
