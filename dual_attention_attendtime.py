@@ -131,20 +131,14 @@ class DualAttention(nn.Module):
 		# Visual Attention
 		h_one_vision = F.tanh(self.Wvision_1(vision))*F.tanh(self.Wvision_m1(m_zero_vision))
 		a_one_vision = F.softmax(self.Wvision_h1(h_one_vision),dim=0)
-		print('a_one_vision size')
-		print(a_one_vision.size())
 		avision_one = (a_one_vision.repeat(1,N)*vision).mean(0).unsqueeze(0)
-		print('avision_one size')
-		print(avision_one.size())
 		vision_one = F.tanh(self.Pvision_1(avision_one))
-		print('vision one size')
-		print(vision_one.size())
 
 		# Vocal Attention
 		h_one_vocal = F.tanh(self.Wvocal_1(vocal))*F.tanh(self.Wvocal_m1(m_zero_vocal))
 		a_one_vocal = F.softmax(self.Wvocal_h1(h_one_vocal),dim=-1)
 		avocal_one = (a_one_vocal.repeat(1,N)*vocal).mean(0).unsqueeze(0)
-		vocal_one = F.tan(self.Pvocal_1(avocal_one))
+		vocal_one = F.tanh(self.Pvocal_1(avocal_one))
 
 		# Memory Update
 		m_one = m_zero + vision_one * vocal_one 
@@ -183,12 +177,12 @@ class predictor(nn.Module):
 		return x
 '------------------------------------------------------Hyperparameters-------------------------------------------------'
 batch_size = 1
-mega_batch_size = 1
+mega_batch_size = 16
 no_of_emotions = 6
 # vocal_seq_len = 150
 # vision_seq_len = 45
 use_CUDA = True
-use_pretrained =  True
+use_pretrained =  False
 num_workers = 20
 
 test_mode = False

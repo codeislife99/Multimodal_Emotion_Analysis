@@ -146,10 +146,10 @@ class TripleAttention(nn.Module):
 		# vision = resnet_output.transpose(0,1)
 
 		'-------------------------------------------------Initializing Memory--------------------------------------'
-
 		vision_zero = vision.mean(0).unsqueeze(0)
 		vocal_zero = vocal.mean(0).unsqueeze(0)
 		emb_zero = emb.mean(0).unsqueeze(0)
+		
 		m_zero = vision_zero * vocal_zero * emb_zero
 		m_zero_vision = m_zero.repeat(vision.size(0),1)
 		m_zero_vocal = m_zero.repeat(vocal.size(0),1)
@@ -157,7 +157,7 @@ class TripleAttention(nn.Module):
 		'--------------------------------------------------K = 1 ---------------------------------------------------'
 		# Visual Attention
 		h_one_vision = F.tanh(self.Wvision_1(vision))*F.tanh(self.Wvision_m1(m_zero_vision))
-		a_one_vision = F.softmax(self.Wvision_h1(h_one_vision),dim=-1)
+		a_one_vision = F.softmax(self.Wvision_h1(h_one_vision),dim=-1)  ## along dimsions
 		vision_one = (a_one_vision*vision).mean(0).unsqueeze(0)
 
 		# Vocal Attention
@@ -206,13 +206,13 @@ class predictor(nn.Module):
 	def __init__(self,no_of_emotions,hidden_size,output_scale_factor = 1, output_shift = 0):
 		super(predictor, self).__init__()
 		self.fc = nn.Linear(hidden_size, no_of_emotions)
-		self.output_scale_factor = Parameter(torch.FloatTensor([output_scale_factor]), requires_grad=False)
-		self.output_shift = Parameter(torch.FloatTensor([output_shift]), requires_grad=False)
+		# self.output_scale_factor = Parameter(torch.FloatTensor([output_scale_factor]), requires_grad=False)
+		# self.output_shift = Parameter(torch.FloatTensor([output_shift]), requires_grad=False)
 
 	def forward(self,x):
 		x = self.fc(x)
-		x = F.sigmoid(x)
-		x = x*self.output_scale_factor + self.output_shift
+		# x = F.sigmoid(x)
+		# x = x*self.output_scale_factor + self.output_shift
 
 		return x
 '------------------------------------------------------Hyperparameters-------------------------------------------------'
@@ -220,12 +220,12 @@ batch_size = 1
 mega_batch_size = 16
 no_of_emotions = 6
 use_CUDA = True
-use_pretrained =  False
+use_pretrained =  True
 num_workers = 20
 
-test_mode = False
+test_mode = True
 val_mode = False
-train_mode = True
+train_mode = False
 
 no_of_epochs = 1000
 vocal_input_size = 74 # Dont Change
@@ -271,7 +271,7 @@ Wordvec_encoder = Wordvec_encoder.cuda()
 Predictor = Predictor.cuda()
 '----------------------------------------------------------------------------------------------------------------------'
 criterion = nn.MSELoss(size_average = False)
-params =  list(Vocal_encoder.parameters())+ list(Attention.parameters()) + list(Wordvec_encoder.parameters()) + list(Vision_encoder.parameters()) + list(Predictor.parameters())[2:]
+params =  list(Vocal_encoder.parameters())+ list(Attention.parameters()) + list(Wordvec_encoder.parameters()) + list(Vision_encoder.parameters()) + list(Predictor.parameters())
 print('Parameters in the model = ' + str(len(params)))
 optimizer = torch.optim.Adam(params, lr = 0.0001)
 # optimizer = torch.optim.SGD(params, lr =0.001,momentum = 0.9 )
@@ -312,7 +312,7 @@ while epoch<no_of_epochs:
 	running_corrects = 0
 	if use_pretrained:
 		# pretrained_file = './TAN/triple_attention_net_iter_8000_0.pth.tar'
-		pretrained_file = './TAN/triple_attention_net__1.pth.tar'
+		pretrained_file = './TAN/triple_attention_net__8.pth.tar'
 
 		checkpoint = torch.load(pretrained_file)
 		Vocal_encoder.load_state_dict(checkpoint['Vocal_encoder'])
@@ -344,7 +344,7 @@ while epoch<no_of_epochs:
 		# output = Attention(vocal_output,vision_output)
 		output = Attention(vocal_output,vision_output,emb_output)
 		outputs = Predictor(output)
-		# outputs = torch.clamp(outputs,0,3)
+		outputs = torch.clamp(outputs,0,3)
 		loss = criterion(outputs, gt)
 		if train_mode and K%mega_batch_size==0:
 			loss.backward()

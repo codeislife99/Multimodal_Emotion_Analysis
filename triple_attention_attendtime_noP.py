@@ -117,29 +117,23 @@ class TripleAttention(nn.Module):
 		self.Wvision_1 = nn.Linear(N,N)
 		self.Wvision_m1 = nn.Linear(N,N)
 		self.Wvision_h1 = nn.Linear(N,1)
-		self.Pvision_1 = nn.Linear(N,N)
 		self.Wvocal_1 = nn.Linear(N,N)
 		self.Wvocal_m1 = nn.Linear(N,N)
 		self.Wvocal_h1 = nn.Linear(N,1)
-		self.Pvocal_1 = nn.Linear(N,N)
 		self.Wemb_1 = nn.Linear(N,N)
 		self.Wemb_m1 = nn.Linear(N,N)
 		self.Wemb_h1 = nn.Linear(N,1)
-		self.Pemb_1 = nn.Linear(N,N)
 
 		''' K = 2 '''
 		self.Wvision_2 = nn.Linear(N,N)
 		self.Wvision_m2 = nn.Linear(N,N)
 		self.Wvision_h2 = nn.Linear(N,1)
-		self.Pvision_2 = nn.Linear(N,N)
 		self.Wvocal_2 = nn.Linear(N,N)
 		self.Wvocal_m2 = nn.Linear(N,N)
 		self.Wvocal_h2 = nn.Linear(N,1)
-		self.Pvocal_2 = nn.Linear(N,N)
 		self.Wemb_2 = nn.Linear(N,N)
 		self.Wemb_m2 = nn.Linear(N,N)
 		self.Wemb_h2 = nn.Linear(N,1)
-		self.Pemb_2 = nn.Linear(N,N)
 
 		self.fc = nn.Linear(N, no_of_emotions)
 
@@ -165,20 +159,23 @@ class TripleAttention(nn.Module):
 		# Visual Attention
 		h_one_vision = F.tanh(self.Wvision_1(vision))*F.tanh(self.Wvision_m1(m_zero_vision))
 		a_one_vision = F.softmax(self.Wvision_h1(h_one_vision),dim=0)  ## along dimsions
-		avision_one = (a_one_vision.repeat(1,N)*vision).mean(0).unsqueeze(0)
-		vision_one = F.tanh(self.Pvision_1(avision_one))
+		vision_one = (a_one_vision.repeat(1,N)*vision).mean(0).unsqueeze(0)
+		# avision_one = (a_one_vision.repeat(1,N)*vision).mean(0).unsqueeze(0)
+		# vision_one = F.tanh(self.Pvision_1(avision_one))
 
 		# Vocal Attention
 		h_one_vocal = F.tanh(self.Wvocal_1(vocal))*F.tanh(self.Wvocal_m1(m_zero_vocal))
 		a_one_vocal = F.softmax(self.Wvocal_h1(h_one_vocal),dim=0)
-		avocal_one = (a_one_vocal.repeat(1,N)*vocal).mean(0).unsqueeze(0)
-		vocal_one = F.tanh(self.Pvocal_1(avocal_one))
+		vocal_one = (a_one_vocal.repeat(1,N)*vocal).mean(0).unsqueeze(0)
+		# avocal_one = (a_one_vocal.repeat(1,N)*vocal).mean(0).unsqueeze(0)
+		# vocal_one = F.tanh(self.Pvocal_1(avocal_one))
 
 		# Emb Attention
 		h_one_emb = F.tanh(self.Wemb_1(emb))*F.tanh(self.Wemb_m1(m_zero_emb))
 		a_one_emb = F.softmax(self.Wemb_h1(h_one_emb),dim=0)
-		aemb_one = (a_one_emb.repeat(1,N)*emb).mean(0).unsqueeze(0)
-		emb_one = F.tanh(self.Pemb_1(aemb_one))
+		emb_one = (a_one_emb.repeat(1,N)*emb).mean(0).unsqueeze(0)
+		# aemb_one = (a_one_emb.repeat(1,N)*emb).mean(0).unsqueeze(0)
+		# emb_one = F.tanh(self.Pemb_1(aemb_one))
 
 		# Memory Update
 		m_one = m_zero + vision_one * vocal_one * emb_one
@@ -191,20 +188,23 @@ class TripleAttention(nn.Module):
 		# Visual Attention
 		h_two_vision = F.tanh(self.Wvision_2(vision))*F.tanh(self.Wvision_m2(m_one_vision))
 		a_two_vision = F.softmax(self.Wvision_h2(h_two_vision),dim=0)
-		avision_two = (a_two_vision.repeat(1,N)*vision).mean(0).unsqueeze(0)
-		vision_two = F.tanh(self.Pvision_2(avision_two))	
+		vision_two = (a_two_vision.repeat(1,N)*vision).mean(0).unsqueeze(0)
+		# avision_two = (a_two_vision.repeat(1,N)*vision).mean(0).unsqueeze(0)
+		# vision_two = F.tanh(self.Pvision_2(avision_two))	
 
 		# Vocal Attention
 		h_two_vocal = F.tanh(self.Wvocal_2(vocal))*F.tanh(self.Wvocal_m2(m_one_vocal))
 		a_two_vocal = F.softmax(self.Wvocal_h2(h_two_vocal),dim=0)
-		avocal_two = (a_two_vocal.repeat(1,N)*vocal).mean(0).unsqueeze(0)
-		vocal_two = F.tanh(self.Pvocal_2(avocal_two))
+		vocal_two = (a_two_vocal.repeat(1,N)*vocal).mean(0).unsqueeze(0)
+		# avocal_two = (a_two_vocal.repeat(1,N)*vocal).mean(0).unsqueeze(0)
+		# vocal_two = F.tanh(self.Pvocal_2(avocal_two))
 
 		# Emb Attention
 		h_two_emb = F.tanh(self.Wemb_2(emb))*F.tanh(self.Wemb_m2(m_one_emb))
 		a_two_emb = F.softmax(self.Wemb_h2(h_two_emb),dim=0)
-		aemb_two = (a_two_emb.repeat(1,N)*emb).mean(0).unsqueeze(0)
-		emb_two = F.tanh(self.Pemb_2(aemb_two))
+		emb_two = (a_two_emb.repeat(1,N)*emb).mean(0).unsqueeze(0)
+		# aemb_two = (a_two_emb.repeat(1,N)*emb).mean(0).unsqueeze(0)
+		# emb_two = F.tanh(self.Pemb_2(aemb_two))
 
 		# Memory Update
 		m_two = m_one + vision_two * vocal_two * emb_two 
@@ -284,6 +284,7 @@ Wordvec_encoder = Wordvec_encoder.cuda()
 Predictor = Predictor.cuda()
 '----------------------------------------------------------------------------------------------------------------------'
 criterion = nn.MSELoss(size_average = False)
+# params =  list(Vocal_encoder.parameters())+ list(Attention.parameters()) + list(Wordvec_encoder.parameters()) + list(Vision_encoder.parameters()) + list(Predictor.parameters())[2:]
 params =  list(Vocal_encoder.parameters())+ list(Attention.parameters()) + list(Wordvec_encoder.parameters()) + list(Vision_encoder.parameters()) + list(Predictor.parameters())
 print('Parameters in the model = ' + str(len(params)))
 optimizer = torch.optim.Adam(params, lr = 0.0001)
@@ -294,8 +295,8 @@ optimizer = torch.optim.Adam(params, lr = 0.0001)
 
 def save_checkpoint(state, is_final, filename='attention_net'):
 	filename = filename +'_'+str(state['epoch'])+'.pth.tar'
-	os.system("mkdir -p TAN") 
-	torch.save(state, './TAN/'+filename)
+	os.system("mkdir -p TAN.attendtime.noP") 
+	torch.save(state, './TAN.attendtime.noP/'+filename)
 	if is_final:
 		shutil.copyfile(filename, 'model_final.pth.tar')
 
@@ -324,7 +325,7 @@ while epoch<no_of_epochs:
 	running_loss = 0
 	running_corrects = 0
 	if use_pretrained:
-		pretrained_file = './TAN/triple_attention_net_iter_8000_0.pth.tar'
+		pretrained_file = './TAN.attendtime.noP/triple_attention_net_iter_8000_0.pth.tar'
 		# pretrained_file = './TAN/triple_attention_net__8.pth.tar'
 
 		checkpoint = torch.load(pretrained_file)
