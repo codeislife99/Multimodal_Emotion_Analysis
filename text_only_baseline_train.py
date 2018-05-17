@@ -1,5 +1,5 @@
 from mosei_dataloader import mosei
-from models.text_encoders import TextOnlyModel, TorchMoji_Emb
+from models.text_encoders import TextOnlyModel, TorchMoji_Emb, BiLSTM
 from torch.utils.data import DataLoader
 from torch.autograd import Variable
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
@@ -83,6 +83,9 @@ def main(options):
         nb_tokens = 0 # dummy - unused in adjusted torchmoji model
         model = TorchMoji_Emb(6, nb_tokens, feature_output=False, output_logits=True,
                  embed_dropout_rate=0, final_dropout_rate=0.2, return_attention=False)
+    elif model_type == 'bilstm':
+        model = BiLSTM(6, hidden_size=text_hid_size, num_layer=num_layers)
+
     if options['cuda']:
         model = model.cuda()
         DTYPE = torch.cuda.FloatTensor
@@ -119,7 +122,7 @@ def main(options):
             # x_t = Variable(x_t.float().type(DTYPE), requires_grad=False) # unpadded
             gt = Variable(gt.float().type(DTYPE), requires_grad=False)
 
-            if model_type == 'torchmoji':
+            if model_type in ['torchmoji', 'bilsm']:
                 x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
                 x_t = x_t.unsqueeze(0)
                 output = model(x_t)
@@ -185,8 +188,8 @@ def main(options):
 
             # x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
             gt = Variable(gt.float().type(DTYPE), requires_grad=False)
-            
-            if model_type == 'torchmoji':
+
+            if model_type in ['torchmoji', 'bilsm']:
                 x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
                 x_t = x_t.unsqueeze(0)
                 output = model(x_t)
@@ -277,7 +280,7 @@ if __name__ == "__main__":
                          type=str, default='models')
     OPTIONS.add_argument('--vidorseg', dest='vid_or_seg_based', type=str, default='seg')
     OPTIONS.add_argument('--num_workers', dest='num_workers', type=int, default=20)
-    OPTIONS.add_argument('--num_layers', dest='num_layers', type=int, default=1)
+    OPTIONS.add_argument('--num_layers', dest='num_layers', type=int, default=2)
     OPTIONS.add_argument('--hidden_size', dest='hidden_size', type=int, default=150)
     OPTIONS.add_argument('--bidirectional', dest='bidirectional', action='store_true', default=False)
     OPTIONS.add_argument('--self_att', dest='self_att', type=str, default='none')

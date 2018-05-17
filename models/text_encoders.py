@@ -5,6 +5,7 @@ from torch.autograd import Variable
 from torch.nn.parameter import Parameter
 from torch.nn.init import xavier_normal, xavier_uniform, orthogonal
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence, PackedSequence
+import torch.nn.utils.weight_norm as weight_norm
 
 from torchmoji.lstm import LSTMHardSigmoid
 from torchmoji.attlayer import Attention
@@ -297,66 +298,60 @@ class TorchMoji_Emb(nn.Module):
             Same format as input format (except for PackedSequence returned as Variable).
         """
         # Check if we have Torch.LongTensor inputs or not Torch.Variable (assume Numpy array in this case), take note to return same format
-        # return_numpy = False
-        # return_tensor = False
-        # if isinstance(input_seqs, (torch.LongTensor, torch.cuda.LongTensor)):
-        #     input_seqs = Variable(input_seqs)
-        #     return_tensor = True
-        # elif not isinstance(input_seqs, Variable):
-        #     input_seqs = Variable(torch.from_numpy(input_seqs.astype('int64')).long())
-        #     return_numpy = True
+        return_numpy = False
+        return_tensor = False
+        if isinstance(input_seqs, (torch.LongTensor, torch.cuda.LongTensor)):
+            input_seqs = Variable(input_seqs)
+            return_tensor = True
+        elif not isinstance(input_seqs, Variable):
+            input_seqs = Variable(torch.from_numpy(input_seqs.astype('int64')).long())
+            return_numpy = True
 
         # If we don't have a packed inputs, let's pack it
         reorder_output = False
-        # if not isinstance(input_seqs, PackedSequence):
-        #     ho = self.lstm_0.weight_hh_l0.data.new(2, input_seqs.size()[0], self.hidden_size).zero_()
-        #     co = self.lstm_0.weight_hh_l0.data.new(2, input_seqs.size()[0], self.hidden_size).zero_()
+        if not isinstance(input_seqs, PackedSequence):
+            ho = self.lstm_0.weight_hh_l0.data.new(2, input_seqs.size()[0], self.hidden_size).zero_()
+            co = self.lstm_0.weight_hh_l0.data.new(2, input_seqs.size()[0], self.hidden_size).zero_()
 
-        #     # Reorder batch by sequence length
-        #     input_lengths = torch.LongTensor([torch.max(input_seqs[i, :].data.nonzero()) + 1 for i in range(input_seqs.size()[0])])
-        #     input_lengths, perm_idx = input_lengths.sort(0, descending=True)
-        #     input_seqs = input_seqs[perm_idx][:, :input_lengths.max()]
+            # Reorder batch by sequence length
+            input_lengths = torch.LongTensor([torch.max(input_seqs[i, :].data.nonzero()) + 1 for i in range(input_seqs.size()[0])])
+            input_lengths, perm_idx = input_lengths.sort(0, descending=True)
+            input_seqs = input_seqs[perm_idx][:, :input_lengths.max()]
 
-        #     # Pack sequence and work on data tensor to reduce embeddings/dropout computations
-        #     packed_input = pack_padded_sequence(input_seqs, input_lengths.cpu().numpy(), batch_first=True)
-        #     reorder_output = True
-        # else:
-        #     ho = self.lstm_0.weight_hh_l0.data.data.new(2, input_seqs.size()[0], self.hidden_size).zero_()
-        #     co = self.lstm_0.weight_hh_l0.data.data.new(2, input_seqs.size()[0], self.hidden_size).zero_()
-        #     input_lengths = input_seqs.batch_sizes
-        #     print("input_lenghts", inputs_lenghts)
-        #     packed_input = input_seqs
+            # Pack sequence and work on data tensor to reduce embeddings/dropout computations
+            packed_input = pack_padded_sequence(input_seqs, input_lengths.cpu().numpy(), batch_first=True)
+            reorder_output = True
+        else:
+            ho = self.lstm_0.weight_hh_l0.data.data.new(2, input_seqs.size()[0], self.hidden_size).zero_()
+            co = self.lstm_0.weight_hh_l0.data.data.new(2, input_seqs.size()[0], self.hidden_size).zero_()
+            input_lengths = input_seqs.batch_sizes
+            packed_input = input_seqs
 
-        # hidden = (Variable(ho, requires_grad=False), Variable(co, requires_grad=False))
-        # print("hidden", hidden)
+        hidden = (Variable(ho, requires_grad=False), Variable(co, requires_grad=False))
 
         # Embed with an activation function to bound the values of the embeddings
         # x = self.embed(packed_input.data)
         # x = nn.Tanh()(x) # REMOVED FOR NOW
-        # --------- because of massive commenting out -----------
-        # x = packed_input.data # ADDED
-
+        x = packed_input.data # ADDED
 
         # pyTorch 2D dropout2d operate on axis 1 which is fine for us
         # x = self.embed_dropout(x) # REMOVED FOR NOW
 
-        # # Update packed sequence data for RNN
-        # packed_input = PackedSequence(data=x, batch_sizes=packed_input.batch_sizes)
+        # Update packed sequence data for RNN
+        packed_input = PackedSequence(data=x, batch_sizes=packed_input.batch_sizes)
 
         # skip-connection from embedding to output eases gradient-flow and allows access to lower-level features
         # ordering of the way the merge is done is important for consistency with the pretrained model
-        # lstm_0_output, _ = self.lstm_0(packed_input, hidden)
-        lstm_0_output, _ = self.lstm_0(input_seqs)
-        # lstm_1_output, _ = self.lstm_1(lstm_0_output, hidden)
-        lstm_1_output, _ = self.lstm_1(lstm_0_output)
+        lstm_0_output, _ = self.lstm_0(packed_input, hidden)
+        lstm_1_output, _ = self.lstm_1(lstm_0_output, hidden)
 
         # Update packed sequence data for attention layer
-        # packed_input = PackedSequence(data=torch.cat((lstm_1_output.data,
-        #                                               lstm_0_output.data,
-        #                                               packed_input.data), dim=1),
-        #                               batch_sizes=packed_input.batch_sizes)
+        packed_input = PackedSequence(data=torch.cat((lstm_1_output.data,
+                                                      lstm_0_output.data,
+                                                      packed_input.data), dim=1),
+                                      batch_sizes=packed_input.batch_sizes)
 
-        # input_seqs, _ = pad_packed_sequence(packed_input, batch_first=True)
+        input_seqs, _ = pad_packed_sequence(packed_input, batch_first=True)
 
         x, att_weights = self.attention_layer(input_seqs, input_lengths)
 
@@ -384,3 +379,108 @@ class TorchMoji_Emb(nn.Module):
             return outputs, att_weights
         else:
             return outputs
+
+class BiLSTM(nn.Module):
+    """
+    Adapted from https://github.com/yezhejack/bidirectional-LSTM-for-text-classification/blob/master/models/RNN.py
+    """
+    def __init__(self, output_size, hidden_size=150, num_layer=2, embedding_freeze=False):
+        super(BiLSTM,self).__init__()
+
+        # embedding layer
+        # vocab_size = embedding_matrix.shape[0]
+        # embed_size = embedding_matrix.shape[1]
+        embed_size = 300
+        self.hidden_size = hidden_size
+        self.num_layer = num_layer
+        # self.embed = nn.Embedding(vocab_size, embed_size)
+        # self.embed.weight = nn.Parameter(torch.from_numpy(embedding_matrix).type(torch.FloatTensor), requires_grad=not embedding_freeze)
+        # self.embed_dropout = nn.Dropout(p=0.3)
+        self.custom_params = []
+        # if embedding_freeze == False:
+        #     self.custom_params.append(self.embed.weight)
+
+        # The first LSTM layer
+        self.lstm1 = nn.LSTM(embed_size, self.hidden_size, num_layer, dropout=0.3, bidirectional=True)
+        for param in self.lstm1.parameters():
+            self.custom_params.append(param)
+            if param.data.dim() > 1:
+                nn.init.orthogonal(param)
+            else:
+                nn.init.normal(param)
+
+        self.lstm1_dropout = nn.Dropout(p=0.3)
+
+        # The second LSTM layer
+        self.lstm2 = nn.LSTM(2*self.hidden_size, self.hidden_size, num_layer, dropout=0.3, bidirectional=True)
+        for param in self.lstm2.parameters():
+            self.custom_params.append(param)
+            if param.data.dim() > 1:
+                nn.init.orthogonal(param)
+            else:
+                nn.init.normal(param)
+        self.lstm2_dropout = nn.Dropout(p=0.3)
+        # Attention
+        self.attention = nn.Linear(2*self.hidden_size,1)
+        self.attention_dropout = nn.Dropout(p=0.5)
+
+        # Fully-connected layer
+        self.fc = weight_norm(nn.Linear(2*self.hidden_size, output_size))
+        for param in self.fc.parameters():
+            self.custom_params.append(param)
+            if param.data.dim() > 1:
+                nn.init.orthogonal(param)
+            else:
+                nn.init.normal(param)
+
+        self.hidden1=self.init_hidden()
+        self.hidden2=self.init_hidden()
+
+    def init_hidden(self, batch_size=3):
+        if torch.cuda.is_available():
+            return (Variable(torch.zeros(self.num_layer*2, batch_size, self.hidden_size)).cuda(),
+                    Variable(torch.zeros(self.num_layer*2, batch_size, self.hidden_size)).cuda())
+        else:
+            return (Variable(torch.zeros(self.num_layer*2, batch_size, self.hidden_size)),
+                    Variable(torch.zeros(self.num_layer*2, batch_size, self.hidden_size)))
+
+    def forward(self, sentences):
+        # get embedding vectors of input
+        # padded_sentences, lengths = torch.nn.utils.rnn.pad_packed_sequence(sentences, padding_value=int(0), batch_first=True)
+        # embeds = self.embed(padded_sentences)
+        # noise = Variable(torch.zeros(embeds.shape).cuda())
+        # noise.data.normal_(std=0.3)
+        # embeds += noise
+        # embeds = self.embed_dropout(embeds)
+        # # add noise
+        
+        # packed_embeds = torch.nn.utils.rnn.pack_padded_sequence(embeds, lengths, batch_first=True)
+
+
+        packed_embeds = sentences # just skip the padding/packing thing for batch size of 1
+        
+        # First LSTM layer
+        # self.hidden = num_layers*num_directions batch_size hidden_size
+        packed_out_lstm1, self.hidden1 = self.lstm1(packed_embeds, self.hidden1)
+        padded_out_lstm1, lengths = torch.nn.utils.rnn.pad_packed_sequence(packed_out_lstm1, padding_value=int(0))
+        padded_out_lstm1 = self.lstm1_dropout(padded_out_lstm1)
+        packed_out_lstm1 = torch.nn.utils.rnn.pack_padded_sequence(padded_out_lstm1, lengths)
+   
+        # Second LSTM layer
+        packed_out_lstm2, self.hidden2 = self.lstm2(packed_out_lstm1, self.hidden2)
+        padded_out_lstm2, lengths = torch.nn.utils.rnn.pad_packed_sequence(packed_out_lstm2, padding_value=int(0), batch_first=True)
+        padded_out_lstm2 = self.lstm2_dropout(padded_out_lstm2)
+
+        # attention
+        unnormalize_weight = F.tanh(torch.squeeze(self.attention(padded_out_lstm2), 2))
+        unnormalize_weight = F.softmax(unnormalize_weight, dim=1)
+        unnormalize_weight = torch.nn.utils.rnn.pack_padded_sequence(unnormalize_weight, lengths, batch_first=True)
+        unnormalize_weight, lengths = torch.nn.utils.rnn.pad_packed_sequence(unnormalize_weight, padding_value=0.0, batch_first=True)
+        logging.debug("unnormalize_weight size: %s" % (str(unnormalize_weight.size())))
+        normalize_weight = torch.nn.functional.normalize(unnormalize_weight, p=1, dim=1)
+        normalize_weight = normalize_weight.view(normalize_weight.size(0), 1, -1)
+        weighted_sum = torch.squeeze(normalize_weight.bmm(padded_out_lstm2), 1)
+        
+        # fully connected layer
+        output = self.fc(self.attention_dropout(weighted_sum))
+        return output
