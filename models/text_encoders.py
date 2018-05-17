@@ -328,7 +328,7 @@ class TorchMoji_Emb(nn.Module):
             packed_input = input_seqs
 
         hidden = (Variable(ho, requires_grad=False), Variable(co, requires_grad=False))
-        print(hidden.size())
+        print(hidden[0].size())
 
         # Embed with an activation function to bound the values of the embeddings
         # x = self.embed(packed_input.data)
