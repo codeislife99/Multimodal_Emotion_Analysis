@@ -339,6 +339,8 @@ class TorchMoji_Emb(nn.Module):
         # x = self.embed_dropout(x) # REMOVED FOR NOW
 
         # Update packed sequence data for RNN
+        print("x", x.size())
+        print("batch_sizes", packed_input.batch_sizes)
         packed_input = PackedSequence(data=x, batch_sizes=packed_input.batch_sizes)
 
         # skip-connection from embedding to output eases gradient-flow and allows access to lower-level features
