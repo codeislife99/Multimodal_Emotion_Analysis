@@ -122,7 +122,7 @@ def main(options):
             # x_t = Variable(x_t.float().type(DTYPE), requires_grad=False) # unpadded
             gt = Variable(gt.float().type(DTYPE), requires_grad=False)
 
-            if model_type in ['torchmoji', 'bilsm']:
+            if model_type in ['torchmoji', 'bilstm']:
                 x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
                 x_t = x_t.unsqueeze(0)
                 output = model(x_t)
@@ -189,7 +189,7 @@ def main(options):
             # x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
             gt = Variable(gt.float().type(DTYPE), requires_grad=False)
 
-            if model_type in ['torchmoji', 'bilsm']:
+            if model_type in ['torchmoji', 'bilstm']:
                 x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
                 x_t = x_t.unsqueeze(0)
                 output = model(x_t)
