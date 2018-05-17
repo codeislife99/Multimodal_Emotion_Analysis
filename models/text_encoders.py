@@ -345,6 +345,7 @@ class TorchMoji_Emb(nn.Module):
 
         # skip-connection from embedding to output eases gradient-flow and allows access to lower-level features
         # ordering of the way the merge is done is important for consistency with the pretrained model
+        print('packed_input', packed_input.data.size())
         lstm_0_output, _ = self.lstm_0(packed_input, hidden)
         lstm_1_output, _ = self.lstm_1(lstm_0_output, hidden)
         print('here', lstm_1_output.size())
