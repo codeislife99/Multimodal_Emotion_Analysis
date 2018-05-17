@@ -7,9 +7,9 @@ from torch.nn.init import xavier_normal, xavier_uniform, orthogonal
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence, PackedSequence
 import torch.nn.utils.weight_norm as weight_norm
 
-from torchmoji.lstm import LSTMHardSigmoid
-from torchmoji.attlayer import Attention
-from torchmoji.global_variables import NB_TOKENS, NB_EMOJI_CLASSES
+from torchmoji_local.lstm import LSTMHardSigmoid
+from torchmoji_local.attlayer import Attention
+from torchmoji_local.global_variables import NB_TOKENS, NB_EMOJI_CLASSES
 
 
 class TextEncoder(nn.Module):
