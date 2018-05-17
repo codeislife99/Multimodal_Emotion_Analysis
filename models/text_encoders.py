@@ -446,18 +446,16 @@ class BiLSTM(nn.Module):
 
     def forward(self, sentences):
         # get embedding vectors of input
-        # padded_sentences, lengths = torch.nn.utils.rnn.pad_packed_sequence(sentences, padding_value=int(0), batch_first=True)
+        padded_sentences, lengths = torch.nn.utils.rnn.pad_packed_sequence(sentences, padding_value=int(0), batch_first=True)
+        print('lengths', lengths)
         # embeds = self.embed(padded_sentences)
-        # noise = Variable(torch.zeros(embeds.shape).cuda())
-        # noise.data.normal_(std=0.3)
+        noise = Variable(torch.zeros(embeds.shape).cuda())
+        noise.data.normal_(std=0.3)
         # embeds += noise
         # embeds = self.embed_dropout(embeds)
-        # # add noise
+        # add noise
         
-        # packed_embeds = torch.nn.utils.rnn.pack_padded_sequence(embeds, lengths, batch_first=True)
-
-
-        packed_embeds = sentences # just skip the padding/packing thing for batch size of 1
+        packed_embeds = torch.nn.utils.rnn.pack_padded_sequence(embeds, lengths, batch_first=True)
         
         # First LSTM layer
         # self.hidden = num_layers*num_directions batch_size hidden_size
