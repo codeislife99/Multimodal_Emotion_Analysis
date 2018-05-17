@@ -314,12 +314,13 @@ class TorchMoji_Emb(nn.Module):
             co = self.lstm_0.weight_hh_l0.data.new(2, input_seqs.size()[0], self.hidden_size).zero_()
 
             # Reorder batch by sequence length
-            input_lengths = torch.LongTensor([torch.max(input_seqs[i, :].data.nonzero()) + 1 for i in range(input_seqs.size()[0])])
+            input_lengths = torch.LongTensor([torch.max(input_seqs[i, :][0].data.nonzero()) + 1 for i in range(input_seqs.size()[0])])
             input_lengths, perm_idx = input_lengths.sort(0, descending=True)
             input_seqs = input_seqs[perm_idx][:, :input_lengths.max()]
 
             # Pack sequence and work on data tensor to reduce embeddings/dropout computations
-            packed_input = pack_padded_sequence(input_seqs, input_lengths.cpu().numpy(), batch_first=True)
+            # packed_input = pack_padded_sequence(input_seqs, input_lengths.cpu().numpy(), batch_first=True)
+            packed_input = pack_padded_sequence(input_seqs, [1], batch_first=True)
             reorder_output = True
         else:
             ho = self.lstm_0.weight_hh_l0.data.data.new(2, input_seqs.size()[0], self.hidden_size).zero_()
