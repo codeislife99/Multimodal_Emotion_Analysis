@@ -20,10 +20,10 @@ export LC_ALL=C.UTF-8
  |:--------:|:----------:|:-------------:|:--------------:|:-------------:|:-------------:|:-----------:|:------------:|
  | Random              | -          | 0.63    |   0.647   |0.7938|0.8121|0.2822|0.2946|
  | Triple Attention    | V+A+T      | 0.4765  |   0.4709  |           | | | |
- | Triple Attention-1024 | V+A+T(attElement)-iter3 | 0.4910 |     |   | | | |
+ | Triple Attention-1024 | V+A+T(attElement)-iter3 | 0.4910 | 0.4859 |   | | | |
  | Triple Attention-1024 | V+A+T(attElement)-iter4 | 0.5003 | 0.4793 |   | | | |
  | Triple Attention-1024 | V+A+T(attElement)-iter5 |        |     |   | | | |
- | Triple Attention-1024 | V+A+T(attTime)-iter3 | 0.4855 |    |       | | | |
+ | Triple Attention-1024 | V+A+T(attTime)-iter3 | 0.4855 | 0.4919 |       | | | |
  | Triple Attention-1024 | V+A+T(attTime)-iter4 | 0.4888 | 0.4889 |       | | | |
  | Triple Attention-1024 | V+A+T(attTime)-iter5 |        |    |       | | | |
  | Early Concatenation | V+A+T      |         |           |           | | | |
