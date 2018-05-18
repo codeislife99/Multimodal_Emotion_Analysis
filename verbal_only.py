@@ -152,7 +152,7 @@ while epoch<no_of_epochs:
 			gt = Variable(gt.float()).cuda()
 
 		emb_output = Wordvec_encoder(emb)
-		outputs = Predictor(output)
+		outputs = Predictor(emb_output)
 		outputs = torch.clamp(outputs,0,3)
 		loss = criterion(outputs, gt)
 		if train_mode and K%mega_batch_size==0:
