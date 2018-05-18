@@ -34,8 +34,8 @@ export LC_ALL=C.UTF-8
  | LSTM + Attention    | V          |         |           |           | | | |  
  | LSTM + Attention    | T          |  0.6285 |           |           | | | |  
  | LSTM + Attention    | A          |         |           |           | | | |  
- | LSTM                | V          |  0.5170 | 0.5106    |           | | | |        
- | LSTM                | T          |   0.59  |           |           | | | |        
+ | LSTM                | V          | 0.5170  | 0.5106    |           | | | |        
+ | LSTM                | T          | 0.6026  | 0.6056    |           | | | |        
  | LSTM                | A          |         |           |           | | | |        
       
 #### Structure of Pickle Files
