@@ -30,6 +30,7 @@ from sklearn.metrics import precision_score, recall_score, confusion_matrix, cla
 from torch.utils.data import Dataset, DataLoader
 from mosei_dataloader import mosei
 from torch.nn.parameter import Parameter
+from models.highway import GatedMemUpdate
 
 preprocess = transforms.Compose([
 	transforms.ToTensor(),
@@ -110,8 +111,9 @@ class GatedAttention(nn.Module):
 '---------------------------------------------------Triple Attention----------------------------------------------------'
 
 class TripleAttention(nn.Module):
-	def __init__(self,no_of_emotions,dan_hidden_size):
+	def __init__(self,no_of_emotions,dan_hidden_size, gated_mem):
 		super(TripleAttention, self).__init__()
+		self.gated_mem = gated_mem
 		N = dan_hidden_size
 		''' K= 1 ''' 
 		self.Wvision_1 = nn.Linear(N,N)
@@ -123,6 +125,8 @@ class TripleAttention(nn.Module):
 		self.Wemb_1 = nn.Linear(N,N)
 		self.Wemb_m1 = nn.Linear(N,N)
 		self.Wemb_h1 = nn.Linear(N,N)
+		if gated_mem:
+			self.gated_mem_update_1 = GatedMemUpdate(N)
 
 		''' K = 2 '''
 		self.Wvision_2 = nn.Linear(N,N)
@@ -134,6 +138,8 @@ class TripleAttention(nn.Module):
 		self.Wemb_2 = nn.Linear(N,N)
 		self.Wemb_m2 = nn.Linear(N,N)
 		self.Wemb_h2 = nn.Linear(N,N)
+		if gated_mem:
+			self.gated_mem_update_2 = GatedMemUpdate(N)
 
 		self.fc = nn.Linear(N, no_of_emotions)
 
@@ -171,7 +177,10 @@ class TripleAttention(nn.Module):
 		emb_one = (a_one_emb*emb).mean(0).unsqueeze(0)
 
 		# Memory Update
-		m_one = m_zero + vision_one * vocal_one * emb_one
+		if self.gated_mem:
+			m_one = self.gated_mem_update_1(vision_one * vocal_one * emb_one, m_zero)
+		else:
+			m_one = m_zero + vision_one * vocal_one * emb_one
 		m_one_vision = m_one.repeat(vision.size(0),1)
 		m_one_vocal = m_one.repeat(vocal.size(0),1)
 		m_one_emb = m_one.repeat(emb.size(0),1)
@@ -194,7 +203,10 @@ class TripleAttention(nn.Module):
 		emb_two = (a_two_emb*emb).mean(0).unsqueeze(0)
 
 		# Memory Update
-		m_two = m_one + vision_two * vocal_two * emb_two 
+		if self.gated_mem:
+			m_two = self.gated_mem_update_2(vision_two * vocal_two * emnb_two, m_one)
+		else:
+			m_two = m_one + vision_two * vocal_two * emb_two 
 		return m_two
 		'-------------------------------------------------Prediction--------------------------------------------------'
 		# return m_two
@@ -238,11 +250,12 @@ vocal_hidden_size = 1024
 vision_hidden_size = 1024
 wordvec_hidden_size = 1024
 dan_hidden_size = 2048
+gated_mem = False
 '----------------------------------------------------------------------------------------------------------------------'
 Vocal_encoder = VocalNet(vocal_input_size, vocal_hidden_size, vocal_num_layers)
 Vision_encoder = VisionNet(vision_input_size, vision_hidden_size, vision_num_layers)
 Wordvec_encoder = WordvecNet(wordvec_input_size, wordvec_hidden_size, wordvec_num_layers)
-Attention = TripleAttention(no_of_emotions,dan_hidden_size)
+Attention = TripleAttention(no_of_emotions,dan_hidden_size, gated_mem)
 Predictor = predictor(no_of_emotions,dan_hidden_size)
 if train_mode:
 	train_dataset = mosei(mode= "train")
