@@ -22,6 +22,9 @@ export LC_ALL=C.UTF-8
  | Triple Attention    | V+A+T      | 0.4765  |   0.4709  |  |         | | | |
  | Triple Attention | V+A+T(scalarAttTime)-iter5 | 0.5193 | 0.5346 | 0.5986 |   |   | | |
  | Triple Attention | V+A+T(scalarAttTime)-iter6 | 0.5439 |  | 0.5742 |   | | | |
+ | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __3.pth | 0.4816 | 0.4790 | 0.4605 |   | | | |
+ | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __4.pth |  |  |  |  | | | |
+ | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __5.pth |        |     |    | | | | |
  | Triple Attention-1024 | V+A+T(attElement)- __3.pth | 0.4910 | 0.4859 | 0.4604 |   | | | |
  | Triple Attention-1024 | V+A+T(attElement)- __4.pth | 0.5003 | 0.4793 | 0.4303 |  | | | |
  | Triple Attention-1024 | V+A+T(attElement)- __5.pth |        |     |    | | | | |
