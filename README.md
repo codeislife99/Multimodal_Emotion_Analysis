@@ -16,35 +16,37 @@ export LC_ALL=C.UTF-8
       Metric 3 = Huber Loss (Smooth L1 Loss)    [0.3263]
       
 
- | Model    | Modality   | Metric 1 Val  | Metric 1 Test  | Metric 2 Val  | Metric 2 Test | Metric 3 Val| Metric 3 Test| 
- |:--------:|:----------:|:-------------:|:--------------:|:-------------:|:-------------:|:-----------:|:------------:|
- | Random              | -          | 0.63    |   0.647   |0.7938|0.8121|0.2822|0.2946|
- | Triple Attention    | V+A+T      | 0.4765  |   0.4709  |           | | | |
- | Triple Attention-1024 | V+A+T(attElement)-iter3 | 0.4910 | 0.4859 |   | | | |
- | Triple Attention-1024 | V+A+T(attElement)-iter4 | 0.5003 | 0.4793 |   | | | |
- | Triple Attention-1024 | V+A+T(attElement)-iter5 |        |     |   | | | |
- | Triple Attention-1024 | V+A+T(attTime)-iter3 | 0.4855 | 0.4919 |       | | | |
- | Triple Attention-1024 | V+A+T(attTime)-iter4 | 0.4888 | 0.4889 |       | | | |
- | Triple Attention-1024 | V+A+T(attTime)-iter5 | 0.4761 | 0.4816 |       | | | |
- | Triple Attention-1024 | V+A+T(attTime)-iter6 | 0.4970 | 0.4973 |       | | | |
- | Triple Attention-1024 | V+A+T(attTime)-iter7 | 0.5103 | 0.5121 |       | | | |
- | Early Concatenation | V+A+T      |         |           |           | | | |
- | Late Weighting      | V+A+T      |         |           |           | | | |
- | Dual Attention      | V+T        |         |           |           | | | |
- | Dual Attention      | V+A        |  0.5157 | 0.5103    |           | | | |
- | Dual Attention      | A+T        |         |           |           | | | |
- | Early Concatenation | V+T        |         |           |           | | | |
- | Early Concatenation | V+A        |         |           |           | | | |
- | Early Concatenation | A+T        |         |           |           | | | |
- | Late Weighting      | V+T        |         |           |           | | | |
- | Late Weighting      | V+A        |         |           |           | | | |
- | Late Weighting      | A+T        |         |           |           | | | |
- | LSTM + Attention    | V          |         |           |           | | | |  
- | LSTM + Attention    | T          |  0.6285 |           |           | | | |  
- | LSTM + Attention    | A          |         |           |           | | | |  
- | LSTM                | V          | 0.5170  | 0.5106    |           | | | |        
- | LSTM                | T          | 0.6026  | 0.6056    |           | | | |        
- | LSTM                | A          |         |           |           | | | |        
+ | Model    | Modality   | Metric 1 Val  | Metric 1 Test  | Metric 1 Train | Metric 2 Val  | Metric 2 Test | Metric 3 Val| Metric 3 Test| 
+ |:--------:|:----------:|:-------------:|:--------------:|:--------------:|:-------------:|:-------------:|:-----------:|:------------:|
+ | Random              | -          | 0.63    |   0.647   |  | 0.7938|0.8121|0.2822|0.2946|
+ | Triple Attention    | V+A+T      | 0.4765  |   0.4709  |  |         | | | |
+ | Triple Attention | V+A+T(scalarAttElement)-iter5 | 0.5193 |  | 0.5986 |   |   | | |
+ | Triple Attention | V+A+T(scalarAttElement)-iter6 | 0.5439 |  | 0.5742 |   | | | |
+ | Triple Attention-1024 | V+A+T(attElement)-iter3 | 0.4910 | 0.4859 | 0.4604 |   | | | |
+ | Triple Attention-1024 | V+A+T(attElement)-iter4 | 0.5003 | 0.4793 | 0.4303 |  | | | |
+ | Triple Attention-1024 | V+A+T(attElement)-iter5 |        |     |    | | | | |
+ | Triple Attention-1024 | V+A+T(attTime)-iter3 | 0.4855 | 0.4919 | 0.4671 |    | | | |
+ | Triple Attention-1024 | V+A+T(attTime)-iter4 | 0.4888 | 0.4889 | 0.4409 |     | | | |
+ | Triple Attention-1024 | V+A+T(attTime)-iter5 | 0.4761 | 0.4816 | 0.4144 |     | | | |
+ | Triple Attention-1024 | V+A+T(attTime)-iter6 | 0.4970 | 0.4973 | 0.3879 |     | | | |
+ | Triple Attention-1024 | V+A+T(attTime)-iter7 | 0.5103 | 0.5121 | 0.3608 |     | | | |
+ | Early Concatenation | V+A+T      |         |           |   |        | | | |
+ | Late Weighting      | V+A+T      |         |           |   |         | | | |
+ | Dual Attention      | V+T        |         |           |   |        | | | |
+ | Dual Attention      | V+A        |  0.5157 | 0.5103    |   |        | | | |
+ | Dual Attention      | A+T        |         |           |   |        | | | |
+ | Early Concatenation | V+T        |         |           |   |        | | | |
+ | Early Concatenation | V+A        |         |           |   |        | | | |
+ | Early Concatenation | A+T        |         |           |   |        | | | |
+ | Late Weighting      | V+T        |         |           |   |        | | | |
+ | Late Weighting      | V+A        |         |           |   |        | | | |
+ | Late Weighting      | A+T        |         |           |   |        | | | |
+ | LSTM + Attention    | V          |         |           |   |        | | | |  
+ | LSTM + Attention    | T          |  0.6285 |           |   |        | | | |  
+ | LSTM + Attention    | A          |         |           |   |        | | | |  
+ | LSTM                | V          | 0.5170  | 0.5106    |   |        | | | |        
+ | LSTM                | T          | 0.6026  | 0.6056    |   |        | | | |        
+ | LSTM                | A          |         |           |   |        | | | |        
       
 #### Structure of Pickle Files
 
