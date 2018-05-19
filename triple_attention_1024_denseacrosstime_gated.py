@@ -204,7 +204,7 @@ class TripleAttention(nn.Module):
 
         # Memory Update
         if self.gated_mem:
-            m_two = self.gated_mem_update_2(vision_two * vocal_two * emnb_two, m_one)
+            m_two = self.gated_mem_update_2(vision_two * vocal_two * emb_two, m_one)
         else:
             m_two = m_one + vision_two * vocal_two * emb_two
         return m_two
