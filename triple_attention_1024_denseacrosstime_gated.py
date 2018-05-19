@@ -111,7 +111,7 @@ class GatedAttention(nn.Module):
 '---------------------------------------------------Triple Attention----------------------------------------------------'
 
 class TripleAttention(nn.Module):
-    def __init__(self,no_of_emotions,dan_hidden_size):
+    def __init__(self,no_of_emotions,dan_hidden_size, gated_mem):
         super(TripleAttention, self).__init__()
         N = dan_hidden_size
         ''' K= 1 '''
@@ -254,7 +254,7 @@ gated_mem = True
 Vocal_encoder = VocalNet(vocal_input_size, vocal_hidden_size, vocal_num_layers)
 Vision_encoder = VisionNet(vision_input_size, vision_hidden_size, vision_num_layers)
 Wordvec_encoder = WordvecNet(wordvec_input_size, wordvec_hidden_size, wordvec_num_layers)
-Attention = TripleAttention(no_of_emotions,dan_hidden_size)
+Attention = TripleAttention(no_of_emotions,dan_hidden_size, gated_mem)
 Predictor = predictor(no_of_emotions,dan_hidden_size)
 if train_mode:
     train_dataset = mosei(mode= "train")
