@@ -25,7 +25,9 @@ export LC_ALL=C.UTF-8
  | Triple Attention-1024 | V+A+T(attElement)-iter5 |        |     |   | | | |
  | Triple Attention-1024 | V+A+T(attTime)-iter3 | 0.4855 | 0.4919 |       | | | |
  | Triple Attention-1024 | V+A+T(attTime)-iter4 | 0.4888 | 0.4889 |       | | | |
- | Triple Attention-1024 | V+A+T(attTime)-iter5 |        |    |       | | | |
+ | Triple Attention-1024 | V+A+T(attTime)-iter5 | 0.4761 | 0.4816 |       | | | |
+ | Triple Attention-1024 | V+A+T(attTime)-iter6 | 0.4970 | 0.4973 |       | | | |
+ | Triple Attention-1024 | V+A+T(attTime)-iter7 | 0.5103 | 0.5121 |       | | | |
  | Early Concatenation | V+A+T      |         |           |           | | | |
  | Late Weighting      | V+A+T      |         |           |           | | | |
  | Dual Attention      | V+T        |         |           |           | | | |
