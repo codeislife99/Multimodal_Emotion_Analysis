@@ -22,14 +22,14 @@ export LC_ALL=C.UTF-8
  | Triple Attention    | V+A+T      | 0.4765  |   0.4709  |  |         | | | |
  | Triple Attention | V+A+T(scalarAttElement)-iter5 | 0.5193 | 0.5346 | 0.5986 |   |   | | |
  | Triple Attention | V+A+T(scalarAttElement)-iter6 | 0.5439 |  | 0.5742 |   | | | |
- | Triple Attention-1024 | V+A+T(attElement)-iter3 | 0.4910 | 0.4859 | 0.4604 |   | | | |
- | Triple Attention-1024 | V+A+T(attElement)-iter4 | 0.5003 | 0.4793 | 0.4303 |  | | | |
- | Triple Attention-1024 | V+A+T(attElement)-iter5 |        |     |    | | | | |
- | Triple Attention-1024 | V+A+T(attTime)-iter3 | 0.4855 | 0.4919 | 0.4671 |    | | | |
- | Triple Attention-1024 | V+A+T(attTime)-iter4 | 0.4888 | 0.4889 | 0.4409 |     | | | |
- | Triple Attention-1024 | V+A+T(attTime)-iter5 | 0.4761 | 0.4816 | 0.4144 |     | | | |
- | Triple Attention-1024 | V+A+T(attTime)-iter6 | 0.4970 | 0.4973 | 0.3879 |     | | | |
- | Triple Attention-1024 | V+A+T(attTime)-iter7 | 0.5103 | 0.5121 | 0.3608 |     | | | |
+ | Triple Attention-1024 | V+A+T(attElement)- __3.pth | 0.4910 | 0.4859 | 0.4604 |   | | | |
+ | Triple Attention-1024 | V+A+T(attElement)- __4.pth | 0.5003 | 0.4793 | 0.4303 |  | | | |
+ | Triple Attention-1024 | V+A+T(attElement)- __5.pth |        |     |    | | | | |
+ | Triple Attention-1024 | V+A+T(attTime)- __3.pth | 0.4855 | 0.4919 | 0.4671 |    | | | |
+ | Triple Attention-1024 | V+A+T(attTime)- __4.pth | 0.4888 | 0.4889 | 0.4409 |     | | | |
+ | Triple Attention-1024 | V+A+T(attTime)- __5.pth | 0.4761 | 0.4816 | 0.4144 |     | | | |
+ | Triple Attention-1024 | V+A+T(attTime)- __6.pth | 0.4970 | 0.4973 | 0.3879 |     | | | |
+ | Triple Attention-1024 | V+A+T(attTime)- __7.pth | 0.5103 | 0.5121 | 0.3608 |     | | | |
  | Early Concatenation | V+A+T      |         |           |   |        | | | |
  | Late Weighting      | V+A+T      |         |           |   |         | | | |
  | Dual Attention      | V+T        |         |           |   |        | | | |
