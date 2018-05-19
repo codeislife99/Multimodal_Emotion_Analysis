@@ -22,11 +22,9 @@ class GatedMemUpdate(nn.Module):
             and ⨀ is element-wise multiplication
             """
 
-        for layer in range(self.num_layers):
-            gate = F.sigmoid(self.gate[layer](c))
 
-            linear = self.linear[layer](c)
+        gate = F.sigmoid(self.gate(c))
 
-            x = gate * t + (1 - gate) * c
+        x = gate * t + (1 - gate) * c
 
         return x
