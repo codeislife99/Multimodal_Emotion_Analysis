@@ -110,36 +110,38 @@ class GatedAttention(nn.Module):
 '---------------------------------------------------Triple Attention----------------------------------------------------'
 
 class TripleAttention(nn.Module):
-	def __init__(self,no_of_emotions,dan_hidden_size):
+	def __init__(self,no_of_emotions,dan_hidden_size,attention_hidden_size):
 		super(TripleAttention, self).__init__()
 		N = dan_hidden_size
+		N2 = attention_hidden_size
 		''' K= 1 ''' 
-		self.Wvision_1 = nn.Linear(N,N)
-		self.Wvision_m1 = nn.Linear(N,N)
-		self.Wvision_h1 = nn.Linear(N,1)
-		self.Wvocal_1 = nn.Linear(N,N)
-		self.Wvocal_m1 = nn.Linear(N,N)
-		self.Wvocal_h1 = nn.Linear(N,1)
-		self.Wemb_1 = nn.Linear(N,N)
-		self.Wemb_m1 = nn.Linear(N,N)
-		self.Wemb_h1 = nn.Linear(N,1)
+		self.Wvision_1 = nn.Linear(N,N2)
+		self.Wvision_m1 = nn.Linear(N,N2)
+		self.Wvision_h1 = nn.Linear(N2,1)
+		self.Wvocal_1 = nn.Linear(N,N2)
+		self.Wvocal_m1 = nn.Linear(N,N2)
+		self.Wvocal_h1 = nn.Linear(N2,1)
+		self.Wemb_1 = nn.Linear(N,N2)
+		self.Wemb_m1 = nn.Linear(N,N2)
+		self.Wemb_h1 = nn.Linear(N2,1)
 
 		''' K = 2 '''
-		self.Wvision_2 = nn.Linear(N,N)
-		self.Wvision_m2 = nn.Linear(N,N)
-		self.Wvision_h2 = nn.Linear(N,1)
-		self.Wvocal_2 = nn.Linear(N,N)
-		self.Wvocal_m2 = nn.Linear(N,N)
-		self.Wvocal_h2 = nn.Linear(N,1)
-		self.Wemb_2 = nn.Linear(N,N)
-		self.Wemb_m2 = nn.Linear(N,N)
-		self.Wemb_h2 = nn.Linear(N,1)
+		self.Wvision_2 = nn.Linear(N,N2)
+		self.Wvision_m2 = nn.Linear(N,N2)
+		self.Wvision_h2 = nn.Linear(N2,1)
+		self.Wvocal_2 = nn.Linear(N,N2)
+		self.Wvocal_m2 = nn.Linear(N,N2)
+		self.Wvocal_h2 = nn.Linear(N2,1)
+		self.Wemb_2 = nn.Linear(N,N2)
+		self.Wemb_m2 = nn.Linear(N,N2)
+		self.Wemb_h2 = nn.Linear(N2,1)
 
 		self.fc = nn.Linear(N, no_of_emotions)
 
 
 	def forward(self,vocal,vision,emb):
 		N = dan_hidden_size
+		N2 = attention_hidden_size
 		# Sorting out vision
 		# print(resnet_output.size())
 		# resnet_output = resnet_output.mean(0)
@@ -233,12 +235,12 @@ batch_size = 1
 mega_batch_size = 1
 no_of_emotions = 6
 use_CUDA = True
-use_pretrained = True
+use_pretrained = False
 num_workers = 20
 
-test_mode = True
+test_mode = False
 val_mode = False
-train_mode = False
+train_mode = True
 
 no_of_epochs = 1000
 vocal_input_size = 74 # Dont Change
@@ -247,15 +249,16 @@ wordvec_input_size = 300
 vocal_num_layers = 2
 vision_num_layers = 2
 wordvec_num_layers = 2
-vocal_hidden_size = 1024
-vision_hidden_size = 1024
-wordvec_hidden_size = 1024
-dan_hidden_size = 2048
+vocal_hidden_size = 512
+vision_hidden_size = 512
+wordvec_hidden_size = 512
+dan_hidden_size = 1024
+attention_hidden_size = 128
 '----------------------------------------------------------------------------------------------------------------------'
 Vocal_encoder = VocalNet(vocal_input_size, vocal_hidden_size, vocal_num_layers)
 Vision_encoder = VisionNet(vision_input_size, vision_hidden_size, vision_num_layers)
 Wordvec_encoder = WordvecNet(wordvec_input_size, wordvec_hidden_size, wordvec_num_layers)
-Attention = TripleAttention(no_of_emotions,dan_hidden_size)
+Attention = TripleAttention(no_of_emotions,dan_hidden_size,attention_hidden_size)
 Predictor = predictor(no_of_emotions,dan_hidden_size)
 if train_mode:
 	train_dataset = mosei(mode= "train")
@@ -295,8 +298,8 @@ optimizer = torch.optim.Adam(params, lr = 0.0001)
 
 def save_checkpoint(state, is_final, filename='attention_net'):
 	filename = filename +'_'+str(state['epoch'])+'.pth.tar'
-	os.system("mkdir -p TAN.attendtime.noP") 
-	torch.save(state, './TAN.attendtime.noP/'+filename)
+	os.system("mkdir -p TAN_1024_scalarTime") 
+	torch.save(state, './TAN_1024_scalarTime/'+filename)
 	if is_final:
 		shutil.copyfile(filename, 'model_final.pth.tar')
 
@@ -325,7 +328,7 @@ while epoch<no_of_epochs:
 	running_loss = 0
 	running_corrects = 0
 	if use_pretrained:
-		pretrained_file = './TAN.attendtime.noP.20180517/triple_attention_net__5.pth.tar'
+		pretrained_file = './TAN_1024_scalarTime/triple_attention_net__5.pth.tar'
 		# pretrained_file = './TAN/triple_attention_net__8.pth.tar'
 
 		checkpoint = torch.load(pretrained_file)
