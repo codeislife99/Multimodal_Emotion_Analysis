@@ -30,7 +30,7 @@ torch.cuda.manual_seed(777)
  | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __3.pth | 0.4816 | 0.4790 | 0.4605 |   | | | |
  | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __4.pth | 0.4884 | 0.4806 | 0.4345 |  | | | |
  | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __5.pth | 0.4789 | 0.4745 | 0.4087 | | | | |
- | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __6.pth |  | 0.4929 | 0.3830 | | | | |
+ | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __6.pth | 0.4870 | 0.4929 | 0.3830 | | | | |
  | Triple Attention-1024 | V+A+T(attElement)- __3.pth | 0.4910 | 0.4859 | 0.4604 |   | | | |
  | Triple Attention-1024 | V+A+T(attElement)- __4.pth | 0.5003 | 0.4793 | 0.4303 |  | | | |
  | Triple Attention-1024 | V+A+T(attTime)- __3.pth | 0.4855 | 0.4919 | 0.4671 |    | | | |
