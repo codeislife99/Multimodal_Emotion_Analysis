@@ -31,6 +31,7 @@ export LC_ALL=C.UTF-8
  | Triple Attention-1024 | V+A+T(attTime)- __6.pth | 0.4970 | 0.4973 | 0.3879 |     | | | |
  | Triple Attention-1024 | V+A+T(attTime)- __7.pth | 0.5103 | 0.5121 | 0.3608 |     | | | |
  | Triple Attention-1024-gated | V+A+T(attTime)- __4.pth | 0.4746 | 0.4631 | 0.4512 |     | | | |
+ | Triple Attention-1024-gated | V+A+T(attTime)- __5.pth | 0.4911 | 0.4734 | 0.4225 |     | | | |
  | Early Concatenation | V+A+T      |         |           |   |        | | | |
  | Late Weighting      | V+A+T      |         |           |   |         | | | |
  | Dual Attention      | V+T        |         |           |   |        | | | |
