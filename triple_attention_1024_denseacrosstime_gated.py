@@ -113,6 +113,7 @@ class GatedAttention(nn.Module):
 class TripleAttention(nn.Module):
     def __init__(self,no_of_emotions,dan_hidden_size, gated_mem):
         super(TripleAttention, self).__init__()
+        self.gated_mem = gated_mem
         N = dan_hidden_size
         ''' K= 1 '''
         self.Wvision_1 = nn.Linear(N,N)
