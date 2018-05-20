@@ -236,8 +236,8 @@ use_CUDA = True
 use_pretrained = True
 num_workers = 20
 
-test_mode = True
-val_mode = False
+test_mode = False
+val_mode = True
 train_mode = False
 
 no_of_epochs = 1000
