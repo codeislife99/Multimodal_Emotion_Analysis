@@ -12,6 +12,7 @@ Random seed initialization
 https://discuss.pytorch.org/t/random-seed-initialization/7854
 torch.manual_seed(777)
 torch.cuda.manual_seed(777)
+np.random.seed(777)
 
 
 #### Baselines and Metrics:
@@ -40,6 +41,8 @@ torch.cuda.manual_seed(777)
  | Triple Attention-1024 | V+A+T(attTime)- __7.pth | 0.5103 | 0.5121 | 0.3608 |     | | | |
  | Triple Attention-1024-gated | V+A+T(attTime)- __4.pth | 0.4746 | 0.4631 | 0.4512 |     | | | |
  | Triple Attention-1024-gated | V+A+T(attTime)- __5.pth | 0.4911 | 0.4734 | 0.4225 |     | | | |
+ | Triple Attention-scalar-1024-gated | V+A+T(scalarAttTime)- __4.pth | 0.4812 | 0.4683 | 0.4470 |     | | | |
+ | Triple Attention-scalar-1024-gated | V+A+T(scalarAttTime)- __5.pth | 0.4838 | 0.4649 | 0.4262 |     | | | |
  | Early Concatenation | V+A+T      |         |           |   |        | | | |
  | Late Weighting      | V+A+T      |         |           |   |         | | | |
  | Dual Attention      | V+T        |         |           |   |        | | | |
