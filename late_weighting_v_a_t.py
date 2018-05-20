@@ -183,8 +183,7 @@ PredictorT = PredictorT.cuda()
 Lateweight = Lateweight.cuda()
 '----------------------------------------------------------------------------------------------------------------------'
 criterion = nn.MSELoss(size_average = False)
-params =  list(Vocal_encoder.parameters()) + list(Wordvec_encoder.parameters()) + list(Vision_encoder.parameters()) 
-        + list(PredictorV.parameters()) + list(PredictorA.parameters()) + list(PredictorT.parameters()) + list(Lateweight.parameters())
+params =  list(Vocal_encoder.parameters()) + list(Wordvec_encoder.parameters()) + list(Vision_encoder.parameters()) + list(PredictorV.parameters()) + list(PredictorA.parameters()) + list(PredictorT.parameters()) + list(Lateweight.parameters())
 print('Parameters in the model = ' + str(len(params)))
 optimizer = torch.optim.Adam(params, lr = 0.0001)
 # optimizer = torch.optim.SGD(params, lr =0.001,momentum = 0.9 )
@@ -246,7 +245,7 @@ while epoch<no_of_epochs:
 
 		use_pretrained_encoders = False
 
- 	if use_pretrained:
+	if use_pretrained:
 		pretrained_file = './late_weight/late_weight_net__0.pth.tar'
 
 		checkpoint = torch.load(pretrained_file)
