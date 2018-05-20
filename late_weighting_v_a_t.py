@@ -230,9 +230,9 @@ while epoch<no_of_epochs:
 		pretrained_file_a = './vocal_only/vocal_net__20.pth.tar'
 		pretrained_file_t = './verbal_only/verbal_net__4.pth.tar'
 
-		checkpoint_v = torch.load(pretrained_file) 
-		checkpoint_a = torch.load(pretrained_file) 
-		checkpoint_t = torch.load(pretrained_file) 
+		checkpoint_v = torch.load(pretrained_file_v) 
+		checkpoint_a = torch.load(pretrained_file_a) 
+		checkpoint_t = torch.load(pretrained_file_t) 
 
 		Vision_encoder.load_state_dict(checkpoint_v['Vision_encoder'])
 		PredictorV.load_state_dict(checkpoint_v['Predictor'])
