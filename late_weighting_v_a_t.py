@@ -81,7 +81,7 @@ class VisionNet(nn.Module):
 '---------------------------------------------------Memory to Emotion Decoder------------------------------------------'
 class predictor_v(nn.Module):
 	def __init__(self,no_of_emotions,hidden_size,output_scale_factor = 1, output_shift = 0):
-		super(predictor, self).__init__()
+		super(predictor_v, self).__init__()
 		self.fc = nn.Linear(hidden_size, no_of_emotions)
 
 
@@ -92,7 +92,7 @@ class predictor_v(nn.Module):
 
 class predictor_a(nn.Module):
 	def __init__(self,no_of_emotions,hidden_size):
-		super(predictor, self).__init__()
+		super(predictor_a, self).__init__()
 		self.fc = nn.Linear(hidden_size, no_of_emotions)
 	def forward(self,x):
 		x = self.fc(x)
@@ -101,7 +101,7 @@ class predictor_a(nn.Module):
 		return x
 class predictor_t(nn.Module):
 	def __init__(self,no_of_emotions,hidden_size,output_scale_factor = 1, output_shift = 0):
-		super(predictor, self).__init__()
+		super(predictor_t, self).__init__()
 		self.fc = nn.Linear(hidden_size, no_of_emotions)
 
 	def forward(self,x):
@@ -111,7 +111,7 @@ class predictor_t(nn.Module):
 
 class late_weighting(nn.Module):
 	def __init__(self):
-		super(predictor, self).__init__()
+		super(late_weighting, self).__init__()
 		self.v = Parameter(torch.FloatTensor([0,0,0,0,0,0]))
 		self.a = Parameter(torch.FloatTensor([0,0,0,0,0,0]))
 		self.t = Parameter(torch.FloatTensor([0,0,0,0,0,0]))
