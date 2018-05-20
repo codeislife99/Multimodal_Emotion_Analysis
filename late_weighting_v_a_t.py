@@ -42,14 +42,12 @@ class VocalNet(nn.Module):
 	def __init__(self,input_size,hidden_size,num_layers):
 		super(VocalNet, self).__init__()
 		self.lstm = nn.LSTM(input_size,hidden_size,num_layers,bidirectional=True)
-		self.linear = nn.Linear(hidden_size, 6)
-
 
 	def forward(self,x):
 		x = torch.transpose(x,0,1)
 		hiddens,_ = self.lstm(x)
-		hiddens = hiddens.squeeze(1)
-		return hiddens
+		return hiddens[-1]
+
 '---------------------------------------------------LSTM TextNet-------------------------------------------------------'
 
 class WordvecNet(nn.Module):
@@ -75,9 +73,8 @@ class VisionNet(nn.Module):
 	def forward(self,x):
 		x = torch.transpose(x,0,1)
 		hiddens,_ = self.lstm(x)
-		hiddens = hiddens.squeeze(1)
-		return hiddens
-
+		return hiddens[-1]
+		
 '---------------------------------------------------Memory to Emotion Decoder------------------------------------------'
 class predictor_v(nn.Module):
 	def __init__(self,no_of_emotions,hidden_size,output_scale_factor = 1, output_shift = 0):
