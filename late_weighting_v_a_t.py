@@ -74,7 +74,7 @@ class VisionNet(nn.Module):
 		x = torch.transpose(x,0,1)
 		hiddens,_ = self.lstm(x)
 		return hiddens[-1]
-		
+
 '---------------------------------------------------Memory to Emotion Decoder------------------------------------------'
 class predictor_v(nn.Module):
 	def __init__(self,no_of_emotions,hidden_size,output_scale_factor = 1, output_shift = 0):
@@ -279,7 +279,7 @@ while epoch<no_of_epochs:
 		outputs_t = torch.clamp(outputs_t,0,3)
 
 		outputs = Lateweight(outputs_v,outputs_a,outputs_t)
-
+		outputs = torch.clamp(outputs,0,3)
 		loss = criterion(outputs, gt)
 		if train_mode and K%mega_batch_size==0:
 			loss.backward()
