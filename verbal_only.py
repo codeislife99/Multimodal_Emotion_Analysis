@@ -31,6 +31,11 @@ from torch.utils.data import Dataset, DataLoader
 from mosei_dataloader import mosei
 from torch.nn.parameter import Parameter
 
+
+torch.manual_seed(777)
+torch.cuda.manual_seed(777)
+np.random.seed(777)
+
 preprocess = transforms.Compose([
 	transforms.ToTensor(),
 	transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
@@ -62,18 +67,19 @@ batch_size = 1
 mega_batch_size = 1
 no_of_emotions = 6
 use_CUDA = True
-use_pretrained = False
+use_pretrained = True
 num_workers = 20
 
-test_mode = False
+test_mode = True
 val_mode = False
-train_mode = True
+train_mode = False
 
-no_of_epochs = 1000
+# no_of_epochs = 1000
+no_of_epochs = 6
 wordvec_input_size = 300
 wordvec_num_layers = 2
-wordvec_hidden_size = 1024
-dan_hidden_size = 2048
+wordvec_hidden_size = 512
+dan_hidden_size = 1024
 '----------------------------------------------------------------------------------------------------------------------'
 Wordvec_encoder = WordvecNet(wordvec_input_size, wordvec_hidden_size, wordvec_num_layers)
 Predictor = predictor(no_of_emotions,dan_hidden_size)
@@ -135,7 +141,7 @@ while epoch<no_of_epochs:
 	running_loss = 0
 	running_corrects = 0
 	if use_pretrained:
-		pretrained_file = './verbal/verbal_net__0.pth.tar'
+		pretrained_file = './verbal_only/verbal_net_6.pth.tar'
 
 		checkpoint = torch.load(pretrained_file)
 		Wordvec_encoder.load_state_dict(checkpoint['Wordvec_encoder'])

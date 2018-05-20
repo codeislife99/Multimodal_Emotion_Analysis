@@ -12,6 +12,7 @@ Random seed initialization
 https://discuss.pytorch.org/t/random-seed-initialization/7854
 torch.manual_seed(777)
 torch.cuda.manual_seed(777)
+np.random.seed(777)
 
 
 #### Baselines and Metrics:
