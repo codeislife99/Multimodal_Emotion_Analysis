@@ -31,6 +31,11 @@ from torch.utils.data import Dataset, DataLoader
 from mosei_dataloader import mosei
 from torch.nn.parameter import Parameter
 from models.highway import GatedMemUpdate
+from models.text_encoders import SelfAttention_B as SelfAtten
+
+torch.manual_seed(777)
+torch.cuda.manual_seed(777)
+np.random.seed(777)
 
 preprocess = transforms.Compose([
     transforms.ToTensor(),
@@ -108,126 +113,23 @@ class GatedAttention(nn.Module):
         hiddens,_ = self.lstm(fusion)
         outputs = self.linear(hiddens[-1])
         return outputs
-'---------------------------------------------------Triple Attention----------------------------------------------------'
 
-class TripleAttention(nn.Module):
-    def __init__(self,no_of_emotions,dan_hidden_size,attention_hidden_size,gated_mem):
-        super(TripleAttention, self).__init__()
-        self.gated_mem = gated_mem
-        N = dan_hidden_size
-        N2 = attention_hidden_size
-        ''' K= 1 '''
-        self.Wvision_1 = nn.Linear(N,N2)
-        self.Wvision_m1 = nn.Linear(N,N2)
-        self.Wvision_h1 = nn.Linear(N2,1)
-        self.Wvocal_1 = nn.Linear(N,N2)
-        self.Wvocal_m1 = nn.Linear(N,N2)
-        self.Wvocal_h1 = nn.Linear(N2,1)
-        self.Wemb_1 = nn.Linear(N,N2)
-        self.Wemb_m1 = nn.Linear(N,N2)
-        self.Wemb_h1 = nn.Linear(N2,1)
-        if gated_mem:
-            self.gated_mem_update_1 = GatedMemUpdate(N)
+'---------------------------------------------------Early concat with self-attention----------------------------------------------------'
 
-        ''' K = 2 '''
-        self.Wvision_2 = nn.Linear(N,N2)
-        self.Wvision_m2 = nn.Linear(N,N2)
-        self.Wvision_h2 = nn.Linear(N2,1)
-        self.Wvocal_2 = nn.Linear(N,N2)
-        self.Wvocal_m2 = nn.Linear(N,N2)
-        self.Wvocal_h2 = nn.Linear(N2,1)
-        self.Wemb_2 = nn.Linear(N,N2)
-        self.Wemb_m2 = nn.Linear(N,N2)
-        self.Wemb_h2 = nn.Linear(N2,1)
-        if gated_mem:
-            self.gated_mem_update_2 = GatedMemUpdate(N)
-
-        self.fc = nn.Linear(N, no_of_emotions)
+class EarlyCatSelfAtten(nn.Module):
+    def __init__(self, no_of_emotions, enc_hidden_size, self_atten_hid_size):
+        super(EarlyCatSelfAtten, self).__init__()
+        self.self_atten = SelfAtten(enc_hidden_size*3, self_atten_hid_size) # three stacked hiddens
+        self.fc = nn.Linear(self_atten_hid_size, no_of_emotions)
 
 
-    def forward(self,vocal,vision,emb):
-        print('vocal', vocal.size())
-        print('vision', vision.size())
-        print('emb', emb.size())
-        N = dan_hidden_size
-        N2 = attention_hidden_size
-        # Sorting out vision
-        # print(resnet_output.size())
-        # resnet_output = resnet_output.mean(0)
-        # resnet_output = resnet_output.view(512,49)
-        # vision = resnet_output.transpose(0,1)
-
-        '-------------------------------------------------Initializing Memory--------------------------------------'
-        vision_zero = vision.mean(0).unsqueeze(0)
-        vocal_zero = vocal.mean(0).unsqueeze(0)
-        emb_zero = emb.mean(0).unsqueeze(0)
-
-        m_zero = vision_zero * vocal_zero * emb_zero
-        m_zero_vision = m_zero.repeat(vision.size(0),1)
-        m_zero_vocal = m_zero.repeat(vocal.size(0),1)
-        m_zero_emb = m_zero.repeat(emb.size(0),1)
-        '--------------------------------------------------K = 1 ---------------------------------------------------'
-        # Visual Attention
-        h_one_vision = F.tanh(self.Wvision_1(vision))*F.tanh(self.Wvision_m1(m_zero_vision))
-        a_one_vision = F.softmax(self.Wvision_h1(h_one_vision),dim=0)  ## along dimsions
-        vision_one = (a_one_vision.repeat(1,N)*vision).mean(0).unsqueeze(0)
-        # avision_one = (a_one_vision.repeat(1,N)*vision).mean(0).unsqueeze(0)
-        # vision_one = F.tanh(self.Pvision_1(avision_one))
-
-        # Vocal Attention
-        h_one_vocal = F.tanh(self.Wvocal_1(vocal))*F.tanh(self.Wvocal_m1(m_zero_vocal))
-        a_one_vocal = F.softmax(self.Wvocal_h1(h_one_vocal),dim=0)
-        vocal_one = (a_one_vocal.repeat(1,N)*vocal).mean(0).unsqueeze(0)
-        # avocal_one = (a_one_vocal.repeat(1,N)*vocal).mean(0).unsqueeze(0)
-        # vocal_one = F.tanh(self.Pvocal_1(avocal_one))
-
-        # Emb Attention
-        h_one_emb = F.tanh(self.Wemb_1(emb))*F.tanh(self.Wemb_m1(m_zero_emb))
-        a_one_emb = F.softmax(self.Wemb_h1(h_one_emb),dim=0)
-        emb_one = (a_one_emb.repeat(1,N)*emb).mean(0).unsqueeze(0)
-        # aemb_one = (a_one_emb.repeat(1,N)*emb).mean(0).unsqueeze(0)
-        # emb_one = F.tanh(self.Pemb_1(aemb_one))
-
-        # Memory Update
-        if self.gated_mem:
-            m_one = self.gated_mem_update_1(vision_one * vocal_one * emb_one, m_zero)
-        else:
-            m_one = m_zero + vision_one * vocal_one * emb_one
-        m_one_vision = m_one.repeat(vision.size(0),1)
-        m_one_vocal = m_one.repeat(vocal.size(0),1)
-        m_one_emb = m_one.repeat(emb.size(0),1)
+    def forward(self, vocal, vision, emb):
+        enc_concat = torch.cat((vision, vocal, emb), 1) # concatenate along time dimension
+        print('enc_concat', enc_concat.size())
+        context = self.self_atten(enc_concat) # attention context - the convex combination (along time) of concat'd stacked encodings
 
 
 
-        '--------------------------------------------------K = 2  ---------------------------------------------------'
-
-        # Visual Attention
-        h_two_vision = F.tanh(self.Wvision_2(vision))*F.tanh(self.Wvision_m2(m_one_vision))
-        a_two_vision = F.softmax(self.Wvision_h2(h_two_vision),dim=0)
-        vision_two = (a_two_vision.repeat(1,N)*vision).mean(0).unsqueeze(0)
-        # avision_two = (a_two_vision.repeat(1,N)*vision).mean(0).unsqueeze(0)
-        # vision_two = F.tanh(self.Pvision_2(avision_two))
-
-        # Vocal Attention
-        h_two_vocal = F.tanh(self.Wvocal_2(vocal))*F.tanh(self.Wvocal_m2(m_one_vocal))
-        a_two_vocal = F.softmax(self.Wvocal_h2(h_two_vocal),dim=0)
-        vocal_two = (a_two_vocal.repeat(1,N)*vocal).mean(0).unsqueeze(0)
-        # avocal_two = (a_two_vocal.repeat(1,N)*vocal).mean(0).unsqueeze(0)
-        # vocal_two = F.tanh(self.Pvocal_2(avocal_two))
-
-        # Emb Attention
-        h_two_emb = F.tanh(self.Wemb_2(emb))*F.tanh(self.Wemb_m2(m_one_emb))
-        a_two_emb = F.softmax(self.Wemb_h2(h_two_emb),dim=0)
-        emb_two = (a_two_emb.repeat(1,N)*emb).mean(0).unsqueeze(0)
-        # aemb_two = (a_two_emb.repeat(1,N)*emb).mean(0).unsqueeze(0)
-        # emb_two = F.tanh(self.Pemb_2(aemb_two))
-
-        # Memory Update
-        if self.gated_mem:
-            m_two = self.gated_mem_update_2(vision_two * vocal_two * emb_two, m_one)
-        else:
-            m_two = m_one + vision_two * vocal_two * emb_two
-        return m_two
         '-------------------------------------------------Prediction--------------------------------------------------'
         # return m_two
         # outputs = self.fc(m_two)
@@ -270,14 +172,15 @@ vocal_hidden_size = 512
 vision_hidden_size = 512
 wordvec_hidden_size = 512
 dan_hidden_size = 1024
-attention_hidden_size = 128
+self_atten_hidden_size = 128
 gated_mem = True
 '----------------------------------------------------------------------------------------------------------------------'
 Vocal_encoder = VocalNet(vocal_input_size, vocal_hidden_size, vocal_num_layers)
 Vision_encoder = VisionNet(vision_input_size, vision_hidden_size, vision_num_layers)
 Wordvec_encoder = WordvecNet(wordvec_input_size, wordvec_hidden_size, wordvec_num_layers)
-Attention = TripleAttention(no_of_emotions,dan_hidden_size,attention_hidden_size,gated_mem)
-Predictor = predictor(no_of_emotions,dan_hidden_size)
+# Attention = TripleAttention(no_of_emotions,dan_hidden_size,attention_hidden_size,gated_mem)
+Attention = EarlyCatSelfAtten(no_of_emotions, vision_hidden_size, self_atten_hidden_size)
+Predictor = predictor(no_of_emotions,self_atten_hidden_size)
 if train_mode:
     train_dataset = mosei(mode= "train")
     data_loader = torch.utils.data.DataLoader(dataset=train_dataset,
@@ -316,8 +219,8 @@ optimizer = torch.optim.Adam(params, lr = 0.0001)
 
 def save_checkpoint(state, is_final, filename='attention_net'):
     filename = filename +'_'+str(state['epoch'])+'.pth.tar'
-    os.system("mkdir -p TAN_1024_scalarTime_gated")
-    torch.save(state, './TAN_1024_scalarTime_gated/'+filename)
+    os.system("mkdir -p EarlyCat_self_attention")
+    torch.save(state, './EarlyCat_self_attention/'+filename)
     if is_final:
         shutil.copyfile(filename, 'model_final.pth.tar')
 
@@ -346,7 +249,7 @@ while epoch<no_of_epochs:
     running_loss = 0
     running_corrects = 0
     if use_pretrained:
-        pretrained_file = './TAN_1024_scalarTime_gated/triple_attention_net__6.pth.tar'
+        pretrained_file = './EarlyCat_self_attention/triple_attention_net__4.pth.tar'
         # pretrained_file = './TAN/triple_attention_net__8.pth.tar'
 
         checkpoint = torch.load(pretrained_file)

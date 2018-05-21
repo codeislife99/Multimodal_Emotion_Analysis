@@ -199,7 +199,7 @@ class SelfAttention_A(nn.Module):
         return representations, attentions
 
 class SelfAttention_B(nn.Module):
-    def __init__(self, enc_hidden_size, att_hidden_size, batch_size):
+    def __init__(self, enc_hidden_size, att_hidden_size, batch_size=1):
         super(SelfAttention_B, self).__init__()
         # this naive implementation can only handle batch sizes = 1, so
         assert batch_size == 1 # to reject batch size > 1

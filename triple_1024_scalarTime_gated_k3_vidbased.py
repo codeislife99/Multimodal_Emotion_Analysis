@@ -32,6 +32,10 @@ from mosei_dataloader import mosei
 from torch.nn.parameter import Parameter
 from models.highway import GatedMemUpdate
 
+torch.manual_seed(777)
+torch.cuda.manual_seed(777)
+np.random.seed(777)
+
 preprocess = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
@@ -142,13 +146,23 @@ class TripleAttention(nn.Module):
         if gated_mem:
             self.gated_mem_update_2 = GatedMemUpdate(N)
 
+        ''' K = 3 '''
+        self.Wvision_3 = nn.Linear(N,N2)
+        self.Wvision_m3 = nn.Linear(N,N2)
+        self.Wvision_h3 = nn.Linear(N2,1)
+        self.Wvocal_3 = nn.Linear(N,N2)
+        self.Wvocal_m3 = nn.Linear(N,N2)
+        self.Wvocal_h3 = nn.Linear(N2,1)
+        self.Wemb_3 = nn.Linear(N,N2)
+        self.Wemb_m3 = nn.Linear(N,N2)
+        self.Wemb_h3 = nn.Linear(N2,1)
+        if gated_mem:
+            self.gated_mem_update_3 = GatedMemUpdate(N)
+
         self.fc = nn.Linear(N, no_of_emotions)
 
 
     def forward(self,vocal,vision,emb):
-        print('vocal', vocal.size())
-        print('vision', vision.size())
-        print('emb', emb.size())
         N = dan_hidden_size
         N2 = attention_hidden_size
         # Sorting out vision
@@ -227,7 +241,40 @@ class TripleAttention(nn.Module):
             m_two = self.gated_mem_update_2(vision_two * vocal_two * emb_two, m_one)
         else:
             m_two = m_one + vision_two * vocal_two * emb_two
-        return m_two
+        m_two_vision = m_two.repeat(vision.size(0),1)
+        m_two_vocal = m_two.repeat(vocal.size(0),1)
+        m_two_emb = m_two.repeat(emb.size(0),1)
+
+
+
+        '--------------------------------------------------K = 3  ---------------------------------------------------'
+
+        # Visual Attention
+        h_three_vision = F.tanh(self.Wvision_3(vision))*F.tanh(self.Wvision_m3(m_two_vision))
+        a_three_vision = F.softmax(self.Wvision_h3(h_three_vision),dim=0)
+        vision_three = (a_three_vision.repeat(1,N)*vision).mean(0).unsqueeze(0)
+        # avision_two = (a_two_vision.repeat(1,N)*vision).mean(0).unsqueeze(0)
+        # vision_two = F.tanh(self.Pvision_2(avision_two))
+
+        # Vocal Attention
+        h_three_vocal = F.tanh(self.Wvocal_3(vocal))*F.tanh(self.Wvocal_m3(m_two_vocal))
+        a_three_vocal = F.softmax(self.Wvocal_h3(h_three_vocal),dim=0)
+        vocal_three = (a_three_vocal.repeat(1,N)*vocal).mean(0).unsqueeze(0)
+        # avocal_two = (a_two_vocal.repeat(1,N)*vocal).mean(0).unsqueeze(0)
+        # vocal_two = F.tanh(self.Pvocal_2(avocal_two))
+
+        # Emb Attention
+        h_three_emb = F.tanh(self.Wemb_3(emb))*F.tanh(self.Wemb_m3(m_two_emb))
+        a_three_emb = F.softmax(self.Wemb_h3(h_three_emb),dim=0)
+        emb_three = (a_three_emb.repeat(1,N)*emb).mean(0).unsqueeze(0)
+        # aemb_two = (a_two_emb.repeat(1,N)*emb).mean(0).unsqueeze(0)
+        # emb_two = F.tanh(self.Pemb_2(aemb_two))
+
+        if self.gated_mem:
+            m_three = self.gated_mem_update_3(vision_three * vocal_three * emb_three, m_two)
+        else:
+            m_three = m_two + vision_three * vocal_three * emb_three
+        return m_three
         '-------------------------------------------------Prediction--------------------------------------------------'
         # return m_two
         # outputs = self.fc(m_two)
@@ -252,12 +299,12 @@ batch_size = 1
 mega_batch_size = 1
 no_of_emotions = 6
 use_CUDA = True
-use_pretrained = False
-num_workers = 20
+use_pretrained = True
+num_workers = 0
 
 test_mode = False
-val_mode = False
-train_mode = True
+val_mode = True
+train_mode = False
 
 no_of_epochs = 1000
 vocal_input_size = 74 # Dont Change
@@ -279,18 +326,18 @@ Wordvec_encoder = WordvecNet(wordvec_input_size, wordvec_hidden_size, wordvec_nu
 Attention = TripleAttention(no_of_emotions,dan_hidden_size,attention_hidden_size,gated_mem)
 Predictor = predictor(no_of_emotions,dan_hidden_size)
 if train_mode:
-    train_dataset = mosei(mode= "train")
+    train_dataset = mosei(mode= "train", segment=False)
     data_loader = torch.utils.data.DataLoader(dataset=train_dataset,
                                         batch_size=batch_size,
                                         shuffle=True,num_workers = num_workers)
 elif val_mode:
-    val_dataset = mosei(mode = "val")
+    val_dataset = mosei(mode = "val", segment=False)
     data_loader = torch.utils.data.DataLoader(dataset=val_dataset,
                                         batch_size=1,
                                         shuffle=False,num_workers = num_workers)
     no_of_epochs = 1
 else:
-    test_dataset = mosei(mode = "test")
+    test_dataset = mosei(mode = "test", segment=False)
     data_loader = torch.utils.data.DataLoader(dataset=test_dataset,
                                         batch_size=1,
                                         shuffle=False,num_workers = num_workers)

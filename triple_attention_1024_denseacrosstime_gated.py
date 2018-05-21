@@ -232,12 +232,12 @@ batch_size = 1
 mega_batch_size = 1
 no_of_emotions = 6
 use_CUDA = True
-use_pretrained = False
+use_pretrained = True
 num_workers = 20
 
 test_mode = False
-val_mode = False
-train_mode = True
+val_mode = True
+train_mode = False
 
 no_of_epochs = 1000
 vocal_input_size = 74 # Dont Change
@@ -325,7 +325,7 @@ while epoch<no_of_epochs:
     running_corrects = 0
     if use_pretrained:
         # pretrained_file = './TAN/triple_attention_net_iter_8000_0.pth.tar'
-        pretrained_file = './TAN_1024_denseacrosstime_gated/triple_attention_net__7.pth.tar'
+        pretrained_file = './TAN_1024_denseacrosstime_gated/triple_attention_net__5.pth.tar'
 
         checkpoint = torch.load(pretrained_file)
         Vocal_encoder.load_state_dict(checkpoint['Vocal_encoder'])

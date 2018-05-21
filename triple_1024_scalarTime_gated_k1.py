@@ -129,26 +129,10 @@ class TripleAttention(nn.Module):
         if gated_mem:
             self.gated_mem_update_1 = GatedMemUpdate(N)
 
-        ''' K = 2 '''
-        self.Wvision_2 = nn.Linear(N,N2)
-        self.Wvision_m2 = nn.Linear(N,N2)
-        self.Wvision_h2 = nn.Linear(N2,1)
-        self.Wvocal_2 = nn.Linear(N,N2)
-        self.Wvocal_m2 = nn.Linear(N,N2)
-        self.Wvocal_h2 = nn.Linear(N2,1)
-        self.Wemb_2 = nn.Linear(N,N2)
-        self.Wemb_m2 = nn.Linear(N,N2)
-        self.Wemb_h2 = nn.Linear(N2,1)
-        if gated_mem:
-            self.gated_mem_update_2 = GatedMemUpdate(N)
-
         self.fc = nn.Linear(N, no_of_emotions)
 
 
     def forward(self,vocal,vision,emb):
-        print('vocal', vocal.size())
-        print('vision', vision.size())
-        print('emb', emb.size())
         N = dan_hidden_size
         N2 = attention_hidden_size
         # Sorting out vision
@@ -193,41 +177,9 @@ class TripleAttention(nn.Module):
             m_one = self.gated_mem_update_1(vision_one * vocal_one * emb_one, m_zero)
         else:
             m_one = m_zero + vision_one * vocal_one * emb_one
-        m_one_vision = m_one.repeat(vision.size(0),1)
-        m_one_vocal = m_one.repeat(vocal.size(0),1)
-        m_one_emb = m_one.repeat(emb.size(0),1)
+        return m_one
 
 
-
-        '--------------------------------------------------K = 2  ---------------------------------------------------'
-
-        # Visual Attention
-        h_two_vision = F.tanh(self.Wvision_2(vision))*F.tanh(self.Wvision_m2(m_one_vision))
-        a_two_vision = F.softmax(self.Wvision_h2(h_two_vision),dim=0)
-        vision_two = (a_two_vision.repeat(1,N)*vision).mean(0).unsqueeze(0)
-        # avision_two = (a_two_vision.repeat(1,N)*vision).mean(0).unsqueeze(0)
-        # vision_two = F.tanh(self.Pvision_2(avision_two))
-
-        # Vocal Attention
-        h_two_vocal = F.tanh(self.Wvocal_2(vocal))*F.tanh(self.Wvocal_m2(m_one_vocal))
-        a_two_vocal = F.softmax(self.Wvocal_h2(h_two_vocal),dim=0)
-        vocal_two = (a_two_vocal.repeat(1,N)*vocal).mean(0).unsqueeze(0)
-        # avocal_two = (a_two_vocal.repeat(1,N)*vocal).mean(0).unsqueeze(0)
-        # vocal_two = F.tanh(self.Pvocal_2(avocal_two))
-
-        # Emb Attention
-        h_two_emb = F.tanh(self.Wemb_2(emb))*F.tanh(self.Wemb_m2(m_one_emb))
-        a_two_emb = F.softmax(self.Wemb_h2(h_two_emb),dim=0)
-        emb_two = (a_two_emb.repeat(1,N)*emb).mean(0).unsqueeze(0)
-        # aemb_two = (a_two_emb.repeat(1,N)*emb).mean(0).unsqueeze(0)
-        # emb_two = F.tanh(self.Pemb_2(aemb_two))
-
-        # Memory Update
-        if self.gated_mem:
-            m_two = self.gated_mem_update_2(vision_two * vocal_two * emb_two, m_one)
-        else:
-            m_two = m_one + vision_two * vocal_two * emb_two
-        return m_two
         '-------------------------------------------------Prediction--------------------------------------------------'
         # return m_two
         # outputs = self.fc(m_two)
@@ -346,7 +298,7 @@ while epoch<no_of_epochs:
     running_loss = 0
     running_corrects = 0
     if use_pretrained:
-        pretrained_file = './TAN_1024_scalarTime_gated/triple_attention_net__6.pth.tar'
+        pretrained_file = './TAN_1024_scalarTime_gated_k1/triple_attention_net__4.pth.tar'
         # pretrained_file = './TAN/triple_attention_net__8.pth.tar'
 
         checkpoint = torch.load(pretrained_file)
