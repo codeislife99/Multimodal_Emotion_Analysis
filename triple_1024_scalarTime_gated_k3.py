@@ -295,12 +295,12 @@ batch_size = 1
 mega_batch_size = 1
 no_of_emotions = 6
 use_CUDA = True
-use_pretrained = False
+use_pretrained = True
 num_workers = 20
 
-test_mode = False
+test_mode = True
 val_mode = False
-train_mode = True
+train_mode = False
 
 no_of_epochs = 1000
 vocal_input_size = 74 # Dont Change
