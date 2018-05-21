@@ -124,8 +124,8 @@ class EarlyCatSelfAtten(nn.Module):
 
 
     def forward(self, vocal, vision, emb):
-        enc_concat = torch.cat((vision, vocal, emb), 0) # concatenate along time dimension
-        enc_concat = torch.transpose(enc_concat, 0, 1) # (seq_len, 3*enc_hidden_size)
+        enc_concat = torch.cat((vision, vocal, emb), 1) # concatenate along time dimension
+        print('enc_concat', enc_concat.size())
         context = self.self_atten(enc_concat) # attention context - the convex combination (along time) of concat'd stacked encodings
 
 
