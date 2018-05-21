@@ -146,6 +146,9 @@ class TripleAttention(nn.Module):
 
 
     def forward(self,vocal,vision,emb):
+        print('vocal', vocal.size())
+        print('vision', vision.size())
+        print('emb', emb.size())
         N = dan_hidden_size
         N2 = attention_hidden_size
         # Sorting out vision
@@ -249,12 +252,12 @@ batch_size = 1
 mega_batch_size = 1
 no_of_emotions = 6
 use_CUDA = True
-use_pretrained = True
+use_pretrained = False
 num_workers = 20
 
-test_mode = True
+test_mode = False
 val_mode = False
-train_mode = False
+train_mode = True
 
 no_of_epochs = 1000
 vocal_input_size = 74 # Dont Change
