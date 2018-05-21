@@ -30,6 +30,10 @@ from sklearn.metrics import precision_score, recall_score, confusion_matrix, cla
 from torch.utils.data import Dataset, DataLoader
 from mosei_dataloader import mosei
 
+torch.manual_seed(777)
+torch.cuda.manual_seed(777)
+np.random.seed(777)
+
 preprocess = transforms.Compose([
 	transforms.ToTensor(),
 	transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
@@ -64,18 +68,18 @@ mega_batch_size = 1
 no_of_emotions = 6
 
 use_CUDA = True
-use_pretrained =  False
+use_pretrained = True
 num_workers = 20
 
-test_mode = False
+test_mode = True
 val_mode = False
-train_mode = True
+train_mode = False
 
-no_of_epochs = 1000
+no_of_epochs = 12
 vision_input_size = 35 # Dont Change
 vision_num_layers = 2
-vision_hidden_size = 1024
-predictor_input_size = 2048 
+vision_hidden_size = 512
+predictor_input_size = 1024 
 '----------------------------------------------------------------------------------------------------------------------'
 Vision_encoder = VisionNet(vision_input_size, vision_hidden_size, vision_num_layers)
 Predictor = predictor(no_of_emotions,predictor_input_size)
@@ -138,7 +142,7 @@ while epoch<no_of_epochs:
 	running_corrects = 0
 	if use_pretrained:
 		# pretrained_file = './vision_only/vision_net_iter_8000_0.pth.tar'
-		pretrained_file = './vision_only/vision_net__0.pth.tar'
+		pretrained_file = './vision_only/vision_net__11.pth.tar'
 
 		checkpoint = torch.load(pretrained_file)
 		Vision_encoder.load_state_dict(checkpoint['Vision_encoder'])

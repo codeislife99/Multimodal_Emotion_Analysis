@@ -44,7 +44,10 @@ np.random.seed(777)
  | Triple Attention-scalar-1024-gated | V+A+T(scalarAttTime)- __4.pth | 0.4812 | 0.4683 | 0.4470 |     | | | |
  | Triple Attention-scalar-1024-gated | V+A+T(scalarAttTime)- __5.pth | 0.4838 | 0.4649 | 0.4262 |     | | | |
  | Early Concatenation | V+A+T      |         |           |   |        | | | |
- | Late Weighting      | V+A+T      |         |           |   |         | | | |
+ | Late Weighting      | V+A+T __0.pth |         |           |   |         | | | |
+ | Late Weighting      | V+A+T __1.pth |         |           |   |         | | | |
+ | Late Weighting      | V+A+T __2.pth |         |           |   |         | | | |
+ | Late Weighting      | V+A+T __3.pth |         |           |   |         | | | |
  | Dual Attention      | V+T        |         |           |   |        | | | |
  | Dual Attention      | V+A        |  0.5157 | 0.5103    |   |        | | | |
  | Dual Attention      | A+T        |         |           |   |        | | | |

@@ -67,15 +67,15 @@ batch_size = 1
 mega_batch_size = 1
 no_of_emotions = 6
 use_CUDA = True
-use_pretrained = True
+use_pretrained = False
 num_workers = 20
 
-test_mode = True
+test_mode = False
 val_mode = False
-train_mode = False
+train_mode = True
 
 # no_of_epochs = 1000
-no_of_epochs = 6
+no_of_epochs = 22
 wordvec_input_size = 300
 wordvec_num_layers = 2
 wordvec_hidden_size = 512
@@ -141,7 +141,7 @@ while epoch<no_of_epochs:
 	running_loss = 0
 	running_corrects = 0
 	if use_pretrained:
-		pretrained_file = './verbal_only/verbal_net_6.pth.tar'
+		pretrained_file = './verbal_only/verbal_net__3.pth.tar'
 
 		checkpoint = torch.load(pretrained_file)
 		Wordvec_encoder.load_state_dict(checkpoint['Wordvec_encoder'])

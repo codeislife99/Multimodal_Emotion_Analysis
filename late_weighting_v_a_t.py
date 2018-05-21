@@ -32,6 +32,10 @@ from mosei_dataloader import mosei
 from torch.nn.parameter import Parameter
 from models.highway import GatedMemUpdate
 
+torch.manual_seed(777)
+torch.cuda.manual_seed(777)
+np.random.seed(777)
+
 preprocess = transforms.Compose([
 	transforms.ToTensor(),
 	transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
@@ -122,25 +126,25 @@ batch_size = 1
 mega_batch_size = 1
 no_of_emotions = 6
 use_CUDA = True
-use_pretrained = False
-use_pretrained_encoders = True
+use_pretrained = True
+use_pretrained_encoders = False
 num_workers = 20
 
-test_mode = False
+test_mode = True
 val_mode = False
-train_mode = True
+train_mode = False
 
-no_of_epochs = 1000
+no_of_epochs = 30
 vocal_input_size = 74 # Dont Change
 vision_input_size = 35 # Dont Change
 wordvec_input_size = 300
 vocal_num_layers = 2
 vision_num_layers = 2
 wordvec_num_layers = 2
-vocal_hidden_size = 1024
-vision_hidden_size = 1024
-wordvec_hidden_size = 1024
-dan_hidden_size = 2048
+vocal_hidden_size = 512
+vision_hidden_size = 512
+wordvec_hidden_size = 512
+dan_hidden_size = 1024
 gated_mem = False
 '----------------------------------------------------------------------------------------------------------------------'
 Vocal_encoder = VocalNet(vocal_input_size, vocal_hidden_size, vocal_num_layers)
@@ -223,8 +227,8 @@ while epoch<no_of_epochs:
 	running_loss = 0
 	running_corrects = 0
 	if use_pretrained_encoders:
-		pretrained_file_v = './vision_only/vision_net__4.pth.tar'
-		pretrained_file_a = './vocal_only/vocal_net__20.pth.tar'
+		pretrained_file_v = './vision_only/vision_net__10.pth.tar'
+		pretrained_file_a = './vocal_only/vocal_net__7.pth.tar'
 		pretrained_file_t = './verbal_only/verbal_net__4.pth.tar'
 
 		checkpoint_v = torch.load(pretrained_file_v) 
@@ -243,7 +247,7 @@ while epoch<no_of_epochs:
 		use_pretrained_encoders = False
 
 	if use_pretrained:
-		pretrained_file = './late_weight/late_weight_net__0.pth.tar'
+		pretrained_file = './late_weight/late_weight_net__2.pth.tar'
 
 		checkpoint = torch.load(pretrained_file)
 		Vocal_encoder.load_state_dict(checkpoint['Vocal_encoder'])

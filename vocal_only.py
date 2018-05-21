@@ -30,6 +30,10 @@ from sklearn.metrics import precision_score, recall_score, confusion_matrix, cla
 from torch.utils.data import Dataset, DataLoader
 from mosei_dataloader import mosei
 
+torch.manual_seed(777)
+torch.cuda.manual_seed(777)
+np.random.seed(777)
+
 preprocess = transforms.Compose([
 	transforms.ToTensor(),
 	transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
@@ -69,11 +73,11 @@ test_mode = False
 val_mode = False
 train_mode = True
 
-no_of_epochs = 1000
+no_of_epochs = 22
 vocal_input_size = 74 # Dont Change
 vocal_num_layers = 2
-vocal_hidden_size = 1024
-predictor_input_size = 2048
+vocal_hidden_size = 512
+predictor_input_size = 1024
 '----------------------------------------------------------------------------------------------------------------------'
 Vocal_encoder = VocalNet(vocal_input_size, vocal_hidden_size, vocal_num_layers)
 Predictor = predictor(no_of_emotions,predictor_input_size)
