@@ -43,6 +43,12 @@ np.random.seed(777)
  | Triple Attention-1024-gated | V+A+T(attTime)- __5.pth | 0.4911 | 0.4734 | 0.4225 |     | | | |
  | Triple Attention-scalar-1024-gated | V+A+T(scalarAttTime)- __4.pth | 0.4812 | 0.4683 | 0.4470 |     | | | |
  | Triple Attention-scalar-1024-gated | V+A+T(scalarAttTime)- __5.pth | 0.4838 | 0.4649 | 0.4262 |     | | | |
+ | Triple Attention-scalar-1024-gated-k3 | V+A+T(scalarAttTime)- __5.pth | 0.4812 | 0.4912 | 0.4171 |     | | | |
+ | Triple Attention-scalar-1024-gated-k3 | V+A+T(scalarAttTime)- __4.pth | 0.4730 | 0.4709 | 0.3993 |     | | | |
+ | Triple Attention-scalar-1024-gated-k3 | V+A+T(scalarAttTime)- __3.pth | 0.4715 | 0.4602 | 0.4670 |     | | | |
+ | Triple Attention-scalar-1024-gated-k1 | V+A+T(scalarAttTime)- __5.pth | 0.5151 | 0.5034 | 0.4579 |     | | | |
+ | Triple Attention-scalar-1024-gated-k1 | V+A+T(scalarAttTime)- __4.pth | 0.5088 | 0.4957 | 0.4763 |     | | | |
+ | Triple Attention-scalar-1024-gated-k1 | V+A+T(scalarAttTime)- __3.pth | 0.5105 | 0.5042 | 0.4953 |     | | | |
  | Early Concatenation | V+A+T      |         |           |   |        | | | |
  | Late Weighting      | V+A+T __0.pth |         | 0.5175 | 0.5647 |         | | | |
  | Late Weighting      | V+A+T __1.pth |         | 0.5047 | 0.4302 |         | | | |
