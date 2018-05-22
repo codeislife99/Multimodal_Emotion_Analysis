@@ -28,6 +28,9 @@ np.random.seed(777)
  | Triple Attention    | V+A+T      | 0.4765  |   0.4709  |  |         | | | |
  | Triple Attention-scalar | V+A+T(scalarAttTime) __5.pth | 0.5193 | 0.5346 | 0.5986 |   |   | | |
  | Triple Attention-scalar | V+A+T(scalarAttTime) __6.pth | 0.5439 | 0.5520 | 0.5742 |   | | | |
+ | Triple Attention-scalar-1024 | pretrained V+A+T (scalarAttTime)- __1.pth | 0.5159 | 0.5072 | 0.4498 |   | | | |
+ | Triple Attention-scalar-1024 | pretrained V+A+T (scalarAttTime)- __2.pth | 0.5018 | 0.4866 | 0.4103 |   | | | |
+ | Triple Attention-scalar-1024 | pretrained V+A+T (scalarAttTime)- __3.pth | 0.5176 | 0.5043 | 0.3703 |   | | | |
  | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __3.pth | 0.4816 | 0.4790 | 0.4605 |   | | | |
  | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __4.pth | 0.4884 | 0.4806 | 0.4345 |  | | | |
  | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __4.pth(seed777) | -- | 0.4772 | 0.4239 |  | | | |
