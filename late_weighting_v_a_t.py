@@ -247,7 +247,7 @@ while epoch<no_of_epochs:
 		use_pretrained_encoders = False
 
 	if use_pretrained:
-		pretrained_file = './late_weight/late_weight_net__2.pth.tar'
+		pretrained_file = './late_weight/late_weight_net__0.pth.tar'
 
 		checkpoint = torch.load(pretrained_file)
 		Vocal_encoder.load_state_dict(checkpoint['Vocal_encoder'])
