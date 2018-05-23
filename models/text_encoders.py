@@ -213,7 +213,7 @@ class SelfAttention_B(nn.Module):
         """
         param x: (seq_len, enc_hidden_size) Tensor
         """
-        x = x.transpose(1,0) # (enc_hidden_size, seq_len)
+        # x = x.transpose(1,0) # (enc_hidden_size, seq_len)
         a_unnorm = self.v_linear(F.tanh(self.W_linear(x))) # (1, seq_len)
 
         a = F.softmax(a_unnorm, 1)
