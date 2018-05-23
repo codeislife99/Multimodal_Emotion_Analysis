@@ -258,11 +258,10 @@ def main(options):
         e+=1
     if complete:
         model_path = './text_only/model_final.pth.tar'
-        model = torch.load(model_path)
-        model.zero_grad()
+        best_model = torch.load(model_path)
         K = 0
         test_loss = 0.0
-        model.eval()
+        best_model.eval()
         for _, _, x_t, gt in test_iterator:
             # x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
             gt = Variable(gt.float().type(DTYPE), requires_grad=False)
@@ -294,10 +293,10 @@ def main(options):
                     seq_tensor = seq_tensor[perm_idx]
                     seq_tensor = Variable(seq_tensor.float().type(DTYPE), requires_grad=False)
 
-                    output = model(seq_tensor, seq_lengths.cpu().numpy)
+                    output = best_model(seq_tensor, seq_lengths.cpu().numpy)
                 else:
                     x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
-                    output_test = model(x_t)
+                    output_test = best_model(x_t)
 
             loss_test = criterion(output_test, gt)
             test_loss += loss_test.data[0]
