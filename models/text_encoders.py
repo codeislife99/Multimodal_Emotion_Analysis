@@ -70,7 +70,7 @@ class TextOnlyModel(nn.Module):
         if self_attention == 'typeA':
             self.self_att_layer = SelfAttention_A(hid_size)
         elif self_attention == 'typeB':
-            self.self_att_layer = SelfAttention_B(hid_size, hid_size * 4, batch_size)
+            self.self_att_layer = SelfAttention_B(hid_size, hid_size * 2, batch_size)
         else: 
             self.self_att_layer = None
 
@@ -214,7 +214,7 @@ class SelfAttention_B(nn.Module):
         param x: (seq_len, enc_hidden_size) Tensor
         """
         # x = x.transpose(1,0) # (enc_hidden_size, seq_len)
-        a_unnorm = self.v_linear(F.tanh(self.W_linear(x))) # (1, seq_len)
+        a_unnorm = self.v_linear(F.tanh(self.W_linear(x))) # (seq_len, 1)
 
         a = F.softmax(a_unnorm, 1)
 
