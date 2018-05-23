@@ -50,12 +50,12 @@ def display(test_loss, test_binacc, test_precision, test_recall, test_f1, test_s
     print("Seven-class accuracy on test set is {}".format(test_septacc))
     print("Correlation w.r.t human evaluation on test set is {}".format(test_corr))
 
-def save_checkpoint(state, is_final, filename='text_only'):
+def save_checkpoint(state, is_final, filename='tfn'):
     filename = filename +'_'+str(state['epoch'])+'.pth.tar'
-    os.system("mkdir -p text_only") 
-    torch.save(state, './text_only/'+filename)
+    os.system("mkdir -p TFN") 
+    torch.save(state, './TFN/'+filename)
     if is_final:
-        torch.save(state,'./text_only/model_final.pth.tar')
+        torch.save(state,'./TFN/model_final.pth.tar')
 
 def main(options):
     DTYPE = torch.FloatTensor
@@ -171,6 +171,8 @@ def main(options):
             x_v = Variable(x_v.float().type(DTYPE), requires_grad=False)
             x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
 
+            output = model(x_a, x_v, x_t)
+
             loss = criterion(output, gt)
             valid_loss += loss.data[0]
             K+=1
@@ -202,10 +204,11 @@ def main(options):
     if complete:
 
         model_path = './TFN/model_final.pth.tar'
-        best_model = torch.load(model_path)
+        checkpoint = torch.load(model_path)
+        model.load_state_dict(checkpoint['TFN'])
         K = 0
         test_loss = 0.0
-        best_model.eval()
+        model.eval()
         for x_a, x_v, x_t, gt in test_iterator:
             
             gt = Variable(gt.float().type(DTYPE), requires_grad=False)
@@ -213,6 +216,8 @@ def main(options):
             x_a = Variable(x_a.float().type(DTYPE), requires_grad=False)
             x_v = Variable(x_v.float().type(DTYPE), requires_grad=False)
             x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
+
+            output_test = model(x_a, x_v, x_t)
 
             loss_test = criterion(output_test, gt)
             test_loss += loss_test.data[0]
