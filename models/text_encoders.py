@@ -93,6 +93,7 @@ class TextOnlyModel(nn.Module):
             final_h_drop = torch.cat((final_h_drop[0], final_h_drop[1]), 0)
             # print(final_h_drop.size())
         # y = F.sigmoid(self.linear_last(final_h_drop))
+        y = self.linear_last(final_h_drop)
         # y = y*self.output_scale_factor + self.output_shift
         y = torch.clamp(y, 0,3)
         return y
