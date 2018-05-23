@@ -11,6 +11,9 @@ import torch.nn as nn
 import torch.optim as optim
 import numpy as np
 
+torch.manual_seed(777)
+torch.cuda.manual_seed(777)
+np.random.seed(777)
 
 def preprocess(options):
     # parse the input args
@@ -253,28 +256,60 @@ def main(options):
             break
         print("\n\n")
         e+=1
-    # if complete:
+    if complete:
 
-    #     best_model = torch.load(model_path)
-    #     best_model.eval()
-    #     for _, _, x_t, gt in test_iterator:
-    #         x_t = Variable(x_avt[2].float().type(DTYPE), requires_grad=False)
-    #         gt = Variable(gt.float().type(DTYPE), requires_grad=False)
-    #         output_test = model(x_t)
-    #         loss_test = criterion(output_test, gt)
-    #         test_loss = loss_test.data[0]
-    #     output_test = output_test.cpu().data.numpy().reshape(-1)
-    #     gt = gt.cpu().data.numpy().reshape(-1)
+        best_model = torch.load(model_path)
+        best_model.eval()
+        for _, _, x_t, gt in test_iterator:
+            # x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
+            gt = Variable(gt.float().type(DTYPE), requires_grad=False)
 
-    #     test_binacc = accuracy_score(output_test>=0, gt>=0)
-    #     test_precision, test_recall, test_f1, _ = precision_recall_fscore_support(gt>=0, output_test>=0, average='binary')
-    #     test_septacc = (output_test.round() == gt.round()).mean()
+            if model_type == 'torchmoji':
+                x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
+                x_t = x_t.unsqueeze(0)
+                output = model(x_t)
 
-    #     # compute the correlation between true and predicted scores
-    #     test_corr = np.corrcoef([output_test, gt])[0][1]  # corrcoef returns a matrix
-    #     test_loss = test_loss / len(test_set)
+            elif model_type == 'bilstm':
+                x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
+                x_t = x_t.unsqueeze(0)
+                output = model(x_t)
 
-    #     display(test_loss, test_binacc, test_precision, test_recall, test_f1, test_septacc, test_corr)
+            elif model_type == 'basic':
+
+                if batch_size > 1:
+
+                    # need to pad the batch according to longest sequence within it
+                    seq_lengths = torch.LongTensor([x_t[i, :].size()[0] for i in range(x_t.size()[0])])
+
+                    # NOTE: typically padding is performed at word idx level i.e. before embedding projection
+                    # but we begin with embeddings, so *hopefully* it's ok to embed pad tkn as [0]*300
+                    seq_tensor = torch.zeros((x_t.size()[0], seq_lengths.max(), x_t.size()[2]))
+                    for idx, (seq, seqlen) in enumerate(zip(x_t.long(), seq_lengths)):
+                        seq_tensor[idx, :seqlen] = torch.LongTensor(seq)
+                    # sort tensors by length
+                    seq_lengths, perm_idx = seq_lengths.sort(0, descending=True)
+                    seq_tensor = seq_tensor[perm_idx]
+                    seq_tensor = Variable(seq_tensor.float().type(DTYPE), requires_grad=False)
+
+                    output = model(seq_tensor, seq_lengths.cpu().numpy)
+                else:
+                    x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
+                    output_test = model(x_t)
+
+            loss_test = criterion(output_test, gt)
+            test_loss = loss_test.data[0]
+        output_test = output_test.cpu().data.numpy().reshape(-1)
+        gt = gt.cpu().data.numpy().reshape(-1)
+
+        test_binacc = accuracy_score(output_test>=0.5, gt>=0.5)
+        test_precision, test_recall, test_f1, _ = precision_recall_fscore_support(gt>=0.5, output_test>=0.5, average='binary')
+        test_septacc = (output_test.round() == gt.round()).mean()
+
+        # compute the correlation between true and predicted scores
+        test_corr = np.corrcoef([output_test, gt])[0][1]  # corrcoef returns a matrix
+        test_loss = test_loss / len(test_set)
+
+        display(test_loss, test_binacc, test_precision, test_recall, test_f1, test_septacc, test_corr)
     return
 
 if __name__ == "__main__":
@@ -283,7 +318,7 @@ if __name__ == "__main__":
                          type=str, default='MOSEI')
     OPTIONS.add_argument('--epochs', dest='epochs', type=int, default=50)
     OPTIONS.add_argument('--batch_size', dest='batch_size', type=int, default=1)
-    OPTIONS.add_argument('--mega_batch_size', dest='mega_batch_size', type=int, default=16)
+    OPTIONS.add_argument('--mega_batch_size', dest='mega_batch_size', type=int, default=1)
     OPTIONS.add_argument('--patience', dest='patience', type=int, default=20)
     OPTIONS.add_argument('--cuda', dest='cuda', action='store_true', default=False)
     OPTIONS.add_argument('--model_path', dest='model_path',
@@ -291,7 +326,7 @@ if __name__ == "__main__":
     OPTIONS.add_argument('--vidorseg', dest='vid_or_seg_based', type=str, default='seg')
     OPTIONS.add_argument('--num_workers', dest='num_workers', type=int, default=20)
     OPTIONS.add_argument('--num_layers', dest='num_layers', type=int, default=2)
-    OPTIONS.add_argument('--hidden_size', dest='hidden_size', type=int, default=150)
+    OPTIONS.add_argument('--hidden_size', dest='hidden_size', type=int, default=256)
     OPTIONS.add_argument('--bidirectional', dest='bidirectional', action='store_true', default=False)
     OPTIONS.add_argument('--self_att', dest='self_att', type=str, default='none')
     OPTIONS.add_argument('--model', dest='model', type=str, default='basic')
