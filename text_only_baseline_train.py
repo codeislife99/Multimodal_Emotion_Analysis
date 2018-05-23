@@ -80,7 +80,7 @@ def main(options):
     batch_size = options['batch_size']
     self_attention = options['self_att']
     if model_type == 'basic':
-        model = TextOnlyModel(input_dim, text_hid_size, 6, batch_size, rnn_dropout=0.2, post_dropout=0.2, 
+        model = TextOnlyModel(input_dim, text_hid_size, 6, batch_size, rnn_dropout=0.4, post_dropout=0.4, 
                               bidirectional=bidirectional, self_attention=self_attention)
     elif model_type == 'torchmoji':
         nb_tokens = 0 # dummy - unused in adjusted torchmoji model
@@ -171,21 +171,21 @@ def main(options):
             if K%20 == 0:
                 print('Training -- Epoch [%d], Sample [%d], Average Loss: %.4f'
                 % (e+1, K, average_loss))
-            if K%4000 == 0:
-                save_checkpoint({
-                    'epoch': e,
-                    'loss' : average_loss,
-                    'text_model' : model.state_dict(),
-                    'optimizer': optimizer.state_dict(),
-                }, False,'text_only_net_iter_'+str(K))
+            # if K%4000 == 0:
+            #     save_checkpoint({
+            #         'epoch': e,
+            #         'loss' : average_loss,
+            #         'text_model' : model.state_dict(),
+            #         'optimizer': optimizer.state_dict(),
+            #     }, False,'text_only_net_iter_'+str(K))
 
         print("Epoch {} complete! Average Training loss: {}".format(e, average_loss))
-        save_checkpoint({
-            'epoch': e,
-            'loss' : average_loss,
-            'text_model' : model.state_dict(),
-            'optimizer': optimizer.state_dict(),
-        }, False,'text_only_net_')
+        # save_checkpoint({
+        #     'epoch': e,
+        #     'loss' : average_loss,
+        #     'text_model' : model.state_dict(),
+        #     'optimizer': optimizer.state_dict(),
+        # }, False,'text_only_net_')
         # Terminate the training process if run into NaN
         # On validation set we don't have to compute metrics other than MAE and accuracy
         model.zero_grad()
@@ -247,7 +247,7 @@ def main(options):
                 'loss' : min_valid_loss,
                 'text_model' : model.state_dict(),
                 'optimizer': optimizer.state_dict(),
-            }, True,'text_only_net_')
+            }, True)
             print("Found new best model, saving to disk...")
         else:
             curr_patience -= 1
@@ -257,9 +257,12 @@ def main(options):
         print("\n\n")
         e+=1
     if complete:
-
-        best_model = torch.load(model_path)
-        best_model.eval()
+        model_path = './text_only/model_final.pth.tar'
+        model = torch.load(model_path)
+        model.zero_grad()
+        K = 0
+        test_loss = 0.0
+        model.eval()
         for _, _, x_t, gt in test_iterator:
             # x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
             gt = Variable(gt.float().type(DTYPE), requires_grad=False)
@@ -267,12 +270,12 @@ def main(options):
             if model_type == 'torchmoji':
                 x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
                 x_t = x_t.unsqueeze(0)
-                output = model(x_t)
+                output = best_model(x_t)
 
             elif model_type == 'bilstm':
                 x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
                 x_t = x_t.unsqueeze(0)
-                output = model(x_t)
+                output = best_model(x_t)
 
             elif model_type == 'basic':
 
@@ -297,7 +300,12 @@ def main(options):
                     output_test = model(x_t)
 
             loss_test = criterion(output_test, gt)
-            test_loss = loss_test.data[0]
+            test_loss += loss_test.data[0]
+            K+=1
+            average_test_loss = test_loss/K
+            if K%20 == 0:
+                print('Testing -- Epoch [%d], Sample [%d], Average Loss: %.4f'
+                % (e+1, K, average_valid_loss))
         output_test = output_test.cpu().data.numpy().reshape(-1)
         gt = gt.cpu().data.numpy().reshape(-1)
 
@@ -307,16 +315,16 @@ def main(options):
 
         # compute the correlation between true and predicted scores
         test_corr = np.corrcoef([output_test, gt])[0][1]  # corrcoef returns a matrix
-        test_loss = test_loss / len(test_set)
+        # test_loss = test_loss / len(test_set)
 
-        display(test_loss, test_binacc, test_precision, test_recall, test_f1, test_septacc, test_corr)
+        display(average_test_loss, test_binacc, test_precision, test_recall, test_f1, test_septacc, test_corr)
     return
 
 if __name__ == "__main__":
     OPTIONS = argparse.ArgumentParser()
     OPTIONS.add_argument('--dataset', dest='dataset',
                          type=str, default='MOSEI')
-    OPTIONS.add_argument('--epochs', dest='epochs', type=int, default=50)
+    OPTIONS.add_argument('--epochs', dest='epochs', type=int, default=10)
     OPTIONS.add_argument('--batch_size', dest='batch_size', type=int, default=1)
     OPTIONS.add_argument('--mega_batch_size', dest='mega_batch_size', type=int, default=1)
     OPTIONS.add_argument('--patience', dest='patience', type=int, default=20)
