@@ -76,7 +76,30 @@ np.random.seed(777)
  | LSTM                | V          | 0.5170  | 0.5106    |   |        | | | |        
  | LSTM                | T          | 0.6026  | 0.6056    |   |        | | | |        
  | LSTM                | A          |         |           |   |        | | | |        
-      
+
+#### Scoring
+To add scoring capabilities in your python script
+
+1. import the scoring function 
+from cmu_score import ComputePerformance
+
+2. initialise a numpy array to store *all* reference and hypotheses
+while epoch<no_of_epochs:
+  overall_hyp=np.zeros((0,no_of_emotions))
+  overall_ref=np.zeros((0,no_of_emotions))
+
+3. assign the outputs and ground truth value
+  overall_hyp = np.concatenate((overall_hyp,outputs.data.cpu().numpy()),axis=0)
+  overall_ref = np.concatenate((overall_ref,gt.data.cpu().numpy()),axis=0)
+ 
+4. At the end of the epoch, score it
+score=ComputePerformance(overall_ref,overall_hyp);
+print('Scoring -- Epoch [%d], Sample [%d], Binary accuracy %.4f' % (epoch+1, K, score['binaryaccuracy']))
+print('Scoring -- Epoch [%d], Sample [%d], MSE %.4f' % (epoch+1, K, score['MSE']))
+print('Scoring -- Epoch [%d], Sample [%d], MAE %.4f' % (epoch+1, K, score['MAE']))
+
+
+    
 #### Structure of Pickle Files
 
 ##### 1. Emotions.pkl 
@@ -96,9 +119,6 @@ These emotion labels are emotion intensities, out of 23453 segments 6542 of them
 ...   for j in mosei_emotions[i].keys():
 ...     if(max(mosei_emotions[i][j])==min(mosei_emotions[i][j])) or sorted(mosei_emotions[i][j],reverse=True)[0]==sorted(mosei_emotions[i][j],reverse=True)[1]:
 ...       k2 = k2+ 1
-
-
-
 
 
 
