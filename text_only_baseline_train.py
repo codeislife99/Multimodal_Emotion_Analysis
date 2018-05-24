@@ -259,7 +259,7 @@ def main(options):
     if complete:
         model_path = './text_only/model_final.pth.tar'
         checkpoint = torch.load(model_path)
-        model.load_state_dict(checkpoint['text_only'])
+        model.load_state_dict(checkpoint['text_model'])
         K = 0
         test_loss = 0.0
         model.eval()
