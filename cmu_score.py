@@ -10,8 +10,10 @@ def ComputePerformance(ref,hyp):
     # print(ref_local)
     # print(hyp_local)
 
-    ref_binary=(ref_local >= 0.5)
-    hyp_binary=(hyp_local >= 0.5)
+    ref_binary=np.zeros(np.shape(ref_local))
+    ref_binary[ref_local >= 0.5]=1
+    hyp_binary=np.zeros(np.shape(hyp_local))
+    hyp_binary[hyp_local >= 0.5]=1
 
     # ref_flat=np.reshape(ref_local,(1,np.prod(np.shape(ref_local))))
     # hyp_flat=np.reshape(hyp_local,(1,np.prod(np.shape(hyp_local))))
