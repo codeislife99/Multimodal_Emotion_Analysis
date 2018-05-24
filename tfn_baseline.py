@@ -52,7 +52,7 @@ def display(test_loss, test_binacc, test_precision, test_recall, test_f1, test_s
 
 def save_checkpoint(state, is_final, filename='tfn'):
     filename = filename +'_'+str(state['epoch'])+'.pth.tar'
-    os.system("mkdir -p TFN") 
+    os.system("mkdir -p TFN")
     torch.save(state, './TFN/'+filename)
     if is_final:
         torch.save(state,'./TFN/model_final.pth.tar')
@@ -79,7 +79,7 @@ def main(options):
     text_hid_size = options['hidden_size']
     batch_size = options['batch_size']
     self_attention = options['self_att']
-    
+
     model = TFN(input_dims, (4, 16, 128), 64, (0.3, 0.3, 0.3, 0.3), 32)
 
     if options['cuda']:
@@ -100,7 +100,7 @@ def main(options):
         # pretrained_file = './TAN/triple_attention_net_iter_8000_0.pth.tar'
         pretrained_file = './TFN/TFN_net__0.pth.tar'
         checkpoint = torch.load(pretrained_file)
-        model.load_state_dict(checkpoint['text_model'])
+        model.load_state_dict(checkpoint['tfn_model'])
         use_pretrained = False
         e = checkpoint['epoch']+1
         optimizer.load_state_dict(checkpoint['optimizer'])
@@ -112,7 +112,7 @@ def main(options):
         K = 0
         for x_a, x_v, x_t, gt in train_iterator: # iterate over batches of text and gt labels (x_t is unpadded)
             # model.zero_grad()
-            
+
             # the provided data has format [batch_size, seq_len, feature_dim] or [batch_size, 1, feature_dim]
 
             # x_t = Variable(x_t.float().type(DTYPE), requires_grad=False) # unpadded
@@ -134,9 +134,9 @@ def main(options):
                 optimizer.step()
                 optimizer.zero_grad()
                 model.zero_grad()
-            
-            
-            train_loss += loss.data[0] 
+
+
+            train_loss += loss.data[0]
             K+=1
             average_loss = train_loss/K
             if K%20 == 0:
@@ -189,7 +189,7 @@ def main(options):
             save_checkpoint({
                 'epoch': e,
                 'loss' : min_valid_loss,
-                'text_model' : model.state_dict(),
+                'tfn_model' : model.state_dict(),
                 'optimizer': optimizer.state_dict(),
             }, True)
             print("Found new best model, saving to disk...")
@@ -210,7 +210,7 @@ def main(options):
         test_loss = 0.0
         model.eval()
         for x_a, x_v, x_t, gt in test_iterator:
-            
+
             gt = Variable(gt.float().type(DTYPE), requires_grad=False)
 
             x_a = Variable(x_a.float().type(DTYPE), requires_grad=False)
@@ -244,7 +244,7 @@ if __name__ == "__main__":
     OPTIONS = argparse.ArgumentParser()
     OPTIONS.add_argument('--dataset', dest='dataset',
                          type=str, default='MOSEI')
-    OPTIONS.add_argument('--epochs', dest='epochs', type=int, default=10)
+    OPTIONS.add_argument('--epochs', dest='epochs', type=int, default=20)
     OPTIONS.add_argument('--batch_size', dest='batch_size', type=int, default=1)
     OPTIONS.add_argument('--mega_batch_size', dest='mega_batch_size', type=int, default=1)
     OPTIONS.add_argument('--patience', dest='patience', type=int, default=20)
