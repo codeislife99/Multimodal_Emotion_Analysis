@@ -124,7 +124,7 @@ def main(options):
 
             print('x_a', x_a.size())
             print('x_v', x_v.size())
-            print('x_t', x_tsize())
+            print('x_t', x_t.size())
 
             output = model(x_a, x_v, x_t)
 
