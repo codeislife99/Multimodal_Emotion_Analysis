@@ -72,7 +72,7 @@ def main(options):
     valid_iterator = DataLoader(valid_set, batch_size=1, num_workers=num_workers, shuffle=True)
     test_iterator = DataLoader(test_set, batch_size=1, num_workers=num_workers, shuffle=True)
 
-    input_dims = (35, 74, 300) # audio, visual, textual
+    input_dims = (74, 35, 300) # audio, visual, textual
     batch_size = options['batch_size']
     bidirectional = options['bidirectional']
     num_layers = options['num_layers']
