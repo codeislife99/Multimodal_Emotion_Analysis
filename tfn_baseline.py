@@ -122,6 +122,10 @@ def main(options):
             x_v = Variable(x_v.float().type(DTYPE), requires_grad=False)
             x_t = Variable(x_t.float().type(DTYPE), requires_grad=False)
 
+            # temporally pool audio and vision over segment
+            x_a = torch.mean(x_a, 1) # keepdim=False by default --> (batch_sz, 1, feature_dim)
+            x_v = torch.mean(x_v, 1)
+
             print('x_a', x_a.size())
             print('x_v', x_v.size())
             print('x_t', x_t.size())
