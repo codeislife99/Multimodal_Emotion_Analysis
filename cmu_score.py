@@ -1,6 +1,8 @@
 import numpy as np
 from sklearn.metrics import precision_score, recall_score, confusion_matrix, classification_report, accuracy_score, f1_score
 
+eps=1e-12
+
 def ComputePerformance(ref,hyp):
     # ref_local=ref.data.cpu().numpy()
     # hyp_local=hyp.data.cpu().numpy()
@@ -19,6 +21,10 @@ def ComputePerformance(ref,hyp):
 
     ref_class_binary=np.zeros((no_of_classes,no_of_examples))
     hyp_class_binary=np.zeros((no_of_classes,no_of_examples))
+    score = dict()
+    score['WA']=[[] for i in range(0,no_of_classes)]
+    score['F1customised']=[[] for i in range(0,no_of_classes)]
+    score['F1']=[[] for i in range(0,no_of_classes)]
     for i in range(0,no_of_classes):
       ref_class_binary[i][ref_local[:,i] >= 0.5]=1
       hyp_class_binary[i][hyp_local[:,i] >= 0.5]=1
@@ -26,11 +32,19 @@ def ComputePerformance(ref,hyp):
       TN=np.sum(np.logical_and(ref_class_binary[i]==0,hyp_class_binary[i]==0))
       FP=np.sum(np.logical_and(ref_class_binary[i]==0,hyp_class_binary[i]==1))
       FN=np.sum(np.logical_and(ref_class_binary[i]==1,hyp_class_binary[i]==0))
-      
- 
-      score['WA'][i] = f1
-      score['F1customised'][i] =
-      score['F1'][i] =   
+      P=TP+FN
+      N=TN+FP
+      score['WA'][i] = (TP*N/max(P,eps)+TN)/(2*max(N,eps))
+      score['F1customised'][i] =(2*TP)/max(2*TP+FP+FN,eps)
+      score['F1'][i] = f1_score(ref_class_binary[i],hyp_class_binary[i])
+      # print('customised F1')
+      # print(score['F1customised'][i])
+      # print('default F1')
+      # print(score['F1'][i])
+      # print('WA')
+      # print(score['WA'][i])
+    # print('overall F1')
+    score['overallF1'] = f1_score(np.reshape(ref_binary, (1,np.prod(np.shape(ref_binary))))[0],np.reshape(hyp_binary, (1,np.prod(np.shape(hyp_binary))))[0])
    
  
 
@@ -39,7 +53,6 @@ def ComputePerformance(ref,hyp):
    
     # print(ref_binary)
     # print(hyp_binary) 
-    score=dict()
     # print(accuracy_score(np.reshape(ref_binary, (1,np.prod(np.shape(ref_binary))))[0],np.reshape(hyp_binary, (1,np.prod(np.shape(hyp_binary))))[0]))
     score['binaryaccuracy'] = accuracy_score(np.reshape(ref_binary, (1,np.prod(np.shape(ref_binary))))[0],np.reshape(hyp_binary, (1,np.prod(np.shape(hyp_binary))))[0])
    
