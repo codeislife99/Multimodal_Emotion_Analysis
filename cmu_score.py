@@ -25,6 +25,13 @@ def ComputePerformance(ref,hyp):
     score['WA']=[[] for i in range(0,no_of_classes)]
     score['F1customised']=[[] for i in range(0,no_of_classes)]
     score['F1']=[[] for i in range(0,no_of_classes)]
+    score['TP']=[[] for i in range(0,no_of_classes)]
+    score['TN']=[[] for i in range(0,no_of_classes)]
+    score['FN']=[[] for i in range(0,no_of_classes)]
+    score['FP']=[[] for i in range(0,no_of_classes)]
+    score['P']=[[] for i in range(0,no_of_classes)]
+    score['N']=[[] for i in range(0,no_of_classes)]
+    
     for i in range(0,no_of_classes):
       ref_class_binary[i][ref_local[:,i] >= 0.5]=1
       hyp_class_binary[i][hyp_local[:,i] >= 0.5]=1
@@ -34,6 +41,12 @@ def ComputePerformance(ref,hyp):
       FN=np.sum(np.logical_and(ref_class_binary[i]==1,hyp_class_binary[i]==0))
       P=TP+FN
       N=TN+FP
+      score['TP'][i] = TP
+      score['TN'][i] = TN
+      score['FP'][i] = FP
+      score['FN'][i] = FN
+      score['P'][i] = P
+      score['N'][i] = N
       score['WA'][i] = (TP*N/max(P,eps)+TN)/(2*max(N,eps))
       score['F1customised'][i] =(2*TP)/max(2*TP+FP+FN,eps)
       score['F1'][i] = f1_score(ref_class_binary[i],hyp_class_binary[i])
@@ -56,9 +69,6 @@ def ComputePerformance(ref,hyp):
     # print(accuracy_score(np.reshape(ref_binary, (1,np.prod(np.shape(ref_binary))))[0],np.reshape(hyp_binary, (1,np.prod(np.shape(hyp_binary))))[0]))
     score['binaryaccuracy'] = accuracy_score(np.reshape(ref_binary, (1,np.prod(np.shape(ref_binary))))[0],np.reshape(hyp_binary, (1,np.prod(np.shape(hyp_binary))))[0])
    
-    
-
-
     # print(ref_flat)
     # print(hyp_flat)
     # score['MSE'] = ((ref_flat - hyp_flat) ** 2).mean(axis=0)
