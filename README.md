@@ -34,10 +34,29 @@ np.random.seed(777)
  | Triple Attention-scalar-1024 | pretrained V+A+T (scalarAttTime)- __3.pth | 0.5176 | 0.5043 | 0.3703 |  | |  | |  | | | |
  | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __3.pth | 0.4816 | 0.4790 | 0.4605 |  |  |  |  |  | | | |
  | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __4.pth | 0.4884 | 0.4806 | 0.4345 |  |  |  |  |  | | | |
- | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __4.pth(seed777) | -- | 0.4772 | 0.4239 | 0.9072 | 0.9115 | 0.5900 | 0.6115 |  | | | |
+ | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __4.pth(seed777) -- testclean | -- | 0.4772 | 0.4239 | 0.9072 | 0.9115 | 0.5900 | 0.6115 |  | | | |
+ | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __4.pth(seed777) -- testaudionoise  | -- | 0.5221 | 0.4239 |  |  |  |  |  | | | |
+ | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __4.pth(seed777) -- testvisionnoise | -- | 0.5026 | 0.4239 |  |  |  |  |  | | | |
  | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __5.pth | 0.4789 | 0.4745 | 0.4087 |  |  |  | |  |  | | |
- | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __5.pth(seed777) | -- | 0.4806 | 0.3986 | | | | | | | | |
+ | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __5.pth(seed777) -- testclean | -- | 0.4806 | 0.3986 | | | | | | | | |
+ | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __5.pth(seed777) -- testnoise | -- |        | 0.3986 | | | | | | | | |
  | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __6.pth | 0.4870 | 0.4929 | 0.3830 | | | | | | | | |
+ | Triple Attention-scalar-1024-audioablation | V+A+T(scalarAttTime)- __2.pth -- testclean |        | 0.4823 | 0.5005 | | | | | | | | |
+ | Triple Attention-scalar-1024-audioablation | V+A+T(scalarAttTime)- __3.pth -- testclean |        | 0.4843 | 0.4703 | | | | | | | | |
+ | Triple Attention-scalar-1024-audioablation | V+A+T(scalarAttTime)- __4.pth -- testclean |        | *0.4780 | 0.4439 | | | | | | | | |
+ | Triple Attention-scalar-1024-audioablation | V+A+T(scalarAttTime)- __5.pth -- testclean |        | 0.4831 | 0.4180 | | | | | | | | |
+ | Triple Attention-scalar-1024-audioablation | V+A+T(scalarAttTime)- __2.pth -- testnoise |        | 0.5135 | 0.5005 | | | | | | | | |
+ | Triple Attention-scalar-1024-audioablation | V+A+T(scalarAttTime)- __3.pth -- testnoise |        | 0.4781 | 0.4703 | | | | | | | | |
+ | Triple Attention-scalar-1024-audioablation | V+A+T(scalarAttTime)- __4.pth -- testnoise |        | *0.4843 | 0.4439 | | | | | | | | |
+ | Triple Attention-scalar-1024-audioablation | V+A+T(scalarAttTime)- __5.pth -- testnoise |        | 0.4845 | 0.4180 | | | | | | | | |
+ | Triple Attention-scalar-1024-visionablation | V+A+T(scalarAttTime)- __2.pth -- testclean |        | 0.4968 | 0.4950 | | | | | | | | |
+ | Triple Attention-scalar-1024-visionablation | V+A+T(scalarAttTime)- __3.pth -- testclean |        | 0.5065 | 0.4701 | | | | | | | | |
+ | Triple Attention-scalar-1024-visionablation | V+A+T(scalarAttTime)- __4.pth -- testclean |        | *0.4811 | 0.4473 | | | | | | | | |
+ | Triple Attention-scalar-1024-visionablation | V+A+T(scalarAttTime)- __5.pth -- testclean |        | 0.5031 | 0.4242 | | | | | | | | |
+ | Triple Attention-scalar-1024-visionablation | V+A+T(scalarAttTime)- __2.pth -- testnoise |        | 0.4987 | 0.4950 | | | | | | | | |
+ | Triple Attention-scalar-1024-visionablation | V+A+T(scalarAttTime)- __3.pth -- testnoise |        | 0.5032 | 0.4701 | | | | | | | | |
+ | Triple Attention-scalar-1024-visionablation | V+A+T(scalarAttTime)- __4.pth -- testnoise |        | *0.4850 | 0.4473 | | | | | | | | |
+ | Triple Attention-scalar-1024-visionablation | V+A+T(scalarAttTime)- __5.pth -- testnoise |        | 0.5072 | 0.4242 | | | | | | | | |
  | Triple Attention-1024 | V+A+T(attElement)- __3.pth | 0.4910 | 0.4859 | 0.4604 |  |  |  |   |   | | | |
  | Triple Attention-1024 | V+A+T(attElement)- __4.pth | 0.5003 | 0.4793 | 0.4303 |  |  |  |   |   | | | |
  | Triple Attention-1024 | V+A+T(attTime)- __3.pth    | 0.4855 | 0.4919 | 0.4671 |  |  |  |   |   | | | |
