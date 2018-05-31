@@ -38,9 +38,9 @@ np.random.seed(777)
  | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __4.pth(seed777) -- testclean | -- | 0.4696 | 0.4090 |  |  |  |  |  | | | |
  | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __4.pth(seed777) -- testaudionoise  | -- | 0.5071 | 0.4090 |  |  |  |  |  | | | |
  | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __4.pth(seed777) -- testvisionnoise | -- | 0.5034 | 0.4090 |  |  |  |  |  | | | |
- | Triple Attention-scalar-1024-mixvisionnoise | V+A+T(scalarAttTime)- __4.pth(seed777) -- testclean | -- | 0.4932 | 0.4090 |  |  |  |  |  | | | |
- | Triple Attention-scalar-1024-mixvisionnoise | V+A+T(scalarAttTime)- __4.pth(seed777) -- testaudionoise  | -- | 0.5173 | 0.4090 |  |  |  |  |  | | | |
- | Triple Attention-scalar-1024-mixvisionnoise | V+A+T(scalarAttTime)- __4.pth(seed777) -- testvisionnoise | -- | 0.4934 | 0.4090 |  |  |  |  |  | | | |
+ | Triple Attention-scalar-1024-mixvisionnoise | V+A+T(scalarAttTime)- __4.pth(seed777) -- testclean | -- | 0.4932 | 0.4131 |  |  |  |  |  | | | |
+ | Triple Attention-scalar-1024-mixvisionnoise | V+A+T(scalarAttTime)- __4.pth(seed777) -- testaudionoise  | -- | 0.5173 | 0.4131 |  |  |  |  |  | | | |
+ | Triple Attention-scalar-1024-mixvisionnoise | V+A+T(scalarAttTime)- __4.pth(seed777) -- testvisionnoise | -- | 0.4934 | 0.4131 |  |  |  |  |  | | | |
 
 
 #### Old attention (downweighting memory update by mean(0).unsqueeze(0) instead of sum(0) )
