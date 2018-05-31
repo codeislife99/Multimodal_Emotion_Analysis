@@ -24,12 +24,23 @@ np.random.seed(777)
       Metric 5 = Weighted accuracy at threshold=0.1 [0.xxxx]
 
 
+#### Attention with sum_{t}{a*v} instead of mean(a*v) and m+a+v+t instead of m+(a*v*t)
+ | Model    | Modality   | Metric 1 Val  | Metric 1 Test  | Metric 1 Train | Metric 4 Val | Matric 4 Test | Metric 5 Val  | Metric 5 Test | Metric 2 Val  | Metric 2 Test | Metric 3 Val| Metric 3 Test|
+ |:--------:|:----------:|:-------------:|:--------------:|:--------------:|:------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-----------:|:------------:|
+ | Random              | -          | 0.63    |   0.647   |  |  |  |  |  |  0.7938|0.8121|0.2822|0.2946|
+
+
+
+#### Attention with sum_{t}{a*v} instead of mean(a*v)   
  | Model    | Modality   | Metric 1 Val  | Metric 1 Test  | Metric 1 Train | Metric 4 Val | Matric 4 Test | Metric 5 Val  | Metric 5 Test | Metric 2 Val  | Metric 2 Test | Metric 3 Val| Metric 3 Test|
  |:--------:|:----------:|:-------------:|:--------------:|:--------------:|:------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-----------:|:------------:|
  | Random              | -          | 0.63    |   0.647   |  |  |  |  |  |  0.7938|0.8121|0.2822|0.2946|
  | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __4.pth(seed777) -- testclean | -- | 0.4696 | 0.4090 |  |  |  |  |  | | | |
  | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __4.pth(seed777) -- testaudionoise  | -- | 0.5071 | 0.4090 |  |  |  |  |  | | | |
  | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __4.pth(seed777) -- testvisionnoise | -- | 0.5034 | 0.4090 |  |  |  |  |  | | | |
+ | Triple Attention-scalar-1024-mixvisionnoise | V+A+T(scalarAttTime)- __4.pth(seed777) -- testclean | -- | 0.4932 | 0.4090 |  |  |  |  |  | | | |
+ | Triple Attention-scalar-1024-mixvisionnoise | V+A+T(scalarAttTime)- __4.pth(seed777) -- testaudionoise  | -- | 0.5173 | 0.4090 |  |  |  |  |  | | | |
+ | Triple Attention-scalar-1024-mixvisionnoise | V+A+T(scalarAttTime)- __4.pth(seed777) -- testvisionnoise | -- | 0.4934 | 0.4090 |  |  |  |  |  | | | |
 
 
 #### Old attention (downweighting memory update by mean(0).unsqueeze(0) instead of sum(0) )
