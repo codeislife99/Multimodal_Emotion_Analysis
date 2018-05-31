@@ -20,63 +20,103 @@ np.random.seed(777)
       Metric 1 = MSE with sum across categories [0.73]
       Metric 2 = MAE with sum across categories [0.8686]
       Metric 3 = Huber Loss (Smooth L1 Loss)    [0.3263]
-      Metric 4 = Binary classification accuracy [0.xxxx]
-      
+      Metric 4 = Binary classification accuracy at threshold=0.5 [0.xxxx]
+      Metric 5 = Weighted accuracy at threshold=0.1 [0.xxxx]
 
- | Model    | Modality   | Metric 1 Val  | Metric 1 Test  | Metric 1 Train | Metric 4 Val | Matric 4 Test | Metric 2 Val  | Metric 2 Test | Metric 3 Val| Metric 3 Test|
- |:--------:|:----------:|:-------------:|:--------------:|:--------------:|:------------:|:-------------:|:-------------:|:-------------:|:-----------:|:------------:|
- | Random              | -          | 0.63    |   0.647   |  |  |  |  0.7938|0.8121|0.2822|0.2946|
- | Triple Attention    | V+A+T      | 0.4765  |   0.4709  |  |  |  |       | | | |
- | Triple Attention-scalar | V+A+T(scalarAttTime) __5.pth | 0.5193 | 0.5346 | 0.5986 |   |    |  |   | | |
- | Triple Attention-scalar | V+A+T(scalarAttTime) __6.pth | 0.5439 | 0.5520 | 0.5742 |   |    |  |   | | |
- | Triple Attention-scalar-1024 | pretrained V+A+T (scalarAttTime)- __1.pth | 0.5159 | 0.5072 | 0.4498 |  | |  | | | |
- | Triple Attention-scalar-1024 | pretrained V+A+T (scalarAttTime)- __2.pth | 0.5018 | 0.4866 | 0.4103 |  | |  | | | |
- | Triple Attention-scalar-1024 | pretrained V+A+T (scalarAttTime)- __3.pth | 0.5176 | 0.5043 | 0.3703 |  | |  | | | |
- | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __3.pth | 0.4816 | 0.4790 | 0.4605 |  |  |  | | | |
- | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __4.pth | 0.4884 | 0.4806 | 0.4345 |  |  |  | | | |
- | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __4.pth(seed777) | -- | 0.4772 | 0.4239 |  |  |  | | | |
- | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __5.pth | 0.4789 | 0.4745 | 0.4087 | | |  |  | | |
- | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __5.pth(seed777) | -- | 0.4806 | 0.3986 | | | | | | |
- | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __6.pth | 0.4870 | 0.4929 | 0.3830 | | | | | | |
- | Triple Attention-1024 | V+A+T(attElement)- __3.pth | 0.4910 | 0.4859 | 0.4604 |  |   |   | | | |
- | Triple Attention-1024 | V+A+T(attElement)- __4.pth | 0.5003 | 0.4793 | 0.4303 |  |   |   | | | |
- | Triple Attention-1024 | V+A+T(attTime)- __3.pth    | 0.4855 | 0.4919 | 0.4671 |  |   |   | | | |
- | Triple Attention-1024 | V+A+T(attTime)- __4.pth | 0.4888 | 0.4889 | 0.4409 |     |   |   | | | |
- | Triple Attention-1024 | V+A+T(attTime)- __5.pth | 0.4761 | 0.4816 | 0.4144 |     |   |   | | | |
- | Triple Attention-1024 | V+A+T(attTime)- __6.pth | 0.4970 | 0.4973 | 0.3879 |     |   |   | | | |
- | Triple Attention-1024 | V+A+T(attTime)- __7.pth | 0.5103 | 0.5121 | 0.3608 |     |   |   | | | |
- | Triple Attention-1024-gated | V+A+T(attTime)- __4.pth | 0.4746 | 0.4631 | 0.4512 |   |   |    | | | |
- | Triple Attention-1024-gated | V+A+T(attTime)- __5.pth | 0.4911 | 0.4734 | 0.4225 |   |   |    | | | |
- | Triple Attention-scalar-1024-gated | V+A+T(scalarAttTime)- __4.pth | 0.4812 | 0.4683 | 0.4470 |   | | | | | |
- | Triple Attention-scalar-1024-gated | V+A+T(scalarAttTime)- __5.pth | 0.4838 | 0.4649 | 0.4262 |   | | | | | |
- | Triple Attention-scalar-1024-gated-k3 | V+A+T(scalarAttTime)- __5.pth | 0.4812 | 0.4912 | 0.4171 |  | | | | | |
- | Triple Attention-scalar-1024-gated-k3 | V+A+T(scalarAttTime)- __4.pth | 0.4730 | 0.4709 | 0.3993 |  | | | | | |
- | Triple Attention-scalar-1024-gated-k3 | V+A+T(scalarAttTime)- __3.pth | 0.4715 | 0.4602 | 0.4670 |  | 0.9142 | | 0.9066 | | |
- | Triple Attention-scalar-1024-gated-k1 | V+A+T(scalarAttTime)- __5.pth | 0.5151 | 0.5034 | 0.4579 |  | | | | | |
- | Triple Attention-scalar-1024-gated-k1 | V+A+T(scalarAttTime)- __4.pth | 0.5088 | 0.4957 | 0.4763 |  | | | | | |
- | Triple Attention-scalar-1024-gated-k1 | V+A+T(scalarAttTime)- __3.pth | 0.5105 | 0.5042 | 0.4953 |  | | | | | | |
- | Triple Attention-scalar-1024-pretrained-gated-k3 | V+A+T(scalarAttTime)- __4.pth |      | 0.4789 | 0.4219 | | | | | | |
- | Triple Attention-scalar-1024-pretrained-gated-k3 | V+A+T(scalarAttTime)- __5.pth |      | 0.4992 | 0.4524 | | | | | | |
- | Early Concatenation | V+A+T      |         |           |   |        | | | | | |
- | Late Weighting      | V+A+T __0.pth |         | 0.5175 | 0.5647 |         | | | | | |
- | Late Weighting      | V+A+T __1.pth |         | 0.5047 | 0.4302 |         | | | | | |
- | Late Weighting      | V+A+T __2.pth |         | 0.5098 | 0.3781 |         | | | | | |
- | Late Weighting      | V+A+T __3.pth |         | 0.5413 | 0.3434 |         | | | | | |
- | Dual Attention      | V+T        |         |           |   |        | | | | | |
- | Dual Attention      | V+A        |  0.5157 | 0.5103    |   |        | | | | | |
- | Dual Attention      | A+T        |         |           |   |        | | | | | |
- | Early Concatenation | V+T        |         |           |   |        | | | | | |
- | Early Concatenation | V+A        |         |           |   |        | | | | | |
- | Early Concatenation | A+T        |         |           |   |        | | | | | |
- | Late Weighting      | V+T        |         |           |   |        | | | | | |
- | Late Weighting      | V+A        |         |           |   |        | | | | | |
- | Late Weighting      | A+T        |         |           |   |        | | | | | |
- | LSTM + Attention    | V          |         |           |   |        | | | | | |
- | LSTM + Attention    | T          |  0.6285 |           |   |        | | | | | |
- | LSTM + Attention    | A          |         |           |   |        | | | | | |
- | LSTM                | V          | 0.5170  | 0.5106    |   |        | | | | | |       
- | LSTM                | T          | 0.6026  | 0.6056    |   |        | | | | | |       
- | LSTM                | A          |         |           |   |        | | | | | |       
+
+#### Attention with sum_{t}{a*v} instead of mean(a*v) and m+a+v+t instead of m+(a*v*t)
+ | Model    | Modality   | Metric 1 Val  | Metric 1 Test  | Metric 1 Train | Metric 4 Val | Matric 4 Test | Metric 5 Val  | Metric 5 Test | Metric 2 Val  | Metric 2 Test | Metric 3 Val| Metric 3 Test|
+ |:--------:|:----------:|:-------------:|:--------------:|:--------------:|:------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-----------:|:------------:|
+ | Random              | -          | 0.63    |   0.647   |  |  |  |  |  |  0.7938|0.8121|0.2822|0.2946|
+
+
+
+#### Attention with sum_{t}{a*v} instead of mean(a*v)   
+ | Model    | Modality   | Metric 1 Val  | Metric 1 Test  | Metric 1 Train | Metric 4 Val | Matric 4 Test | Metric 5 Val  | Metric 5 Test | Metric 2 Val  | Metric 2 Test | Metric 3 Val| Metric 3 Test|
+ |:--------:|:----------:|:-------------:|:--------------:|:--------------:|:------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-----------:|:------------:|
+ | Random              | -          | 0.63    |   0.647   |  |  |  |  |  |  0.7938|0.8121|0.2822|0.2946|
+ | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __4.pth(seed777) -- testclean | -- | 0.4696 | 0.4090 |  |  |  |  |  | | | |
+ | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __4.pth(seed777) -- testaudionoise  | -- | 0.5071 | 0.4090 |  |  |  |  |  | | | |
+ | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __4.pth(seed777) -- testvisionnoise | -- | 0.5034 | 0.4090 |  |  |  |  |  | | | |
+ | Triple Attention-scalar-1024-mixvisionnoise | V+A+T(scalarAttTime)- __4.pth(seed777) -- testclean | -- | 0.4932 | 0.4131 |  |  |  |  |  | | | |
+ | Triple Attention-scalar-1024-mixvisionnoise | V+A+T(scalarAttTime)- __4.pth(seed777) -- testaudionoise  | -- | 0.5173 | 0.4131 |  |  |  |  |  | | | |
+ | Triple Attention-scalar-1024-mixvisionnoise | V+A+T(scalarAttTime)- __4.pth(seed777) -- testvisionnoise | -- | 0.4934 | 0.4131 |  |  |  |  |  | | | |
+
+
+#### Old attention (downweighting memory update by mean(0).unsqueeze(0) instead of sum(0) )
+ | Model    | Modality   | Metric 1 Val  | Metric 1 Test  | Metric 1 Train | Metric 4 Val | Matric 4 Test | Metric 5 Val  | Metric 5 Test | Metric 2 Val  | Metric 2 Test | Metric 3 Val| Metric 3 Test|
+ |:--------:|:----------:|:-------------:|:--------------:|:--------------:|:------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-----------:|:------------:|
+ | Random              | -          | 0.63    |   0.647   |  |  |  |  |  |  0.7938|0.8121|0.2822|0.2946|
+ | Triple Attention    | V+A+T      | 0.4765  |   0.4709  |  |  |  |  |  |       | | | |
+ | Triple Attention-scalar | V+A+T(scalarAttTime) __5.pth | 0.5193 | 0.5346 | 0.5986 |   |    |  |    |  |   | | |
+ | Triple Attention-scalar | V+A+T(scalarAttTime) __6.pth | 0.5439 | 0.5520 | 0.5742 |   |    |  |    |  |   | | |
+ | Triple Attention-scalar-1024 | pretrained V+A+T (scalarAttTime)- __1.pth | 0.5159 | 0.5072 | 0.4498 |  | |  | |  | | | |
+ | Triple Attention-scalar-1024 | pretrained V+A+T (scalarAttTime)- __2.pth | 0.5018 | 0.4866 | 0.4103 |  | |  | |  | | | |
+ | Triple Attention-scalar-1024 | pretrained V+A+T (scalarAttTime)- __3.pth | 0.5176 | 0.5043 | 0.3703 |  | |  | |  | | | |
+ | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __3.pth | 0.4816 | 0.4790 | 0.4605 |  |  |  |  |  | | | |
+ | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __4.pth | 0.4884 | 0.4806 | 0.4345 |  |  |  |  |  | | | |
+ | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __4.pth(seed777) -- testclean | -- | 0.4772 | 0.4239 | 0.9072 | 0.9115 | 0.5900 | 0.6115 |  | | | |
+ | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __4.pth(seed777) -- testaudionoise  | -- | 0.5221 | 0.4239 |  |  |  |  |  | | | |
+ | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __4.pth(seed777) -- testvisionnoise | -- | 0.5026 | 0.4239 |  |  |  |  |  | | | |
+ | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __5.pth | 0.4789 | 0.4745 | 0.4087 |  |  |  | |  |  | | |
+ | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __5.pth(seed777) -- testclean | -- | 0.4806 | 0.3986 | | | | | | | | |
+ | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __5.pth(seed777) -- testnoise | -- |        | 0.3986 | | | | | | | | |
+ | Triple Attention-scalar-1024 | V+A+T(scalarAttTime)- __6.pth | 0.4870 | 0.4929 | 0.3830 | | | | | | | | |
+ | Triple Attention-scalar-1024-audioablation | V+A+T(scalarAttTime)- __2.pth -- testclean |        | 0.4823 | 0.5005 | | | | | | | | |
+ | Triple Attention-scalar-1024-audioablation | V+A+T(scalarAttTime)- __3.pth -- testclean |        | 0.4843 | 0.4703 | | | | | | | | |
+ | Triple Attention-scalar-1024-audioablation | V+A+T(scalarAttTime)- __4.pth -- testclean |        | *0.4780 | 0.4439 | | | | | | | | |
+ | Triple Attention-scalar-1024-audioablation | V+A+T(scalarAttTime)- __5.pth -- testclean |        | 0.4831 | 0.4180 | | | | | | | | |
+ | Triple Attention-scalar-1024-audioablation | V+A+T(scalarAttTime)- __2.pth -- testnoise |        | 0.5135 | 0.5005 | | | | | | | | |
+ | Triple Attention-scalar-1024-audioablation | V+A+T(scalarAttTime)- __3.pth -- testnoise |        | 0.4781 | 0.4703 | | | | | | | | |
+ | Triple Attention-scalar-1024-audioablation | V+A+T(scalarAttTime)- __4.pth -- testnoise |        | *0.4843 | 0.4439 | | | | | | | | |
+ | Triple Attention-scalar-1024-audioablation | V+A+T(scalarAttTime)- __5.pth -- testnoise |        | 0.4845 | 0.4180 | | | | | | | | |
+ | Triple Attention-scalar-1024-visionablation | V+A+T(scalarAttTime)- __2.pth -- testclean |        | 0.4968 | 0.4950 | | | | | | | | |
+ | Triple Attention-scalar-1024-visionablation | V+A+T(scalarAttTime)- __3.pth -- testclean |        | 0.5065 | 0.4701 | | | | | | | | |
+ | Triple Attention-scalar-1024-visionablation | V+A+T(scalarAttTime)- __4.pth -- testclean |        | *0.4811 | 0.4473 | | | | | | | | |
+ | Triple Attention-scalar-1024-visionablation | V+A+T(scalarAttTime)- __5.pth -- testclean |        | 0.5031 | 0.4242 | | | | | | | | |
+ | Triple Attention-scalar-1024-visionablation | V+A+T(scalarAttTime)- __2.pth -- testnoise |        | 0.4987 | 0.4950 | | | | | | | | |
+ | Triple Attention-scalar-1024-visionablation | V+A+T(scalarAttTime)- __3.pth -- testnoise |        | 0.5032 | 0.4701 | | | | | | | | |
+ | Triple Attention-scalar-1024-visionablation | V+A+T(scalarAttTime)- __4.pth -- testnoise |        | *0.4850 | 0.4473 | | | | | | | | |
+ | Triple Attention-scalar-1024-visionablation | V+A+T(scalarAttTime)- __5.pth -- testnoise |        | 0.5072 | 0.4242 | | | | | | | | |
+ | Triple Attention-1024 | V+A+T(attElement)- __3.pth | 0.4910 | 0.4859 | 0.4604 |  |  |  |   |   | | | |
+ | Triple Attention-1024 | V+A+T(attElement)- __4.pth | 0.5003 | 0.4793 | 0.4303 |  |  |  |   |   | | | |
+ | Triple Attention-1024 | V+A+T(attTime)- __3.pth    | 0.4855 | 0.4919 | 0.4671 |  |  |  |   |   | | | |
+ | Triple Attention-1024 | V+A+T(attTime)- __4.pth | 0.4888 | 0.4889 | 0.4409 |     |   |     |   |   | | | |
+ | Triple Attention-1024 | V+A+T(attTime)- __5.pth | 0.4761 | 0.4816 | 0.4144 |     |   |     |   |   | | | |
+ | Triple Attention-1024 | V+A+T(attTime)- __6.pth | 0.4970 | 0.4973 | 0.3879 |     |   |     |   |   | | | |
+ | Triple Attention-1024 | V+A+T(attTime)- __7.pth | 0.5103 | 0.5121 | 0.3608 |     |   |     |   |   | | | |
+ | Triple Attention-1024-gated | V+A+T(attTime)- __4.pth | 0.4746 | 0.4631 | 0.4512 |   |     |   |   |    | | | |
+ | Triple Attention-1024-gated | V+A+T(attTime)- __5.pth | 0.4911 | 0.4734 | 0.4225 |   |     |   |   |    | | | |
+ | Triple Attention-scalar-1024-gated | V+A+T(scalarAttTime)- __4.pth | 0.4812 | 0.4683 | 0.4470 |   | | | | | | | |
+ | Triple Attention-scalar-1024-gated | V+A+T(scalarAttTime)- __5.pth | 0.4838 | 0.4649 | 0.4262 |   | | | | | | | |
+ | Triple Attention-scalar-1024-gated-k3 | V+A+T(scalarAttTime)- __5.pth | 0.4812 | 0.4912 | 0.4171 |  | | | | | | | |
+ | Triple Attention-scalar-1024-gated-k3 | V+A+T(scalarAttTime)- __4.pth | 0.4730 | 0.4709 | 0.3993 |  | | | | | | | |
+ | Triple Attention-scalar-1024-gated-k3 | V+A+T(scalarAttTime)- __3.pth | 0.4715 | 0.4602 | 0.4670 | 0.9110 | 0.9142 | 0.5775 | 0.5924 | | 0.9066 | | |
+ | Triple Attention-scalar-1024-gated-k1 | V+A+T(scalarAttTime)- __5.pth | 0.5151 | 0.5034 | 0.4579 |  | | | | | | | |
+ | Triple Attention-scalar-1024-gated-k1 | V+A+T(scalarAttTime)- __4.pth | 0.5088 | 0.4957 | 0.4763 |  | | | | | | | |
+ | Triple Attention-scalar-1024-gated-k1 | V+A+T(scalarAttTime)- __3.pth | 0.5105 | 0.5042 | 0.4953 |  | | | | | | | |
+ | Triple Attention-scalar-1024-pretrained-gated-k3 | V+A+T(scalarAttTime)- __4.pth |      | 0.4789 | 0.4219 | | | | | | | | |
+ | Triple Attention-scalar-1024-pretrained-gated-k3 | V+A+T(scalarAttTime)- __5.pth |      | 0.4992 | 0.4524 | | | | | | | | |
+ | Early Concatenation | V+A+T      |         |           |   |        | | | | | | | |
+ | Late Weighting      | V+A+T __0.pth |         | 0.5175 | 0.5647 |         | | | |  | | | |
+ | Late Weighting      | V+A+T __1.pth |         | 0.5047 | 0.4302 |         | | | |  | | | |
+ | Late Weighting      | V+A+T __2.pth |         | 0.5098 | 0.3781 |         | | | |  | | | |
+ | Late Weighting      | V+A+T __3.pth |         | 0.5413 | 0.3434 |         | | | |  | | | |
+ | Dual Attention      | V+T        |         |           |   |        | | | | | | | |
+ | Dual Attention      | V+A        |  0.5157 | 0.5103    |   |        | | | | | | | |
+ | Dual Attention      | A+T        |         |           |   |        | | | | | | | |
+ | Early Concatenation | V+T        |         |           |   |        | | | | | | | |
+ | Early Concatenation | V+A        |         |           |   |        | | | | | | | |
+ | Early Concatenation | A+T        |         |           |   |        | | | | | | | |
+ | Late Weighting      | V+T        |         |           |   |        | | | | | | | |
+ | Late Weighting      | V+A        |         |           |   |        | | | | | | | |
+ | Late Weighting      | A+T        |         |           |   |        | | | | | | | |
+ | LSTM + Attention    | V          |         |           |   |        | | | | | | | |
+ | LSTM + Attention    | T          |  0.6285 |           |   |        | | | | | | | |
+ | LSTM + Attention    | A          |         |           |   |        | | | | | | | |
+ | LSTM                | V          | 0.5170  | 0.5106    |   |        | | | | | | | |       
+ | LSTM                | T          | 0.6026  | 0.6056    |   |        | | | | | | | |       
+ | LSTM                | A          |         |           |   |        | | | | | | | |       
 
 #### Scoring
 To add scoring capabilities in your python script
