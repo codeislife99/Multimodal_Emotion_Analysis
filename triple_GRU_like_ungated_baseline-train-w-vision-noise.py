@@ -269,24 +269,24 @@ class TripleAttention(nn.Module):
         '--------------------------------------------------K = 3  ---------------------------------------------------'
 
         # Visual Attention
-        h_three_vision = F.tanh(self.Wvision_2(vision))*F.tanh(self.Wvision_m2(m_two_vision))
-        a_three_vision = F.softmax(self.Wvision_h2(h_three_vision),dim=0)
+        h_three_vision = F.tanh(self.Wvision_3(vision))*F.tanh(self.Wvision_m3(m_two_vision))
+        a_three_vision = F.softmax(self.Wvision_h3(h_three_vision),dim=0)
         vision_three = (a_three_vision.repeat(1,N)*vision).sum(0)
         # gate_three_vision = F.sigmoid(self.Wvision_gh(h_three_vision.mean(0).unsqueeze(0)))
         # vision_three_pregate = (a_three_vision.repeat(1,N)*vision).sum(0).unsqueeze(0)
         # vision_three = gate_three_vision.repeat(1,N)*vision_three_pregate + (((1-gate_three_vision).repeat(1,N))*one_constant)
 
         # Vocal Attention
-        h_three_vocal = F.tanh(self.Wvocal_2(vocal))*F.tanh(self.Wvocal_m2(m_two_vocal))
-        a_three_vocal = F.softmax(self.Wvocal_h2(h_three_vocal),dim=0)
+        h_three_vocal = F.tanh(self.Wvocal_3(vocal))*F.tanh(self.Wvocal_m3(m_two_vocal))
+        a_three_vocal = F.softmax(self.Wvocal_h3(h_three_vocal),dim=0)
         vocal_three = (a_three_vocal.repeat(1,N)*vocal).sum(0)
         # gate_three_vocal = F.sigmoid(self.Wvocal_gh(h_three_vocal.mean(0).unsqueeze(0)))
         # vocal_three_pregate = (a_three_vocal.repeat(1,N)*vocal).sum(0).unsqueeze(0)
         # vocal_three = gate_three_vocal.repeat(1,N)*vocal_three_pregate + (((1-gate_three_vocal).repeat(1,N))*one_constant)
 
         # Emb Attention
-        h_three_emb = F.tanh(self.Wemb_2(emb))*F.tanh(self.Wemb_m2(m_two_emb))
-        a_three_emb = F.softmax(self.Wemb_h2(h_three_emb),dim=0)
+        h_three_emb = F.tanh(self.Wemb_3(emb))*F.tanh(self.Wemb_m3(m_two_emb))
+        a_three_emb = F.softmax(self.Wemb_h3(h_three_emb),dim=0)
         emb_three = (a_three_emb.repeat(1,N)*emb).sum(0)
         # gate_three_emb = F.sigmoid(self.Wemb_gh(h_three_emb.mean(0).unsqueeze(0)))
         # emb_three_pregate = (a_three_emb.repeat(1,N)*emb).sum(0).unsqueeze(0)
@@ -298,7 +298,7 @@ class TripleAttention(nn.Module):
             m_three = self.gated_mem_update(m_two, concated)
         else:
             concated = torch.cat((vision_three, vocal_three, emb_three)).unsqueeze(0)
-            m_three = F.tanh(self.mem_update_fc(concated))
+            m_three = m_two + F.tanh(self.mem_update_fc(concated))
 
 
         return m_three
