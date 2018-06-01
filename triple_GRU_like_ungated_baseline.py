@@ -129,7 +129,7 @@ class TripleAttention(nn.Module):
         if gated_mem:
             self.gated_mem_update = GRULikeUpdate(4*N, N, 4*N, 3*N)
         else:
-            self.mem_update_fc = nn.Linear(3*N, N)
+            self.mem_update_fc = nn.Linear(4*N, N)
 
         ''' K= 1 '''
         self.Wvision_1 = nn.Linear(N,N2)
@@ -223,7 +223,8 @@ class TripleAttention(nn.Module):
             m_one = self.gated_mem_update(m_zero, concated)
         else:
             concated = torch.cat((vision_one, vocal_one, emb_one)).unsqueeze(0)
-            m_one = m_zero + F.tanh(self.mem_update_fc(concated))
+            mavt = torch.cat((m_zero, concated), 1)
+            m_one = m_zero + F.tanh(self.mem_update_fc(mavt))
         m_one_vision = m_one.repeat(vision.size(0),1)
         m_one_vocal = m_one.repeat(vocal.size(0),1)
         m_one_emb = m_one.repeat(emb.size(0),1)
@@ -260,7 +261,8 @@ class TripleAttention(nn.Module):
             m_two = self.gated_mem_update(m_one, concated)
         else:
             concated = torch.cat((vision_two, vocal_two, emb_two)).unsqueeze(0)
-            m_two = m_one + F.tanh(self.mem_update_fc(concated))
+            mavt = torch.cat((m_one, mavt), 1)
+            m_two = m_one + F.tanh(self.mem_update_fc(mavt))
         m_two_vision = m_two.repeat(vision.size(0),1)
         m_two_vocal = m_two.repeat(vocal.size(0),1)
         m_two_emb = m_two.repeat(emb.size(0),1)
@@ -298,7 +300,8 @@ class TripleAttention(nn.Module):
             m_three = self.gated_mem_update(m_two, concated)
         else:
             concated = torch.cat((vision_three, vocal_three, emb_three)).unsqueeze(0)
-            m_three = m_two + F.tanh(self.mem_update_fc(concated))
+            mavt = torhc.cat((m_two, concated), 1)
+            m_three = m_two + F.tanh(self.mem_update_fc(mavt))
 
 
         return m_three
