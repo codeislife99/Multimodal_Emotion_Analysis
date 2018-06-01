@@ -258,7 +258,7 @@ class TripleAttention(nn.Module):
             update_proposal = vision_two * vocal_two * emb_two
             m_two = self.gated_mem_update(concated, m_one, update_proposal)
         else:
-        m_two = m_one + ( vision_two * vocal_two * emb_two )
+            m_two = m_one + ( vision_two * vocal_two * emb_two )
         m_two_vision = m_two.repeat(vision.size(0),1)
         m_two_vocal = m_two.repeat(vocal.size(0),1)
         m_two_emb = m_two.repeat(emb.size(0),1)
