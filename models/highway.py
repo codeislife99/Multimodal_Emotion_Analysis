@@ -74,7 +74,7 @@ class GRULikeUpdate(nn.Module):
 
         mx_concated = torch.cat((m, x), 1)
         m_gate = F.sigmoid(self.m_gate_pre(mx_concated))
-        x_gate = F.sigmoid(self.x_gate_pre(x))
+        x_gate = F.sigmoid(self.x_gate_pre(mx_concated))
 
         x_gated = x_gate * x
         m_xgated_concated = torch.cat((m, x_gated), 1)
