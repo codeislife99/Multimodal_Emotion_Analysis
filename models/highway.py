@@ -49,9 +49,9 @@ class GatedMemUpdate_B(nn.Module):
         self.gate = nn.Linear(gate_in_size, gate_out_size)
 
     def forward(self, g, c, u):
-       # print('g',g.size())
-       # print('c',c.size())
-       # print('u',u.size())
+        # print('g',g.size())
+        # print('c',c.size())
+        # print('u',u.size())
         concated = torch.cat((g, c), 1)
         gate = F.sigmoid(self.gate(concated))
 
