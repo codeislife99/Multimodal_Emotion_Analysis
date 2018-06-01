@@ -82,3 +82,5 @@ class GRULikeUpdate(nn.Module):
         update = F.tanh(self.update_ff(m_xgated_concated))
 
         m_new = (1 - m_gate) * m + m_gate * update
+
+        return m_new
