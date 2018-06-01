@@ -143,27 +143,45 @@ class TripleAttention(nn.Module):
         self.Wemb_h1 = nn.Linear(N2,1)
 
         ''' K = 2 '''
-        self.Wvision_2 = nn.Linear(N,N2)
-        self.Wvision_m2 = nn.Linear(N,N2)
-        self.Wvision_h2 = nn.Linear(N2,1)
-        self.Wvocal_2 = nn.Linear(N,N2)
-        self.Wvocal_m2 = nn.Linear(N,N2)
-        self.Wvocal_h2 = nn.Linear(N2,1)
-        self.Wemb_2 = nn.Linear(N,N2)
-        self.Wemb_m2 = nn.Linear(N,N2)
-        self.Wemb_h2 = nn.Linear(N2,1)
+        # self.Wvision_2 = nn.Linear(N,N2)
+        self.Wvision_2 = self.Wvision_1
+        # self.Wvision_m2 = nn.Linear(N,N2)
+        self.Wvision_m2 = self.Wvision_m1
+        # self.Wvision_h2 = nn.Linear(N2,1)
+        self.Wvision_h2 = self.Wvision_h1
+        # self.Wvocal_2 = nn.Linear(N,N2)
+        self.Wvocal_2 = self.Wvocal_1
+        # self.Wvocal_m2 = nn.Linear(N,N2)
+        self.Wvocal_m2 = self.Wvocal_m1
+        # self.Wvocal_h2 = nn.Linear(N2,1)
+        self.Wvocal_h2 = self.Wvocal_h1
+        # self.Wemb_2 = nn.Linear(N,N2)
+        self.Wemb_2 = self.Wemb_1
+        # self.Wemb_m2 = nn.Linear(N,N2)
+        self.Wemb_m2 = self.Wemb_m1
+        # self.Wemb_h2 = nn.Linear(N2,1)
+        self.Wemb_h2 = self.Wemb_h1
 
 
         ''' K = 3 '''
-        self.Wvision_3 = nn.Linear(N,N2)
-        self.Wvision_m3 = nn.Linear(N,N2)
-        self.Wvision_h3 = nn.Linear(N2,1)
-        self.Wvocal_3 = nn.Linear(N,N2)
-        self.Wvocal_m3 = nn.Linear(N,N2)
-        self.Wvocal_h3 = nn.Linear(N2,1)
-        self.Wemb_3 = nn.Linear(N,N2)
-        self.Wemb_m3 = nn.Linear(N,N2)
-        self.Wemb_h3 = nn.Linear(N2,1)
+        # self.Wvision_3 = nn.Linear(N,N2)
+        self.Wvision_3 = self.Wvision_1
+        # self.Wvision_m3 = nn.Linear(N,N2)
+        self.Wvision_m3 = self.Wvision_m1
+        # self.Wvision_h3 = nn.Linear(N2,1)
+        self.Wvision_h3 = self.Wvision_h1
+        # self.Wvocal_3 = nn.Linear(N,N2)
+        self.Wvocal_3 = self.Wvocal_1
+        # self.Wvocal_m3 = nn.Linear(N,N2)
+        self.Wvocal_m3 = self.Wvocal_m1
+        # self.Wvocal_h3 = nn.Linear(N2,1)
+        self.Wvocal_h3 = self.Wvocal_h1
+        # self.Wemb_3 = nn.Linear(N,N2)
+        self.Wemb_3 = self.Wemb_1
+        # self.Wemb_m3 = nn.Linear(N,N2)
+        self.Wemb_m3 = self.Wemb_m1
+        # self.Wemb_h3 = nn.Linear(N2,1)
+        self.Wemb_h3 = self.Wemb_h1
 
 
 
