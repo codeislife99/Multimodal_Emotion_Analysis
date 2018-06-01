@@ -298,7 +298,7 @@ class TripleAttention(nn.Module):
             m_three = self.gated_mem_update(m_two, concated)
         else:
             concated = torch.cat((vision_three, vocal_three, emb_three)).unsqueeze(0)
-            m_three = F.tanh(self.mem_update_fc(concated))
+            m_three = m_two + F.tanh(self.mem_update_fc(concated))
 
 
         return m_three
