@@ -50,7 +50,7 @@ class GatedMemUpdate_B(nn.Module):
 
     def forward(self, g, c, u):
 
-        concated = torch.cat((g, c), 1)
+        concated = torch.cat((g, c))
         gate = F.sigmoid(self.gate(concated))
 
         x = gate * u + (1 - gate) * c
