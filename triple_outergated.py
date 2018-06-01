@@ -217,8 +217,8 @@ class TripleAttention(nn.Module):
 
         # Memory Update
         if self.gated_mem:
-            concated = torch.cat((vision_one, vocal_one, emb_one))
-            update_proposal = vision_one * vocal_one * emb_one
+            concated = torch.cat((vision_one, vocal_one, emb_one)).unsqueeze(0)
+            update_proposal = (vision_one * vocal_one * emb_one).unsqueeze(0)
             m_one = self.gated_mem_update(concated, m_zero, update_proposal)
         else:
             m_one = m_zero + ( vision_one * vocal_one * emb_one )
@@ -254,8 +254,8 @@ class TripleAttention(nn.Module):
 
         # Memory Update
         if self.gated_mem:
-            concated = torch.cat((vision_two, vocal_two, emb_two))
-            update_proposal = vision_two * vocal_two * emb_two
+            concated = torch.cat((vision_two, vocal_two, emb_two)).unsqueeze(0)
+            update_proposal = (vision_two * vocal_two * emb_two).unsqueeze(0)
             m_two = self.gated_mem_update(concated, m_one, update_proposal)
         else:
             m_two = m_one + ( vision_two * vocal_two * emb_two )
@@ -292,8 +292,8 @@ class TripleAttention(nn.Module):
 
         # Memory Update
         if self.gated_mem:
-            concated = torch.cat((vision_three, vocal_three, emb_three))
-            update_proposal = vision_three * vocal_three * emb_three
+            concated = torch.cat((vision_three, vocal_three, emb_three)).unsqueeze(0)
+            update_proposal = (vision_three * vocal_three * emb_three).unsqueeze(0)
             m_three = self.gated_mem_update(concated, m_two, update_proposal)
         else:
             m_three = m_two + ( vision_three * vocal_three * emb_three )
