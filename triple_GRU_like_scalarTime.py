@@ -212,7 +212,7 @@ class TripleAttention(nn.Module):
         # Emb Attention
         h_one_emb = F.tanh(self.Wemb_1(emb)) # *F.tanh(self.Wemb_m1(m_zero_emb))
         a_one_emb = F.softmax(self.Wemb_h1(h_one_emb),dim=0)
-        emb_one = (a_one_emb.repeat(1,N)*emb).sum(0)\
+        emb_one = (a_one_emb.repeat(1,N)*emb).sum(0)
         print('text', emb_one.size())
         # gate_one_emb = F.sigmoid(self.Wemb_gh(h_one_emb.mean(0).unsqueeze(0)))
         # emb_one_pregate = (a_one_emb.repeat(1,N)*emb).sum(0).unsqueeze(0)
