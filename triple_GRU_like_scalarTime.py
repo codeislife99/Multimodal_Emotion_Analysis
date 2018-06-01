@@ -127,7 +127,7 @@ class TripleAttention(nn.Module):
         self.Wemb_gh = nn.Linear(N2,1)
 
         if gated_mem:
-            self.gated_mem_update = GatedMemUpdate_B(4*N, N)
+            self.gated_mem_update = GRULikeUpdate(4*N, N, 4*N, 3*N)
 
         ''' K= 1 '''
         self.Wvision_1 = nn.Linear(N,N2)
@@ -185,7 +185,6 @@ class TripleAttention(nn.Module):
 
         # m_zero = vision_zero * vocal_zero * emb_zero
         m_zero = Variable(torch.zeros([1,dan_hidden_size]).float(),requires_grad=False).cuda()
-        print('mem', m_zero.size())
         m_zero_vision = m_zero.repeat(vision.size(0),1)
         m_zero_vocal = m_zero.repeat(vocal.size(0),1)
         m_zero_emb = m_zero.repeat(emb.size(0),1)
@@ -194,7 +193,6 @@ class TripleAttention(nn.Module):
         h_one_vision = F.tanh(self.Wvision_1(vision)) # *F.tanh(self.Wvision_m1(m_zero_vision))
         a_one_vision = F.softmax(self.Wvision_h1(h_one_vision),dim=0)  ## along dimsions
         vision_one = (a_one_vision.repeat(1,N)*vision).sum(0)
-        print('vision', vision_one.size())
         # gate_one_vision = F.sigmoid(self.Wvision_gh(h_one_vision.mean(0).unsqueeze(0)))
         # vision_one_pregate = (a_one_vision.repeat(1,N)*vision).sum(0).unsqueeze(0)
         # vision_one = gate_one_vision.repeat(1,N)*vision_one_pregate + (((1-gate_one_vision).repeat(1,N))*one_constant)
@@ -204,7 +202,6 @@ class TripleAttention(nn.Module):
         h_one_vocal = F.tanh(self.Wvocal_1(vocal)) # *F.tanh(self.Wvocal_m1(m_zero_vocal))
         a_one_vocal = F.softmax(self.Wvocal_h1(h_one_vocal),dim=0)
         vocal_one = (a_one_vocal.repeat(1,N)*vocal).sum(0)
-        print('vocal', vocal_one.size())
         # gate_one_vocal = F.sigmoid(self.Wvocal_gh(h_one_vocal.mean(0).unsqueeze(0)))
         # vocal_one_pregate = (a_one_vocal.repeat(1,N)*vocal).sum(0).unsqueeze(0)
         # vocal_one = gate_one_vocal.repeat(1,N)*vocal_one_pregate + (((1-gate_one_vocal).repeat(1,N))*one_constant)
@@ -213,7 +210,6 @@ class TripleAttention(nn.Module):
         h_one_emb = F.tanh(self.Wemb_1(emb)) # *F.tanh(self.Wemb_m1(m_zero_emb))
         a_one_emb = F.softmax(self.Wemb_h1(h_one_emb),dim=0)
         emb_one = (a_one_emb.repeat(1,N)*emb).sum(0)
-        print('text', emb_one.size())
         # gate_one_emb = F.sigmoid(self.Wemb_gh(h_one_emb.mean(0).unsqueeze(0)))
         # emb_one_pregate = (a_one_emb.repeat(1,N)*emb).sum(0).unsqueeze(0)
         # emb_one = gate_one_emb.repeat(1,N)*emb_one_pregate + (((1-gate_one_emb).repeat(1,N))*one_constant)
@@ -222,9 +218,7 @@ class TripleAttention(nn.Module):
         # Memory Update
         if self.gated_mem:
             concated = torch.cat((vision_one, vocal_one, emb_one)).unsqueeze(0)
-            print('avt', concated.size())
-            update_proposal = (vision_one * vocal_one * emb_one).unsqueeze(0)
-            m_one = self.gated_mem_update(concated, m_zero, update_proposal)
+            m_one = self.gated_mem_update(m_zero, concated)
         else:
             m_one = m_zero + ( vision_one * vocal_one * emb_one )
         m_one_vision = m_one.repeat(vision.size(0),1)
@@ -260,8 +254,7 @@ class TripleAttention(nn.Module):
         # Memory Update
         if self.gated_mem:
             concated = torch.cat((vision_two, vocal_two, emb_two)).unsqueeze(0)
-            update_proposal = (vision_two * vocal_two * emb_two).unsqueeze(0)
-            m_two = self.gated_mem_update(concated, m_one, update_proposal)
+            m_two = self.gated_mem_update(m_one, concated)
         else:
             m_two = m_one + ( vision_two * vocal_two * emb_two )
         m_two_vision = m_two.repeat(vision.size(0),1)
@@ -298,8 +291,7 @@ class TripleAttention(nn.Module):
         # Memory Update
         if self.gated_mem:
             concated = torch.cat((vision_three, vocal_three, emb_three)).unsqueeze(0)
-            update_proposal = (vision_three * vocal_three * emb_three).unsqueeze(0)
-            m_three = self.gated_mem_update(concated, m_two, update_proposal)
+            m_three = self.gated_mem_update(m_two, concated)
         else:
             m_three = m_two + ( vision_three * vocal_three * emb_three )
 
