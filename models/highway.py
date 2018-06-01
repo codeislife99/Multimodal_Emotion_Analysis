@@ -58,3 +58,27 @@ class GatedMemUpdate_B(nn.Module):
         x = gate * u + (1 - gate) * c
 
         return x
+
+
+class GRULikeUpdate(nn.Module):
+
+    def __init__(self, m_gate_in_size, m_gate_out_size, x_gate_in_size, x_gate_out_size):
+
+        super(GRULikeUpdate, self).__init__()
+
+        self.m_gate_pre = nn.Linear(m_gate_in_size, m_gate_out_size)
+        self.x_gate_pre = nn.Linear(x_gate_in_size, x_gate_out_size)
+        self.update_ff = nn.Linear(m_gate_in_size, m_gate_out_size)
+
+        def forward(self, m, x):
+
+            mx_concated = torch.cat((m, x), 1)
+            m_gate = F.sigmoid(self.m_gate_pre(mx_concated))
+            x_gate = F.sigmoid(self.x_gate_pre(x))
+
+            x_gated = x_gate * x
+            m_xgated_concated = torch.cat((m, x_gated), 1)
+
+            update = F.tanh(self.update_ff(m_xgated_concated))
+
+            m_new = (1 - m_gate) * m + m_gate * update
