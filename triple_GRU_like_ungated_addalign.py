@@ -231,7 +231,7 @@ class TripleAttention(nn.Module):
         '--------------------------------------------------K = 2  ---------------------------------------------------'
 
         # Visual Attention
-        h_two_vision = F.tanh(self.Wvision_2(vision) + Wvision_m2(m_one_vision))
+        h_two_vision = F.tanh(self.Wvision_2(vision) + self.Wvision_m2(m_one_vision))
         a_two_vision = F.softmax(self.Wvision_h2(h_two_vision),dim=0)
         vision_two = (a_two_vision.repeat(1,N)*vision).sum(0)
         # gate_two_vision = F.sigmoid(self.Wvision_gh(h_two_vision.mean(0).unsqueeze(0)))
