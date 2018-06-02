@@ -360,8 +360,8 @@ optimizer = torch.optim.Adam(params, lr = 0.0001)
 
 def save_checkpoint(state, is_final, filename='attention_net'):
     filename = filename +'_'+str(state['epoch'])+'.pth.tar'
-    os.system("mkdir -p TAN_GRU_like_scalarTime")
-    torch.save(state, './TAN_GRU_like_scalarTime/'+filename)
+    os.system("mkdir -p TAN_GRU_tied_scalarTime")
+    torch.save(state, './TAN_GRU_tied_scalarTime/'+filename)
     if is_final:
         shutil.copyfile(filename, 'model_final.pth.tar')
 
@@ -390,7 +390,7 @@ while epoch<no_of_epochs:
     running_loss = 0
     running_corrects = 0
     if use_pretrained:
-        pretrained_file = './TAN_GRU_like_scalarTime/triple_attention_net__4.pth.tar'
+        pretrained_file = './TAN_GRU_tied_scalarTime/triple_attention_net__4.pth.tar'
         # pretrained_file = './TAN/triple_attention_net__8.pth.tar'
 
         checkpoint = torch.load(pretrained_file)
